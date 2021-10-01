@@ -1,31 +1,14 @@
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import Main from './src/components/Main';
+import {NavigationContainer} from '@react-navigation/native';
+import {Text, View} from 'react-native';
+// import StatusBar from './src/components/StatusBar';
+import Tab from './src/navigation/Tab';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const App: () => Node = () => {
+export default function App() {
   return (
-    <View>
-      <Text>Initialize</Text>
-    </View>
+    <NavigationContainer>
+      <Tab />
+    </NavigationContainer>
   );
-};
-
-const styles = StyleSheet.create({});
-
-export default App;
+}
