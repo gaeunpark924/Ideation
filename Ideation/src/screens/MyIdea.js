@@ -25,7 +25,7 @@ const LeftComponent = () => {
 };
 const MyIdea = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Header
         centerComponent={<CenterComponent />}
         containerStyle={{width: 400}}
@@ -74,7 +74,7 @@ const MyIdea = () => {
       <View>
         <Button style={styles.bottom_button} title="전체 카드 랜덤 매칭" />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
