@@ -28,7 +28,7 @@ const MyIdea = () => {
     <View style={styles.container}>
       <Header
         centerComponent={<CenterComponent />}
-        containerStyle={{width: 400}}
+        containerStyle={{flex: 1}}
         leftComponent={<LeftComponent />}
         placement="center"
       />
