@@ -37,6 +37,35 @@ const RightComponent = () => {
   );
 };
 
+const IdeaComponent = () => {
+  return (
+    <View style={{marginBottom: 40}}>
+      <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+        <Text style={{fontSize: 18}}>아이디어 이름</Text>
+        <Text style={{fontSize: 10}}>작성 시간</Text>
+      </View>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
+          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet1.jpg')}></Card.Image>
+        </Card>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
+        </Card> 
+      </View>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
+          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet1.jpg')}></Card.Image>
+        </Card>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
+        </Card> 
+      </View>
+    </View>
+  );
+};
+
 const MyIdea = () => {
 
   return (
@@ -51,42 +80,11 @@ const MyIdea = () => {
       <View style={styles.top_buttons}>
         <Button style={styles.top_button} title="즉시기록 노출 아이디어 선택" />
       </View>
-      <ScrollView style={{backgroundColor: 'pink', margin: 15}}>
-        <View style={{backgroundColor:'green', flexDirection: 'row', justifyContent:'space-between'}}>
-          <Text style={{fontSize: 18}}>아이디어 이름</Text>
-          <Text style={{fontSize: 10}}>작성 시간</Text>
-        </View>
-          <View style={{flexDirection: 'row', justifyContent: 'center', backgroundColor:'yellow'}}>
-            <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
-              <Card.Title>콘텐츠 카드</Card.Title>
-              <Card.Image style={{marginHorizontal:'0%', marginVertical:'0%'}} source={require('../assets/pet1.jpg')}></Card.Image>
-            </Card>
-            <Card containerStyle={{width: (Dimensions.get('window').width-15)/2-2}}>
-              <Card.Title >콘텐츠 카드</Card.Title>
-              <Card.Image source={require('../assets/pet2.jpg')}></Card.Image>
-            </Card>
-          </View>
-          {/* <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Card>
-              <Card.Title>콘텐츠 카드</Card.Title>
-              <Card.Image source={require('../assets/pet3.jpg')}></Card.Image>
-            </Card>
-            <Card>
-              <Card.Title>콘텐츠 카드</Card.Title>
-              <Card.Image source={require('../assets/pet4.jpg')}></Card.Image>
-            </Card>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-            <Card>
-              <Card.Title>콘텐츠 카드</Card.Title>
-              <Card.Image source={require('../assets/pet3.jpg')}></Card.Image>
-            </Card>
-            <Card>
-              <Card.Title>콘텐츠 카드</Card.Title>
-              <Card.Image source={require('../assets/pet4.jpg')}></Card.Image>
-            </Card>
-          </View> 
-        </View>*/}
+      <ScrollView style={{margin: 15}}>
+        <IdeaComponent />
+        <IdeaComponent />
+        <IdeaComponent />
+        <IdeaComponent />
       </ScrollView>
     </SafeAreaView>
   );
