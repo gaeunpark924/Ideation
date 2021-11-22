@@ -5,18 +5,6 @@ const MyIdea = () => {
   return (
     <View style={styles.container}>
 
-      <Header
-        centerComponent={<CenterComponent />}
-        containerStyle={{flex: 1}}
-        leftComponent={<LeftComponent />}
-        placement="center"
-      />
-      <View style={styles.top_buttons}>
-        <Button style={styles.top_button} title="카테고리 설정" />
-        <Button style={styles.top_button} title="키워드 입력" />
-        <Button style={styles.top_button} title="카드 조합 저장" />
-      </View>
-
       <View style={styles.header}>
         <Text style={{fontSize: 24}}>
           키워드 매칭 이름
