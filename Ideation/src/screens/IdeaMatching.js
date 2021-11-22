@@ -1,95 +1,123 @@
-//IdeaList 아이디어 리스트 페이지
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Modal} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ScrollView, Dimensions} from 'react-native';
 import {Button, Header, Card, Icon} from 'react-native-elements';
-import Record from './Record';
-// import Modal from 'react-native-modal';
+
+
 const CenterComponent = () => {
   return (
-    <View>
-      <Text style={styles.CenterComponent}>아이디어 리스트</Text>
+    <View style={{flexDirection: 'row'}}>
+      <Text style={{fontSize: 24}}>
+        아이디어 리스트
+      </Text> 
     </View>
   );
 };
-const RightComponent = () => {
+
+const LeftComponent = () => {
   return (
-    <View>
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
       <Icon name="menu" />
     </View>
   );
 };
-const IdeaMatching = () => {
+
+const RightComponent = () => {
   return (
-    <View style={styles.container}>
-      <Header
-        centerComponent={<CenterComponent />}
-        rightComponent={<RightComponent />}
-        placement="center"
-      />
-      <View>
-        <Button title="즉시기록 노출 아이디어 선택" />
+    <View
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Icon name="dots-three-horizontal" type="entypo"/>
+    </View>
+  );
+};
+
+const IdeaComponent = () => {
+  return (
+    <View style={{marginBottom: 40}}>
+      <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+        <Text style={{fontSize: 18}}>아이디어 이름</Text>
+        <Text style={{fontSize: 10}}>작성 시간</Text>
       </View>
-      <View style={{flexDirection: 'row'}}>
-        <Text>아이디어 이름 </Text>
-        <Text>작성 시간</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
+          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet1.jpg')}></Card.Image>
+        </Card>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
+        </Card> 
       </View>
-      <View>
-        <View style={{flexDirection: 'row'}}>
-          <Card containerStyle={{margin: 2, width: 24}}>
-            <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-          </Card>
-          <Card containerStyle={{margin: 2, width: 24}}>
-            <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-          </Card>
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <Card containerStyle={{margin: 2, width: 24}}>
-            <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-          </Card>
-          <Card containerStyle={{margin: 2, width: 24}}>
-            <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-          </Card>
-        </View>
-      </View>
-      <View style={{flexDirection: 'row'}}>
-        <Text>아이디어 이름 </Text>
-        <Text>작성 시간</Text>
-      </View>
-      <View>
-        <View style={{flexDirection: 'row'}}>
-          <Card containerStyle={{margin: 2, width: 24}} />
-          <Card containerStyle={{margin: 2}} />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <Card containerStyle={{margin: 2}} />
-          <Card containerStyle={{margin: 2}} />
-        </View>
-      </View>
-      <View style={{flexDirection: 'row'}}>
-        <Text>아이디어 이름 </Text>
-        <Text>작성 시간</Text>
-      </View>
-      <View>
-        <View style={{flexDirection: 'row'}}>
-          <Card containerStyle={{margin: 2, width: 24}} />
-          <Card containerStyle={{margin: 2}} />
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <Card containerStyle={{margin: 2}} />
-          <Card containerStyle={{margin: 2}} />
-        </View>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
+          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet1.jpg')}></Card.Image>
+        </Card>
+        <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
+          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
+        </Card> 
+
       </View>
     </View>
   );
 };
+
+const MyIdea = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Header
+        leftComponent={<LeftComponent />}
+        centerComponent={<CenterComponent />}
+        rightComponent={<RightComponent />}
+        containerStyle={{flex: 1, position: 'absolute', minHeight: 50}}
+        placement="center"
+      />
+      <View style={styles.top_buttons}>
+        <Button style={styles.top_button} title="즉시기록 노출 아이디어 선택" />
+      </View>
+      <ScrollView style={{margin: 15}}>
+        <IdeaComponent />
+        <IdeaComponent />
+        <IdeaComponent />
+        <IdeaComponent />
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#fff',
+    //marginTop: StatusBar.currentHeight || 0,  //상태바 높이만큼 낮추는 코드
+  },
+  top_buttons: {
+    marginTop: 90, //작동 안됨... useHeaderHeight(),  import {useHeaderHeight} from '@react-navigation/stack';
+    marginLeft: 15,
+    marginRight: 15,
+    flexDirection: 'row',
+  },
+  top_button: {
+    padding: 5,
+  },
+  card_button_row: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+  },
+  bottom_button: {
+    width: 50,
   },
   CenterComponent: {
     fontSize: 24,
   },
 });
-export default IdeaMatching;
+
+export default MyIdea;
