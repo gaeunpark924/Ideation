@@ -4,7 +4,6 @@ import IdeaCommunity from '../screens/IdeaCommunity';
 import MyIdea from '../screens/MyIdea';
 import IdeaMatching from '../screens/IdeaMatching';
 import {Icon} from 'react-native-elements';
-
 const BTab = createBottomTabNavigator();
 
 const TabNavigation = () => {

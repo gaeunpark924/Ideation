@@ -61,13 +61,13 @@ const IdeaComponent = () => {
         <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
           <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
         </Card> 
+
       </View>
     </View>
   );
 };
 
 const MyIdea = () => {
-
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -114,6 +114,9 @@ const styles = StyleSheet.create({
   },
   bottom_button: {
     width: 50,
+  },
+  CenterComponent: {
+    fontSize: 24,
   },
 });
 

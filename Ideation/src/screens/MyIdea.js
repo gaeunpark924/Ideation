@@ -1,31 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View, Separator, SafeAreaView} from 'react-native';
-import {Button, Header, Card, Icon} from 'react-native-elements';
-const CenterComponent = () => {
-  return (
-    <View>
-      <Text style={{fontSize: 24}}>
-        키워드 매칭 이름
-        <Icon name="edit" style={{marginLeft: 5}} />
-      </Text>
-      <Text style={{fontSize: 16}}>(더블탭해서 이름바꾸기)</Text>
-    </View>
-  );
-};
-const LeftComponent = () => {
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Icon name="menu" />
-    </View>
-  );
-};
+import {StyleSheet, Text, View, Button} from 'react-native';
+import {Icon, Card, Divider} from 'react-native-elements';
 const MyIdea = () => {
   return (
     <View style={styles.container}>
+
       <Header
         centerComponent={<CenterComponent />}
         containerStyle={{flex: 1}}
@@ -37,42 +16,70 @@ const MyIdea = () => {
         <Button style={styles.top_button} title="키워드 입력" />
         <Button style={styles.top_button} title="카드 조합 저장" />
       </View>
-      <View>
-        <View style={{flexDirection: 'row'}}>
-          <Card>
-            <View style={{flexDirection: 'row'}}>
-              <Button title="카드고정" />
-              <Button title="직접입력" />
-            </View>
-            <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-          </Card>
-          <Card>
-            <View style={{flexDirection: 'row'}}>
-              <Button title="카드고정" />
-              <Button title="직접입력" />
-            </View>
-            <Card.Image source={require('../assets/pet2.jpg')}></Card.Image>
-          </Card>
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <Card>
-            <View style={{flexDirection: 'row'}}>
-              <Button title="카드고정" />
-              <Button title="직접입력" />
-            </View>
-            <Card.Image source={require('../assets/pet3.jpg')}></Card.Image>
-          </Card>
-          <Card>
-            <View style={{flexDirection: 'row'}}>
-              <Button title="카드고정" />
-              <Button title="직접입력" />
-            </View>
-            <Card.Image source={require('../assets/pet4.jpg')}></Card.Image>
-          </Card>
-        </View>
+
+      <View style={styles.header}>
+        <Text style={{fontSize: 24}}>
+          키워드 매칭 이름
+          <Icon name="edit" style={{marginLeft: 5}} />
+        </Text>
+        <Text>(더블탭해서 이름바꾸기)</Text>
       </View>
-      <View>
-        <Button style={styles.bottom_button} title="전체 카드 랜덤 매칭" />
+
+      <View style={styles.body}>
+        <View style={styles.top_button}>
+          <Button
+            style={styles.top_button}
+            title="카테고리 설정"
+            color="gray"
+          />
+          <Button style={styles.top_button} title="키워드 입력" color="gray" />
+          <Button
+            style={styles.top_button}
+            title="카드 조합 저장"
+            color="gray"
+          />
+        </View>
+        <View style={styles.contents_card}>
+          <View style={{flexDirection: 'row'}}>
+            <Card>
+              <View style={{flexDirection: 'row'}}>
+                <Button title="카드고정" color="gray" />
+                <Button title="직접입력" color="gray" />
+              </View>
+              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
+            </Card>
+            <Card>
+              <View style={{flexDirection: 'row'}}>
+                <Button title="카드고정" color="gray" />
+                <Button title="직접입력" color="gray" />
+              </View>
+              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
+            </Card>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Card>
+              <View style={{flexDirection: 'row'}}>
+                <Button title="카드고정" color="gray" />
+                <Button title="직접입력" color="gray" />
+              </View>
+              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
+            </Card>
+            <Card>
+              <View style={{flexDirection: 'row'}}>
+                <Button title="카드고정" color="gray" />
+                <Button title="직접입력" color="gray" />
+              </View>
+              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
+            </Card>
+          </View>
+        </View>
+        <View style={styles.footer}>
+          <Button
+            style={styles.bottom_button}
+            title="전체 카드 랜덤 매칭"
+            color="gray"
+          />
+        </View>
       </View>
     </View>
   );
@@ -80,25 +87,40 @@ const MyIdea = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    marginTop: 20,
   },
-  top_buttons: {
-    justifyContent: 'space-between',
-    marginLeft: 10,
-    marginRight: 10,
-    flexDirection: 'row',
+  header: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.2,
+    borderBottomColor: 'black',
+  },
+  body: {
+    flex: 10,
   },
   top_button: {
-    padding: 5,
-  },
-  card_button_row: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    alignItems: 'center',
+    marginTop: 10,
+    marginLeft: 15,
+    marginRight: 15,
+  },
+  contents_card: {
+    flex: 8,
+    marginBottom: 100,
+  },
+  footer: {
+    flex: 1,
+    margin: 10,
+    paddingLeft: 60,
+    paddingRight: 60,
   },
   bottom_button: {
-    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
