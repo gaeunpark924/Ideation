@@ -15,8 +15,10 @@ const App = () => {
       <Stack.Navigator
         screenOptions={{
           headerShown: true,
+          headerBackTitleVisible: false,
         }}>
         {/* 해당스택에 들어갈 화면 요소를 넣어준다. */}
+        <Stack.Screen name="welcome" component={welcome} />
         <Stack.Screen name="ideamatching" component={ideamatching} />
       </Stack.Navigator>
     </NavigationContainer>

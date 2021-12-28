@@ -1,15 +1,16 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+
 const welcome = ({navigation}) => {
-  function _onPressButton() {
-    alert('You tapped the button!');
-  }
   return (
     <View style={styles.welcome}>
       <TouchableOpacity>
         <View style={styles.body}>
           <View>
-            <Text style={styles.title}>환영합니다</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ideamatching')}>
+              <Text style={styles.title}>환영합니다</Text>
+            </TouchableOpacity>
           </View>
           <View>
             <Text>함께 아이디어 퍼즐을 완성해봐요!</Text>
@@ -29,7 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'red',
   },
   title: {
     fontSize: 50,
