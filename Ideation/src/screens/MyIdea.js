@@ -1,115 +1,134 @@
-import React from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
-import {Icon, Card, Divider} from 'react-native-elements';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import {Card, Divider} from 'react-native-elements';
+import Keyword from '../components/keyword';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Swiper from 'react-native-deck-swiper';
+
 const MyIdea = () => {
   return (
     <View style={styles.container}>
-
-      <View style={styles.header}>
-        <Text style={{fontSize: 24}}>
-          키워드 매칭 이름
-          <Icon name="edit" style={{marginLeft: 5}} />
-        </Text>
-        <Text>(더블탭해서 이름바꾸기)</Text>
+      <View style={styles.sv}>
+        <ScrollView
+          style={styles.keyword}
+          horizontal={true}
+          contentContainerStyle={{
+            alignContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View style={styles.addkeyword}>
+            <Text style={{fontSize: 16, marginRight: 7}}>키워드 추가</Text>
+            <TouchableOpacity>
+              <Text style={styles.addbutton}>+</Text>
+            </TouchableOpacity>
+          </View>
+          <Keyword name="랜덤" />
+          <Keyword name="자연" />
+          <Keyword name="건축" />
+          <Keyword name="예술" />
+          <Keyword name="뷰티" />
+          <Keyword name="디자인" />
+          <Keyword name="교육" />
+          <Keyword name="테크" />
+          <Keyword name="유튜브" />
+          <Keyword name="파카" />
+          <Keyword name="정성하" />
+        </ScrollView>
       </View>
-
       <View style={styles.body}>
-        <View style={styles.top_button}>
-          <Button
-            style={styles.top_button}
-            title="카테고리 설정"
-            color="gray"
-          />
-          <Button style={styles.top_button} title="키워드 입력" color="gray" />
-          <Button
-            style={styles.top_button}
-            title="카드 조합 저장"
-            color="gray"
-          />
-        </View>
         <View style={styles.contents_card}>
           <View style={{flexDirection: 'row'}}>
-            <Card>
-              <View style={{flexDirection: 'row'}}>
-                <Button title="카드고정" color="gray" />
-                <Button title="직접입력" color="gray" />
-              </View>
-              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-            </Card>
-            <Card>
-              <View style={{flexDirection: 'row'}}>
-                <Button title="카드고정" color="gray" />
-                <Button title="직접입력" color="gray" />
-              </View>
-              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-            </Card>
+            <View style={styles.containers}>
+              <Swiper
+                cards={['DO', 'MORE', 'OF', 'WHAT', 'MAKES', 'YOU', 'HAPPY']}
+                renderCard={card => {
+                  return (
+                    <View style={styles.card}>
+                      <Text style={styles.text}>{card}</Text>
+                    </View>
+                  );
+                }}
+                onSwiped={cardIndex => {
+                  console.log(cardIndex);
+                }}
+                onSwipedAll={() => {
+                  console.log('onSwipedAll');
+                }}
+                cardIndex={0}
+                backgroundColor={'#4FD0E9'}
+                stackSize={3}>
+                <Button
+                  onPress={() => {
+                    console.log('oulala');
+                  }}
+                  title="Press me">
+                  You can press me
+                </Button>
+              </Swiper>
+            </View>
           </View>
-          <View style={{flexDirection: 'row'}}>
-            <Card>
-              <View style={{flexDirection: 'row'}}>
-                <Button title="카드고정" color="gray" />
-                <Button title="직접입력" color="gray" />
-              </View>
-              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-            </Card>
-            <Card>
-              <View style={{flexDirection: 'row'}}>
-                <Button title="카드고정" color="gray" />
-                <Button title="직접입력" color="gray" />
-              </View>
-              <Card.Image source={require('../assets/pet1.jpg')}></Card.Image>
-            </Card>
-          </View>
-        </View>
-        <View style={styles.footer}>
-          <Button
-            style={styles.bottom_button}
-            title="전체 카드 랜덤 매칭"
-            color="gray"
-          />
         </View>
       </View>
+      <TouchableOpacity style={styles.cardsave}>
+        <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.randommatching}>
+        <Text style={{fontSize: 25}}>전체 카드 랜덤 매칭</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 20,
-  },
-  header: {
-    flex: 1,
+  container: {flex: 1},
+  sv: {flex: 1},
+  topsidebar: {flex: 1, backgroundColor: 'blue'},
+  card: {
+    flex: 0.5,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: '#E8E8E8',
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 0.2,
-    borderBottomColor: 'black',
+    backgroundColor: 'white',
   },
-  body: {
-    flex: 10,
+  text: {
+    textAlign: 'center',
+    fontSize: 50,
+    backgroundColor: 'transparent',
   },
-  top_button: {
-    flex: 1,
+  addkeyword: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    width: 120,
+    textAlign: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E7D9FF',
+    height: '100%',
     alignItems: 'center',
-    marginTop: 10,
-    marginLeft: 15,
-    marginRight: 15,
+    borderColor: 'black',
   },
-  contents_card: {
-    flex: 8,
-    marginBottom: 100,
-  },
-  footer: {
+  addbutton: {},
+  body: {flex: 10, marginBottom: 50},
+  cardsave: {
     flex: 1,
-    margin: 10,
-    paddingLeft: 60,
-    paddingRight: 60,
-  },
-  bottom_button: {
+    borderColor: 'black',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  randommatching: {
+    flex: 2,
+    backgroundColor: '#E7D9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 3,
+    borderColor: 'black',
   },
 });
-
 export default MyIdea;

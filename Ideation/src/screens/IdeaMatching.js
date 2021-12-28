@@ -1,14 +1,20 @@
 import React from 'react';
-import {StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ScrollView, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+  StatusBar,
+  FlatList,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
 import {Button, Header, Card, Icon} from 'react-native-elements';
-
 
 const CenterComponent = () => {
   return (
     <View style={{flexDirection: 'row'}}>
-      <Text style={{fontSize: 24}}>
-        아이디어 리스트
-      </Text> 
+      <Text style={{fontSize: 24}}>아이디어 리스트</Text>
     </View>
   );
 };
@@ -32,7 +38,7 @@ const RightComponent = () => {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      <Icon name="dots-three-horizontal" type="entypo"/>
+      <Icon name="dots-three-horizontal" type="entypo" />
     </View>
   );
 };
@@ -40,28 +46,45 @@ const RightComponent = () => {
 const IdeaComponent = () => {
   return (
     <View style={{marginBottom: 40}}>
-      <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <Text style={{fontSize: 18}}>아이디어 이름</Text>
         <Text style={{fontSize: 10}}>작성 시간</Text>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
         <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
           {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
-          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet1.jpg')}></Card.Image>
+          <Card.Image
+            style={{width: '100%', height: '100%'}}
+            source={require('../assets/pet1.jpg')}></Card.Image>
         </Card>
-        <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
-          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
-        </Card> 
+        <Card
+          containerStyle={{
+            width: 162,
+            height: 80,
+            borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/,
+          }}>
+          <Card.Image
+            style={{width: '100%', height: '100%'}}
+            source={require('../assets/pet2.jpg')}></Card.Image>
+        </Card>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
         <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
           {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
-          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet1.jpg')}></Card.Image>
+          <Card.Image
+            style={{width: '100%', height: '100%'}}
+            source={require('../assets/pet1.jpg')}></Card.Image>
         </Card>
-        <Card containerStyle={{width: 162, height: 80, borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/}}>
-          <Card.Image style={{width: '100%', height: '100%'}} source={require('../assets/pet2.jpg')}></Card.Image>
-        </Card> 
-
+        <Card
+          containerStyle={{
+            width: 162,
+            height: 80,
+            borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/,
+          }}>
+          <Card.Image
+            style={{width: '100%', height: '100%'}}
+            source={require('../assets/pet2.jpg')}></Card.Image>
+        </Card>
       </View>
     </View>
   );
@@ -89,7 +112,6 @@ const MyIdea = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
