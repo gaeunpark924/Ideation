@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import welcome from './src/screens/welcome';
 import ideamatching from './src/screens/MyIdea';
+import card from './src/components/Card';
 // 앱이 각 화면이 전환될 수 있는 기본 틀을 제공한다.
 const Stack = createStackNavigator();
 

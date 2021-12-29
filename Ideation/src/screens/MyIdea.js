@@ -3,15 +3,13 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   ScrollView,
   TouchableOpacity,
+  Button,
 } from 'react-native';
-import {Card, Divider} from 'react-native-elements';
 import Keyword from '../components/keyword';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Swiper from 'react-native-deck-swiper';
-
+import SC from '../components/Card';
 const MyIdea = () => {
   return (
     <View style={styles.container}>
@@ -44,42 +42,24 @@ const MyIdea = () => {
       </View>
       <View style={styles.body}>
         <View style={styles.contents_card}>
-          <View style={{flexDirection: 'row'}}>
-            <View style={styles.containers}>
-              <Swiper
-                cards={['DO', 'MORE', 'OF', 'WHAT', 'MAKES', 'YOU', 'HAPPY']}
-                renderCard={card => {
-                  return (
-                    <View style={styles.card}>
-                      <Text style={styles.text}>{card}</Text>
-                    </View>
-                  );
-                }}
-                onSwiped={cardIndex => {
-                  console.log(cardIndex);
-                }}
-                onSwipedAll={() => {
-                  console.log('onSwipedAll');
-                }}
-                cardIndex={0}
-                backgroundColor={'#4FD0E9'}
-                stackSize={3}>
-                <Button
-                  onPress={() => {
-                    console.log('oulala');
-                  }}
-                  title="Press me">
-                  You can press me
-                </Button>
-              </Swiper>
-            </View>
+          <View style={styles.contents}>
+            <SC style={styles.card} />
+            <SC style={styles.card} />
+          </View>
+          <View style={styles.contents}>
+            <SC style={styles.card} />
+            <SC style={styles.card} />
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.cardsave}>
+      <TouchableOpacity
+        style={styles.cardsave}
+        onPress={() => alert('카드 조합을 저장합니다.')}>
         <Text style={{fontSize: 20}}>카드 조합 저장</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.randommatching}>
+      <TouchableOpacity
+        style={styles.randommatching}
+        onPress={() => alert('카드를 랜덤매칭합니다.')}>
         <Text style={{fontSize: 25}}>전체 카드 랜덤 매칭</Text>
       </TouchableOpacity>
     </View>
@@ -89,19 +69,6 @@ const styles = StyleSheet.create({
   container: {flex: 1},
   sv: {flex: 1},
   topsidebar: {flex: 1, backgroundColor: 'blue'},
-  card: {
-    flex: 0.5,
-    borderRadius: 4,
-    borderWidth: 2,
-    borderColor: '#E8E8E8',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 50,
-    backgroundColor: 'transparent',
-  },
   addkeyword: {
     flexDirection: 'row',
     width: 120,
@@ -114,6 +81,22 @@ const styles = StyleSheet.create({
   },
   addbutton: {},
   body: {flex: 10, marginBottom: 50},
+  contents_card: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contents: {
+    flex: 1,
+    margin: 10,
+    flexDirection: 'row',
+  },
+  card: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 300,
+    height: 300,
+  },
   cardsave: {
     flex: 1,
     borderColor: 'black',
