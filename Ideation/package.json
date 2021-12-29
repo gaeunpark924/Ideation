@@ -1,5 +1,5 @@
 {
-  "name": "Ideation",
+  "name": "ideation",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -14,6 +14,8 @@
     "@react-native-community/masked-view": "0.1.11",
     "@react-navigation/bottom-tabs": "6.0.7",
     "@react-navigation/native": "6.0.4",
+    "@react-navigation/native-stack": "^6.2.5",
+    "@react-navigation/stack": "^6.0.11",
     "react": "17.0.2",
     "react-native": "0.65.1",
     "react-native-element": "1.2.1",
@@ -40,5 +42,9 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
