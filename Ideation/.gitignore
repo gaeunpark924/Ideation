@@ -60,6 +60,9 @@ buck-out/
 
 #env
 .env
+.env.staging
+.env.production
+config.ts
 
 ### firebase
 google-services.json
