@@ -6161,6 +6161,11 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
+"react-native-voice@0.3.0":
+  "integrity" "sha512-puSrXCNn1MM03UZkY8q+GW931OqBCEBCiupNK4vD8i49esGqRDDmzv8sRYyEgXj5ScVDKe6lnlKCmJSn5Wo2UA=="
+  "resolved" "https://registry.npmjs.org/react-native-voice/-/react-native-voice-0.3.0.tgz"
+  "version" "0.3.0"
+
 "react-native-windows@>=0.62":
   "integrity" "sha512-Y5hIPu+ZxPbTW4f6CLVKYZHaEIJJWvbElIfRNRcNrc3R9VIWn/8iDTF14eVnEYwvloTgZenFj1romIMUD9FGYQ=="
   "resolved" "https://registry.npmjs.org/react-native-windows/-/react-native-windows-0.65.3.tgz"
@@ -6200,7 +6205,7 @@
     "whatwg-fetch" "^3.0.0"
     "ws" "^6.1.4"
 
-"react-native@*", "react-native@^0.65.0", "react-native@>= 0.62", "react-native@>=0.57", "react-native@0.65.1":
+"react-native@*", "react-native@^0.65.0", "react-native@>= 0.62", "react-native@>=0.40.0", "react-native@>=0.57", "react-native@0.65.1":
   "integrity" "sha512-0UOVSnlssweQZjuaUtzViCifE/4tXm8oRbxwakopc8GavPu9vLulde145GOw6QVYiOy4iL50f+2XXRdX9NmMeQ=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.65.1.tgz"
   "version" "0.65.1"
