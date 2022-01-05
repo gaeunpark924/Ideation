@@ -24,7 +24,7 @@ const Login = ({navigation}) => {
                       }}
                 onPress={()=>console.log("페이스북으로 로그인")}
                 activeOpacity={0.8}>
-                <Image style={{width: 30, height: 30, margin : 10}} source={require('../assets/facebook.png')}/>  
+                <Image style={{width: 30, height: 30, margin : 10}} source={require('../../assets/facebook.png')}/>  
                 <Text style={{margin : 10}}>
                   페이스북으로 로그인
                 </Text>
@@ -41,7 +41,7 @@ const Login = ({navigation}) => {
                       }}
                 onPress={()=>console.log("구글로 로그인")}
                 activeOpacity={0.8}>
-                <Image style={{width: 30, height: 30, margin : 10}} source={require('../assets/google.png')} resizeMode='cover'/>   
+                <Image style={{width: 30, height: 30, margin : 10}} source={require('../../assets/google.png')} resizeMode='cover'/>   
                 <Text style={{margin : 10}}>
                   구글로 로그인
                 </Text>
