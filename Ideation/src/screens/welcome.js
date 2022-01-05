@@ -7,8 +7,15 @@ const welcome = ({navigation}) => {
       <TouchableOpacity>
         <View style={styles.body}>
           <View>
+            <TouchableOpacity onPress={() => navigation.navigate('idealist')}>
+              <Text style={styles.title}>환영합니다</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate('ideamatching')}>
+              <Text style={styles.title}>환영합니다</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ideadevelop')}>
               <Text style={styles.title}>환영합니다</Text>
             </TouchableOpacity>
           </View>

@@ -1,13 +1,33 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import SwipeCards from 'react-native-swipe-cards-deck';
-
+import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/Octicons';
 const SC = () => {
   function Card({data}) {
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
-        <Text>{data.text}</Text>
-        <Image source={data.image} />
+        <View
+          style={{
+            flexDirection: 'row',
+            flex: 1,
+          }}>
+          <View style={{flex: 1}}>
+            <TouchableOpacity>
+              <Icon1 name="pin-outline" size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={{flex: 5}}></View>
+          <View style={{flex: 1}}>
+            <TouchableOpacity>
+              <Icon2 name="pencil" size={22} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={{flex: 1}}>
+          <Text>{data.text}</Text>
+        </View>
       </View>
     );
   }
@@ -27,7 +47,7 @@ const SC = () => {
       setCards([
         {text: '공동체 참여 설계', backgroundColor: '#E7D9FF'},
         //{image: require('../assets/pet1.jpg')},
-        {text: '파카 유튜브 시청', backgroundColor: '#E7D9FF'},
+        {text: '유튜브 시청', backgroundColor: '#E7D9FF'},
         {text: '점심 먹기', backgroundColor: '#E7D9FF'},
         {text: '냉장고 청소하기', backgroundColor: '#E7D9FF'},
         {text: '대충 씻기', backgroundColor: '#E7D9FF'},
@@ -64,7 +84,8 @@ const SC = () => {
             maybe: {onAction: handleMaybe},
           }}
           hasMaybeAction={true}
-
+          yupText="좋아"
+          nopeText="싫어"
           // If you want a stack of cards instead of one-per-one view, activate stack mode
           // stack={true}
           // stackDepth={3}
@@ -91,6 +112,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     borderRadius: 70,
+    marginTop: 10,
   },
   cardsText: {
     fontSize: 28,

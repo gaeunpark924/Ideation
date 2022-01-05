@@ -1,145 +1,135 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
-  StatusBar,
-  FlatList,
   ScrollView,
-  Dimensions,
+  TouchableOpacity,
+  Button,
 } from 'react-native';
-import {Button, Header, Card, Icon} from 'react-native-elements';
-
-const CenterComponent = () => {
+import Keyword from '../components/keyword';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import SC from '../components/Card';
+import ModalSelector from 'react-native-modal-selector';
+const IdeaMatching = () => {
+  let index = 0;
+  const keyword = [
+    {key: index++, label: 'be'},
+    {key: index++, label: '릴보이'},
+    {key: index++, label: '솤오돔오'},
+    {
+      key: index++,
+      label: '랜덤',
+      accessibilityLabel: 'Tap here for cranberries',
+    },
+    {key: index++, label: 'just a lil more', customKey: 'Not a fruit'},
+  ];
   return (
-    <View style={{flexDirection: 'row'}}>
-      <Text style={{fontSize: 24}}>아이디어 리스트</Text>
-    </View>
-  );
-};
-
-const LeftComponent = () => {
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Icon name="menu" />
-    </View>
-  );
-};
-
-const RightComponent = () => {
-  return (
-    <View
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Icon name="dots-three-horizontal" type="entypo" />
-    </View>
-  );
-};
-
-const IdeaComponent = () => {
-  return (
-    <View style={{marginBottom: 40}}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={{fontSize: 18}}>아이디어 이름</Text>
-        <Text style={{fontSize: 10}}>작성 시간</Text>
-      </View>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
-          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet1.jpg')}></Card.Image>
-        </Card>
-        <Card
-          containerStyle={{
-            width: 162,
-            height: 80,
-            borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/,
+    <View style={styles.container}>
+      <View style={styles.sv}>
+        <ScrollView
+          style={styles.keyword}
+          horizontal={true}
+          contentContainerStyle={{
+            alignContent: 'center',
+            alignItems: 'center',
           }}>
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet2.jpg')}></Card.Image>
-        </Card>
+          <View style={styles.addkeyword}>
+            <Text style={{fontSize: 16, marginRight: 7}}>키워드 추가</Text>
+            <ModalSelector
+              data={keyword}
+              onChange={option => {
+                alert(`${option.label} `);
+              }}>
+              <Text style={styles.addbutton}>+</Text>
+            </ModalSelector>
+          </View>
+          <Keyword name="랜덤" />
+          <Keyword name="자연" />
+          <Keyword name="건축" />
+          <Keyword name="예술" />
+          <Keyword name="뷰티" />
+          <Keyword name="디자인" />
+          <Keyword name="교육" />
+          <Keyword name="테크" />
+          <Keyword name="유튜브" />
+          <Keyword name="파카" />
+          <Keyword name="정성하" />
+        </ScrollView>
       </View>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
-          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet1.jpg')}></Card.Image>
-        </Card>
-        <Card
-          containerStyle={{
-            width: 162,
-            height: 80,
-            borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/,
-          }}>
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet2.jpg')}></Card.Image>
-        </Card>
+      <View style={styles.body}>
+        <View style={styles.contents_card}>
+          <View style={styles.contents}>
+            <SC style={styles.card} />
+            <SC style={styles.card} />
+          </View>
+          <View style={styles.contents}>
+            <SC style={styles.card} />
+            <SC style={styles.card} />
+          </View>
+        </View>
       </View>
+      <TouchableOpacity
+        style={styles.cardsave}
+        onPress={() => alert('카드 조합을 저장합니다.')}>
+        <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.randommatching}
+        onPress={() => alert('카드를 랜덤매칭합니다.')}>
+        <Text style={{fontSize: 25}}>전체 카드 랜덤 매칭</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
-const MyIdea = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      <Header
-        leftComponent={<LeftComponent />}
-        centerComponent={<CenterComponent />}
-        rightComponent={<RightComponent />}
-        containerStyle={{flex: 1, position: 'absolute', minHeight: 50}}
-        placement="center"
-      />
-      <View style={styles.top_buttons}>
-        <Button style={styles.top_button} title="즉시기록 노출 아이디어 선택" />
-      </View>
-      <ScrollView style={{margin: 15}}>
-        <IdeaComponent />
-        <IdeaComponent />
-        <IdeaComponent />
-        <IdeaComponent />
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    //marginTop: StatusBar.currentHeight || 0,  //상태바 높이만큼 낮추는 코드
+  container: {flex: 1},
+  sv: {flex: 1},
+  topsidebar: {flex: 1, backgroundColor: 'blue'},
+  addkeyword: {
+    flexDirection: 'row',
+    width: 120,
+    textAlign: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#E7D9FF',
+    height: '100%',
+    alignItems: 'center',
+    borderColor: 'black',
+    borderWidth: 0.9,
   },
-  top_buttons: {
-    marginTop: 90, //작동 안됨... useHeaderHeight(),  import {useHeaderHeight} from '@react-navigation/stack';
-    marginLeft: 15,
-    marginRight: 15,
+  addbutton: {},
+  body: {flex: 10, marginBottom: 50},
+  contents_card: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  contents: {
+    flex: 1,
+    margin: 10,
     flexDirection: 'row',
   },
-  top_button: {
-    padding: 5,
+  card: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 300,
+    height: 300,
   },
-  card_button_row: {
+  cardsave: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    borderColor: 'black',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  bottom_button: {
-    width: 50,
-  },
-  CenterComponent: {
-    fontSize: 24,
+  randommatching: {
+    flex: 2,
+    backgroundColor: '#E7D9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 3,
+    borderColor: 'black',
   },
 });
-
-export default MyIdea;
+export default IdeaMatching;

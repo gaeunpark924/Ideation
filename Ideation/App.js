@@ -3,8 +3,9 @@ import {View, Text, StyleSheet, DrawerButton} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import welcome from './src/screens/welcome';
-import ideamatching from './src/screens/MyIdea';
-import card from './src/components/Card';
+import ideamatching from './src/screens/IdeaMatching';
+import idealist from './src/screens/IdeaList';
+import ideadevelop from './src/screens/IdeaDevelop';
 // 앱이 각 화면이 전환될 수 있는 기본 틀을 제공한다.
 const Stack = createStackNavigator();
 
@@ -17,9 +18,12 @@ const App = () => {
         screenOptions={{
           headerShown: true,
           headerBackTitleVisible: false,
+          headerStyle: {backgroundColor: '#E7D9FF'},
         }}>
         {/* 해당스택에 들어갈 화면 요소를 넣어준다. */}
         <Stack.Screen name="welcome" component={welcome} />
+        <Stack.Screen name="idealist" component={idealist} />
+        <Stack.Screen name="ideadevelop" component={ideadevelop} />
         <Stack.Screen name="ideamatching" component={ideamatching} />
       </Stack.Navigator>
     </NavigationContainer>
