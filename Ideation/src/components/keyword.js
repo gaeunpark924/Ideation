@@ -1,13 +1,13 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Icon} from 'react-native-vector-icons';
+import Remove from 'react-native-vector-icons/Feather';
 const Keyword = props => {
   const name = props.name;
   return (
     <View style={styles.keyword}>
       <Text style={styles.keywordname}>{name}</Text>
       <TouchableOpacity>
-        <Text style={styles.deletebutton}>X</Text>
+        <Remove name="x" size={18} style={styles.deletebutton} />
       </TouchableOpacity>
     </View>
   );

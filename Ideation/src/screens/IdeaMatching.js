@@ -11,6 +11,9 @@ import Keyword from '../components/keyword';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SC from '../components/Card';
 import ModalSelector from 'react-native-modal-selector';
+import Save from 'react-native-vector-icons/MaterialIcons';
+import Plus from 'react-native-vector-icons/AntDesign';
+
 const IdeaMatching = () => {
   let index = 0;
   const keyword = [
@@ -41,7 +44,7 @@ const IdeaMatching = () => {
               onChange={option => {
                 alert(`${option.label} `);
               }}>
-              <Text style={styles.addbutton}>+</Text>
+              <Plus name="plus" size={15} style={styles.addbutton} />
             </ModalSelector>
           </View>
           <Keyword name="랜덤" />
@@ -72,7 +75,10 @@ const IdeaMatching = () => {
       <TouchableOpacity
         style={styles.cardsave}
         onPress={() => alert('카드 조합을 저장합니다.')}>
-        <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+        <View flexDirection="row">
+          <Save size={25} name="save-alt" style={{marginRight: 5}} />
+          <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.randommatching}

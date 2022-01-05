@@ -2,10 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Image, Button} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SwipeCards from 'react-native-swipe-cards-deck';
-import Icon1 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
+import Pin from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Octicons';
+
 const SC = () => {
   function Card({data}) {
+    const [fix, setFix] = useState('false');
+    const [text, setText] = useState('');
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
         <View
@@ -13,15 +17,50 @@ const SC = () => {
             flexDirection: 'row',
             flex: 1,
           }}>
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, paddingTop: 2}}>
             <TouchableOpacity>
-              <Icon1 name="pin-outline" size={24} />
+              {fix === 'true' ? (
+                <Pin
+                  name="pin"
+                  size={24}
+                  rotation={90}
+                  onPress={() => setFix('false')}
+                  borderColor="black"
+                  style={{
+                    borderColor: 'black',
+                    borderWidth: 1,
+                    padding: 2,
+                    backgroundColor: 'white',
+                  }}
+                />
+              ) : (
+                <Pinoutline
+                  name="pin-outline"
+                  size={24}
+                  onPress={() => setFix('true')}
+                  style={{
+                    borderColor: 'black',
+                    borderWidth: 1,
+                    padding: 2,
+                    backgroundColor: 'white',
+                  }}
+                />
+              )}
             </TouchableOpacity>
           </View>
           <View style={{flex: 5}}></View>
-          <View style={{flex: 1}}>
+          <View style={{flex: 1, paddingTop: 2, paddingRight: 1}}>
             <TouchableOpacity>
-              <Icon2 name="pencil" size={22} />
+              <Icon2
+                name="pencil"
+                size={22}
+                style={{
+                  borderColor: 'black',
+                  borderWidth: 1,
+                  padding: 4,
+                  backgroundColor: 'white',
+                }}
+              />
             </TouchableOpacity>
           </View>
         </View>
