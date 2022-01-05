@@ -1,10 +1,10 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-
+import {StyleSheet, Text, View, TextInput, Switch} from 'react-native';
+import ModalSelector from 'react-native-modal-selector';
 export default function IdeaCommunity() {
   return (
-    <View style={styles.container}>
-      <Text>IdeaCommunity</Text>
+    <View>
+      <Text>아이디어발전</Text>
     </View>
   );
 }
