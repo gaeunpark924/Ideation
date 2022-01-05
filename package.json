@@ -1,0 +1,19 @@
+{
+  "name": "ideation",
+  "version": "1.0.0",
+  "description": "WIT_3Team_Ideation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WIT-IDEA/Ideation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WIT-IDEA/Ideation/issues"
+  },
+  "homepage": "https://github.com/WIT-IDEA/Ideation#readme"
+}
