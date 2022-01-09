@@ -15,6 +15,7 @@ import JoinPwdChecking from './src/screens/join/JoinPwdChecking';
 import JoinFinished from './src/screens/JoinFinished';
 import SearchPwd from './src/screens/pwd/SearchPwd';
 import ResetPwd from './src/screens/pwd/ResetPwd';
+import ideaCardMap from './src/screens/IdeaCardMap';
 // import { Icon } from 'react-native-elements';
 // import Tab from './src/navigation/Tab';
 // import Main from './src/components/Main';
