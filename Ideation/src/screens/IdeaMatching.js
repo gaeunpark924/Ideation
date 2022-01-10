@@ -8,7 +8,6 @@ import {
   Button,
 } from 'react-native';
 import Keyword from '../components/keyword';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import SC from '../components/Card';
 import ModalSelector from 'react-native-modal-selector';
 import Save from 'react-native-vector-icons/MaterialIcons';
@@ -16,17 +15,40 @@ import Plus from 'react-native-vector-icons/AntDesign';
 
 const IdeaMatching = () => {
   let index = 0;
-  const keyword = [
-    {key: index++, label: 'be'},
-    {key: index++, label: '릴보이'},
-    {key: index++, label: '솤오돔오'},
-    {
-      key: index++,
-      label: '랜덤',
-      accessibilityLabel: 'Tap here for cranberries',
-    },
-    {key: index++, label: 'just a lil more', customKey: 'Not a fruit'},
-  ];
+  const [keyword, setKeyword] = useState([
+    /*{key: index++, label: '키워드 직접입력'},*/
+    {key: index++, label: '랜덤', select: true},
+    {key: index++, label: '자연', select: false},
+    {key: index++, label: '건축', select: false},
+    {key: index++, label: '예술', select: false},
+    {key: index++, label: '뷰티', select: false},
+    {key: index++, label: '교육', select: false},
+    {key: index++, label: '테크', select: false},
+  ]);
+  const {key, label, select} = keyword;
+  const changeKeyword = e => {
+    const {key, label, select} = e.target;
+    setKeyword({
+      ...keyword,
+      [key]: label,
+    });
+  };
+
+  var keywordlists = [];
+  var i = 0;
+  while (i < keyword.length) {
+    if (keyword[i].select) {
+      keywordlists.push(
+        <Keyword
+          name={keyword[i].label}
+          key={keyword[i].key}
+          select={keyword[i].select}
+        />,
+      );
+    }
+    i = i + 1;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.sv}>
@@ -42,22 +64,33 @@ const IdeaMatching = () => {
             <ModalSelector
               data={keyword}
               onChange={option => {
-                alert(`${option.label} `);
+                if (!option.select) {
+                  setKeyword({
+                    select: 'true',
+                  });
+                }
+              }}
+              cancelText="태그 추가"
+              optionStyle={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignContent: 'center',
+                borderBottomColor: 'black',
+              }}
+              supportedOrientations={['landscape']}
+              accessible={true}
+              scrollViewAccessibilityLabel={'Scrollable options'}
+              optionTextStyle={{
+                justifyContent: 'center',
+                color: 'black',
+                alignContent: 'center',
+                alignItems: 'center',
               }}>
               <Plus name="plus" size={15} style={styles.addbutton} />
             </ModalSelector>
           </View>
-          <Keyword name="랜덤" />
-          <Keyword name="자연" />
-          <Keyword name="건축" />
-          <Keyword name="예술" />
-          <Keyword name="뷰티" />
-          <Keyword name="디자인" />
-          <Keyword name="교육" />
-          <Keyword name="테크" />
-          <Keyword name="유튜브" />
-          <Keyword name="파카" />
-          <Keyword name="정성하" />
+          {keywordlists}
         </ScrollView>
       </View>
       <View style={styles.body}>

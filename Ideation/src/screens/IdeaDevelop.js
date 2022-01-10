@@ -1,17 +1,23 @@
-import React from 'react';
-import {StyleSheet, Text, View, TextInput, Switch} from 'react-native';
+import React, {useRef, useState, useEffect} from 'react';
+import {StyleSheet, Text, View, TextInput, Switch, Button} from 'react-native';
 import ModalSelector from 'react-native-modal-selector';
-export default function IdeaCommunity() {
+function IdeaCommunity() {
+  const [count, setCount] = useState(0);
+  const intervalId = useRef(null);
+
+  const startCounter = () => {
+    intervalId.current = setInterval(() => setCount(count => count + 1), 1000);
+  };
+  const stopCounter = () => {
+    clearInterval(intervalId.current);
+  };
   return (
     <View>
-      <Text>아이디어발전</Text>
+      <Text>{count}번 클릭했습니다.</Text>
+      <Button onPress={startCounter} title="시작"></Button>
+      <Button onPress={stopCounter} title="정지"></Button>
     </View>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+
+export default IdeaCommunity;

@@ -33,7 +33,7 @@ const App = () => {
           headerBackTitleVisible: false,
           headerStyle: {backgroundColor: '#E7D9FF'},
         }}>
-        {/* 회원가입 페이지 */}
+        {/* 회원가입 페이지 
         <Stack.Screen
           name="Login"
           component={Login}
@@ -81,7 +81,7 @@ const App = () => {
           component={ResetPwd}
           options={{title: '비밀번호 재설정'}}
         />
-
+*/}
         {/* 메인 페이지들 */}
         <Stack.Screen name="welcome" component={welcome} />
         <Stack.Screen name="idealist" component={idealist} />
