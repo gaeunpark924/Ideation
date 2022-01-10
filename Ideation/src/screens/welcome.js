@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import auth from '@react-native-firebase/auth';
 
 const welcome = ({navigation}) => {
   return (
@@ -17,6 +18,13 @@ const welcome = ({navigation}) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('ideadevelop')}>
               <Text style={styles.title}>환영합니다</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                auth().signOut();
+                navigation.navigate('Login');
+                }}>
+              <Text style={styles.title}>로그아웃</Text>
             </TouchableOpacity>
           </View>
           <View>

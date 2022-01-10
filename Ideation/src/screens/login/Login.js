@@ -1,7 +1,11 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import styles from '../../styles/style';
 import { Icon } from 'react-native-elements';
+
+//google 로그인
+import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}) => {
     const onPressEmailLogin = ()=>{
@@ -10,6 +14,19 @@ const Login = ({navigation}) => {
     const onPressJoin = () =>{
       navigation.navigate("JoinEmail")
     }
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: "877649815167-8rq5c4138llk9v3mo785qee98q9hg52i.apps.googleusercontent.com",
+    });
+  }, []);
+
+  async function onGoogleButtonPress() {
+    const {idToken} = await GoogleSignin.signIn(); //구글 로그인하며 유저 idToken 가져옴.
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken); //유저 idToken 이용하여 google credential 생성
+    return auth().signInWithCredential(googleCredential);                 //생성된 credential 이용해 사용자 앱으로 로그인 시킴.
+  }
+
     return (
         <View style={styles.container}>
             <View style={{marginTop:110}}>
@@ -39,7 +56,10 @@ const Login = ({navigation}) => {
                         borderWidth : 2,
                         borderColor : 'black'
                       }}
-                onPress={()=>console.log("구글로 로그인")}
+                onPress={()=>{
+                  console.log("구글로 로그인");
+                  onGoogleButtonPress();
+                }}
                 activeOpacity={0.8}>
                 <Image style={{width: 30, height: 30, margin : 10}} source={require('../../assets/google.png')} resizeMode='cover'/>   
                 <Text style={{margin : 10}}>

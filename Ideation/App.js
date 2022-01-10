@@ -1,5 +1,5 @@
-import React from 'react';
-import {View, Text, StyleSheet, DrawerButton} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, DrawerButton, AsyncStorage} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import welcome from './src/screens/welcome';
@@ -19,10 +19,43 @@ import ResetPwd from './src/screens/pwd/ResetPwd';
 // import Tab from './src/navigation/Tab';
 // import Main from './src/components/Main';
 
+//google 로그인
+import auth from '@react-native-firebase/auth';
+
 // 앱이 각 화면이 전환될 수 있는 기본 틀을 제공한다.
 const Stack = createStackNavigator();
 
 const App = () => {
+
+  //유저 접속(로그인) 상태에 따라 다른 화면 보여주기
+  const [loggedIn, setLoggedIn] = useState(false);
+  auth().onAuthStateChanged((user) => {   //firebase에서 제공하는 유저 접속 유무 알려주는 함수
+    if (user) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
+
+  // if (loggedIn) {
+  //   return (
+  //     <NavigationContainer>
+  //       <Stack.Navigator
+  //         screenOptions={{
+  //           headerShown: true,
+  //           headerBackTitleVisible: false,
+  //           headerStyle: { backgroundColor: '#E7D9FF' },
+  //         }}>
+  //         {/* 메인 페이지들 */}
+  //         <Stack.Screen name="welcome" component={welcome} />
+  //         <Stack.Screen name="idealist" component={idealist} />
+  //         <Stack.Screen name="ideadevelop" component={ideadevelop} />
+  //         <Stack.Screen name="ideamatching" component={ideamatching} />
+  //       </Stack.Navigator>
+  //     </NavigationContainer >
+  //   );
+  // }
+  
   return (
     //네비게이션의 트리를 관리해주는 컴포넌트
     <NavigationContainer>
