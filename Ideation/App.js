@@ -21,18 +21,11 @@ import ResetPwd from './src/screens/pwd/ResetPwd';
 
 //google 로그인
 import auth from '@react-native-firebase/auth';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 // 앱이 각 화면이 전환될 수 있는 기본 틀을 제공한다.
 const Stack = createStackNavigator();
 
 const App = () => {
-
-  // useEffect(() => {
-  //   GoogleSignin.configure({
-  //     webClientId: "877649815167-8rq5c4138llk9v3mo785qee98q9hg52i.apps.googleusercontent.com"
-  //   });
-  // }, []);
 
   //유저 접속(로그인) 상태에 따라 다른 화면 보여주기
   const [loggedIn, setLoggedIn] = useState(false);
@@ -44,25 +37,25 @@ const App = () => {
     }
   });
 
-  if (loggedIn) {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: true,
-            headerBackTitleVisible: false,
-            headerStyle: { backgroundColor: '#E7D9FF' },
-          }}>
-          {/* 메인 페이지들 */}
-          <Stack.Screen name="welcome" component={welcome} />
-          <Stack.Screen name="idealist" component={idealist} />
-          <Stack.Screen name="ideadevelop" component={ideadevelop} />
-          <Stack.Screen name="ideamatching" component={ideamatching} />
-        </Stack.Navigator>
-      </NavigationContainer >
-    );
-  }
-
+  // if (loggedIn) {
+  //   return (
+  //     <NavigationContainer>
+  //       <Stack.Navigator
+  //         screenOptions={{
+  //           headerShown: true,
+  //           headerBackTitleVisible: false,
+  //           headerStyle: { backgroundColor: '#E7D9FF' },
+  //         }}>
+  //         {/* 메인 페이지들 */}
+  //         <Stack.Screen name="welcome" component={welcome} />
+  //         <Stack.Screen name="idealist" component={idealist} />
+  //         <Stack.Screen name="ideadevelop" component={ideadevelop} />
+  //         <Stack.Screen name="ideamatching" component={ideamatching} />
+  //       </Stack.Navigator>
+  //     </NavigationContainer >
+  //   );
+  // }
+  
   return (
     //네비게이션의 트리를 관리해주는 컴포넌트
     <NavigationContainer>
