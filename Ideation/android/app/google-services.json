@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "405190545502",
+    "project_id": "wit-idea",
+    "storage_bucket": "wit-idea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405190545502:android:794ed1970d4a10378964cf",
+        "android_client_info": {
+          "package_name": "com.ideation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405190545502-p4f3p99bm3semtpp1359rcqnopmv71c2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ideation",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "405190545502-93tkkus714sonlvr5fqiltnksrn69qbh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6iNet3prZ30HCA2rEUkn40JPjFAiPLoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405190545502-93tkkus714sonlvr5fqiltnksrn69qbh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
