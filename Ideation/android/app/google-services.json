@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "405190545502",
-    "project_id": "wit-idea",
-    "storage_bucket": "wit-idea.appspot.com"
+    "project_number": "877649815167",
+    "project_id": "wit-idea-20fa8",
+    "storage_bucket": "wit-idea-20fa8.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:405190545502:android:794ed1970d4a10378964cf",
+        "mobilesdk_app_id": "1:877649815167:android:10a7144748be32974a014a",
         "android_client_info": {
           "package_name": "com.ideation"
         }
       },
       "oauth_client": [
         {
-          "client_id": "405190545502-p4f3p99bm3semtpp1359rcqnopmv71c2.apps.googleusercontent.com",
+          "client_id": "877649815167-nom23gv3btqp9ls8j7o1pd4v7i3lea0m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.ideation",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "bfb4bcfe25bb919bc5d52d87f6f4dd7a29df9efe"
           }
         },
         {
-          "client_id": "405190545502-93tkkus714sonlvr5fqiltnksrn69qbh.apps.googleusercontent.com",
+          "client_id": "877649815167-8rq5c4138llk9v3mo785qee98q9hg52i.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB6iNet3prZ30HCA2rEUkn40JPjFAiPLoE"
+          "current_key": "AIzaSyBuG4NGZUXTEkePD63t9uoqprOU_LSKs30"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "405190545502-93tkkus714sonlvr5fqiltnksrn69qbh.apps.googleusercontent.com",
+              "client_id": "877649815167-8rq5c4138llk9v3mo785qee98q9hg52i.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
