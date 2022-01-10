@@ -16,8 +16,9 @@ const LoginEmail = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function onPressLogin() {
-      console.log(email, password);
+  function onPressLogin() {
+    console.log(email, password);
+    if (email && password) {  //email, pass null, 공백 처리
       auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
           console.log(user, '로그인 성공');
@@ -30,6 +31,7 @@ const LoginEmail = ({navigation}) => {
         })
         .catch((err) => console.log(err))
     }
+  }
 
     return (
         <View style={styles.container}>
