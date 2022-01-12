@@ -18,14 +18,15 @@ const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
-    {key: index++, label: '랜덤', select: false},
-    {key: index++, label: '자연', select: false},
-    {key: index++, label: '건축', select: false},
-    {key: index++, label: '예술', select: false},
-    {key: index++, label: '뷰티', select: false},
-    {key: index++, label: '교육', select: false},
-    {key: index++, label: '테크', select: false},
+    {key: index++, label: '랜덤', select: true},
+    {key: index++, label: '자연', select: true},
+    {key: index++, label: '건축', select: true},
+    {key: index++, label: '예술', select: true},
+    {key: index++, label: '뷰티', select: true},
+    {key: index++, label: '교육', select: true},
+    {key: index++, label: '테크', select: true},
   ]);
+  /* 키워드 추가 */
   const changeKeyword = e => {
     let newKeywords = keyword.map(k => {
       if (k.key === e.key) {
@@ -39,6 +40,7 @@ const IdeaMatching = () => {
     });
     setKeyword(newKeywords);
   };
+  /* 키워드 삭제 */
   const remove = e => {
     console.log(e);
     let newKeywords = keyword.map(k => {
@@ -53,6 +55,7 @@ const IdeaMatching = () => {
     });
     setKeyword(newKeywords);
   };
+  /* 키워드 표시 */
   const keywordlists = keyword.map(k =>
     k.select ? (
       <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />

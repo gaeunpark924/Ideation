@@ -9,7 +9,22 @@ import Icon2 from 'react-native-vector-icons/Octicons';
 const SC = () => {
   function Card({data}) {
     const [fix, setFix] = useState('false');
-    const [text, setText] = useState('');
+    // const [text, setText] = useState('');
+    const contents = () => {
+      if (data.image === undefined) {
+        return <Text style={styles.cardtext}> {data.text}</Text>;
+      } else {
+        return (
+          <Image style={styles.cardthumbnail} source={{uri: data.image}} />
+        );
+      }
+    };
+    const isText = () => {
+      if (data.image === undefined) return true;
+      else {
+        return false;
+      }
+    };
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
         <View
@@ -64,9 +79,7 @@ const SC = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flex: 1}}>
-          <Text>{data.text}</Text>
-        </View>
+        <View style={{flex: 1}}>{contents()}</View>
       </View>
     );
   }
@@ -80,13 +93,24 @@ const SC = () => {
   }
   const [cards, setCards] = useState();
 
-  // replace with real remote data fetching
   useEffect(() => {
     setTimeout(() => {
       setCards([
-        {text: '공동체 참여 설계', backgroundColor: '#E7D9FF'},
-        {text: '유튜브 시청', backgroundColor: '#E7D9FF'},
-        {text: '점심 먹기', backgroundColor: '#E7D9FF'},
+        {
+          text: '공동체 참여 설계',
+          backgroundColor: '#E7D9FF',
+          image: 'https://media.giphy.com/media/GfXFVHUzjlbOg/giphy.gif',
+        },
+        {
+          text: '',
+          backgroundColor: '#E7D9FF',
+          image: 'https://media.giphy.com/media/GfXFVHUzjlbOg/giphy.gif',
+        },
+        {
+          text: '점심 먹기',
+          backgroundColor: '#E7D9FF',
+          image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+        },
         {text: '냉장고 청소하기', backgroundColor: '#E7D9FF'},
         {text: '대충 씻기', backgroundColor: '#E7D9FF'},
         {text: '음...', backgroundColor: '#E7D9FF'},
@@ -96,15 +120,15 @@ const SC = () => {
   }, []);
 
   function handleYup(card) {
-    console.log(`Yup for ${card.text}`);
+    console.log(`Yup for ${card.text} ${card.image}`);
     return true; // return false if you wish to cancel the action
   }
   function handleNope(card) {
-    console.log(`Nope for ${card.text}`);
+    console.log(`Nope for ${card.text} ${card.image}`);
     return true;
   }
   function handleMaybe(card) {
-    console.log(`Maybe for ${card.text}`);
+    console.log(`Maybe for ${card.text} ${card.image}`);
     return true;
   }
 
@@ -121,12 +145,11 @@ const SC = () => {
             yup: {onAction: handleYup},
             maybe: {onAction: handleMaybe},
           }}
-          hasMaybeAction={true}
+          hasMaybeAction={false}
           yupText="좋아"
           nopeText="싫어"
           // If you want a stack of cards instead of one-per-one view, activate stack mode
           // stack={true}
-          // stackDepth={3}
         />
       ) : (
         <StatusCard text="Loading..." />
@@ -152,7 +175,11 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     marginTop: 10,
   },
-  cardsText: {
+  cardText: {
     fontSize: 28,
+  },
+  cardthumbnail: {
+    width: 180,
+    height: '100%',
   },
 });
