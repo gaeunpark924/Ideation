@@ -5,10 +5,10 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  TextInput,
   Button,
 } from 'react-native';
 import Keyword from '../components/keyword';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import SC from '../components/Card';
 import ModalSelector from 'react-native-modal-selector';
 import Save from 'react-native-vector-icons/MaterialIcons';
@@ -16,17 +16,55 @@ import Plus from 'react-native-vector-icons/AntDesign';
 
 const IdeaMatching = () => {
   let index = 0;
-  const keyword = [
-    {key: index++, label: 'be'},
-    {key: index++, label: '릴보이'},
-    {key: index++, label: '솤오돔오'},
-    {
-      key: index++,
-      label: '랜덤',
-      accessibilityLabel: 'Tap here for cranberries',
-    },
-    {key: index++, label: 'just a lil more', customKey: 'Not a fruit'},
-  ];
+  const [keyword, setKeyword] = useState([
+    /*label : 키워드 이름 select: 선택되었는지 여부*/
+    {key: index++, label: '랜덤', select: true},
+    {key: index++, label: '자연', select: true},
+    {key: index++, label: '건축', select: true},
+    {key: index++, label: '예술', select: true},
+    {key: index++, label: '뷰티', select: true},
+    {key: index++, label: '교육', select: true},
+    {key: index++, label: '테크', select: true},
+  ]);
+  /* 키워드 추가 */
+  const changeKeyword = e => {
+    let newKeywords = keyword.map(k => {
+      if (k.key === e.key) {
+        return {
+          ...k,
+          select: true,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
+  };
+  /* 키워드 삭제 */
+  const remove = e => {
+    console.log(e);
+    let newKeywords = keyword.map(k => {
+      if (k.label === e) {
+        return {
+          ...k,
+          select: false,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
+  };
+  /* 키워드 표시 */
+  const keywordlists = keyword.map(k =>
+    k.select ? (
+      <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />
+    ) : null,
+  );
+  const [change, setChange] = useState('false');
+  const isChange = change => {
+    setChange(change);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.sv}>
@@ -41,34 +79,39 @@ const IdeaMatching = () => {
             <Text style={{fontSize: 16, marginRight: 7}}>키워드 추가</Text>
             <ModalSelector
               data={keyword}
-              onChange={option => {
-                alert(`${option.label} `);
+              onChange={changeKeyword}
+              cancelText="태그 추가"
+              optionStyle={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignContent: 'center',
+                borderBottomColor: 'black',
+              }}
+              supportedOrientations={['landscape']}
+              accessible={true}
+              scrollViewAccessibilityLabel={'Scrollable options'}
+              optionTextStyle={{
+                justifyContent: 'center',
+                color: 'black',
+                alignContent: 'center',
+                alignItems: 'center',
               }}>
               <Plus name="plus" size={15} style={styles.addbutton} />
             </ModalSelector>
           </View>
-          <Keyword name="랜덤" />
-          <Keyword name="자연" />
-          <Keyword name="건축" />
-          <Keyword name="예술" />
-          <Keyword name="뷰티" />
-          <Keyword name="디자인" />
-          <Keyword name="교육" />
-          <Keyword name="테크" />
-          <Keyword name="유튜브" />
-          <Keyword name="파카" />
-          <Keyword name="정성하" />
+          {keywordlists}
         </ScrollView>
       </View>
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <SC style={styles.card} />
-            <SC style={styles.card} />
+            <SC style={styles.card} isChange={isChange} />
+            <SC style={styles.card} isChange={isChange} />
           </View>
           <View style={styles.contents}>
-            <SC style={styles.card} />
-            <SC style={styles.card} />
+            <SC style={styles.card} isChange={isChange} />
+            <SC style={styles.card} isChange={isChange} />
           </View>
         </View>
       </View>
