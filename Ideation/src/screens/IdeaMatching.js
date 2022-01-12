@@ -39,19 +39,24 @@ const IdeaMatching = () => {
     });
     setKeyword(newKeywords);
   };
-  // useEffect(() => {
-  //   console.log('keyword change');
-  // }, [keyword]);
-
-  const [temp, setTemp] = useState(0);
-  const getData = temp => {
-    setTemp(temp);
-  };
   const remove = e => {
-    console.log(e.name);
+    console.log(e);
+    let newKeywords = keyword.map(k => {
+      if (k.label === e) {
+        return {
+          ...k,
+          select: false,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
   };
   const keywordlists = keyword.map(k =>
-    k.select ? <Keyword name={k.label} key={k.key} select={k.select} /> : null,
+    k.select ? (
+      <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />
+    ) : null,
   );
 
   return (

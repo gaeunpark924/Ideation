@@ -3,8 +3,8 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Remove from 'react-native-vector-icons/Feather';
 const Keyword = props => {
   const name = props.name;
-  const remove = e => {
-    console.log(e.Keyword);
+  const remove = () => {
+    props.remove(props.name);
   };
   return (
     <View style={styles.keyword}>
