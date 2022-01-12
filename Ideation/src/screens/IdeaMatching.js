@@ -5,6 +5,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  TextInput,
   Button,
 } from 'react-native';
 import Keyword from '../components/keyword';
@@ -16,8 +17,8 @@ import Plus from 'react-native-vector-icons/AntDesign';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
-    /*{key: index++, label: '키워드 직접입력'},*/
-    {key: index++, label: '랜덤', select: true},
+    /*label : 키워드 이름 select: 선택되었는지 여부*/
+    {key: index++, label: '랜덤', select: false},
     {key: index++, label: '자연', select: false},
     {key: index++, label: '건축', select: false},
     {key: index++, label: '예술', select: false},
@@ -25,29 +26,33 @@ const IdeaMatching = () => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
-  const {key, label, select} = keyword;
   const changeKeyword = e => {
-    const {key, label, select} = e.target;
-    setKeyword({
-      ...keyword,
-      [key]: label,
+    let newKeywords = keyword.map(k => {
+      if (k.key === e.key) {
+        return {
+          ...k,
+          select: true,
+        };
+      } else {
+        return k;
+      }
     });
+    setKeyword(newKeywords);
   };
+  // useEffect(() => {
+  //   console.log('keyword change');
+  // }, [keyword]);
 
-  var keywordlists = [];
-  var i = 0;
-  while (i < keyword.length) {
-    if (keyword[i].select) {
-      keywordlists.push(
-        <Keyword
-          name={keyword[i].label}
-          key={keyword[i].key}
-          select={keyword[i].select}
-        />,
-      );
-    }
-    i = i + 1;
-  }
+  const [temp, setTemp] = useState(0);
+  const getData = temp => {
+    setTemp(temp);
+  };
+  const remove = e => {
+    console.log(e.name);
+  };
+  const keywordlists = keyword.map(k =>
+    k.select ? <Keyword name={k.label} key={k.key} select={k.select} /> : null,
+  );
 
   return (
     <View style={styles.container}>
@@ -63,13 +68,7 @@ const IdeaMatching = () => {
             <Text style={{fontSize: 16, marginRight: 7}}>키워드 추가</Text>
             <ModalSelector
               data={keyword}
-              onChange={option => {
-                if (!option.select) {
-                  setKeyword({
-                    select: 'true',
-                  });
-                }
-              }}
+              onChange={changeKeyword}
               cancelText="태그 추가"
               optionStyle={{
                 flex: 1,

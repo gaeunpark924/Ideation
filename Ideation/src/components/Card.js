@@ -85,7 +85,6 @@ const SC = () => {
     setTimeout(() => {
       setCards([
         {text: '공동체 참여 설계', backgroundColor: '#E7D9FF'},
-        //{image: require('../assets/pet1.jpg')},
         {text: '유튜브 시청', backgroundColor: '#E7D9FF'},
         {text: '점심 먹기', backgroundColor: '#E7D9FF'},
         {text: '냉장고 청소하기', backgroundColor: '#E7D9FF'},
@@ -93,7 +92,7 @@ const SC = () => {
         {text: '음...', backgroundColor: '#E7D9FF'},
         {text: '파카 유튜브 시청', backgroundColor: '#E7D9FF'},
       ]);
-    }, 3000);
+    }, 1000);
   }, []);
 
   function handleYup(card) {
