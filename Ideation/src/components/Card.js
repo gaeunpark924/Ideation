@@ -6,10 +6,10 @@ import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Octicons';
 
-const SC = () => {
+const SC = ({change, isChange}) => {
   function Card({data}) {
     const [fix, setFix] = useState('false');
-    // const [text, setText] = useState('');
+    const [text, setText] = useState(data.text);
     const contents = () => {
       if (data.image === undefined) {
         return <Text style={styles.cardtext}> {data.text}</Text>;
@@ -19,11 +19,8 @@ const SC = () => {
         );
       }
     };
-    const isText = () => {
-      if (data.image === undefined) return true;
-      else {
-        return false;
-      }
+    const changecontents = () => {
+      isChange();
     };
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
@@ -69,6 +66,7 @@ const SC = () => {
               <Icon2
                 name="pencil"
                 size={22}
+                onPress={changecontents}
                 style={{
                   borderColor: 'black',
                   borderWidth: 1,
@@ -99,7 +97,6 @@ const SC = () => {
         {
           text: '공동체 참여 설계',
           backgroundColor: '#E7D9FF',
-          image: 'https://media.giphy.com/media/GfXFVHUzjlbOg/giphy.gif',
         },
         {
           text: '',
@@ -179,7 +176,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   cardthumbnail: {
+    zIndex: -1,
+    marginTop: -103,
     width: 180,
-    height: '100%',
+    height: 205,
   },
 });

@@ -61,7 +61,10 @@ const IdeaMatching = () => {
       <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />
     ) : null,
   );
-
+  const [change, setChange] = useState('false');
+  const isChange = change => {
+    setChange(change);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.sv}>
@@ -103,12 +106,12 @@ const IdeaMatching = () => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <SC style={styles.card} />
-            <SC style={styles.card} />
+            <SC style={styles.card} isChange={isChange} />
+            <SC style={styles.card} isChange={isChange} />
           </View>
           <View style={styles.contents}>
-            <SC style={styles.card} />
-            <SC style={styles.card} />
+            <SC style={styles.card} isChange={isChange} />
+            <SC style={styles.card} isChange={isChange} />
           </View>
         </View>
       </View>
