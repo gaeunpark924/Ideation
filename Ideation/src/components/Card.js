@@ -9,7 +9,6 @@ import Icon2 from 'react-native-vector-icons/Octicons';
 const SC = ({change, isChange}) => {
   function Card({data}) {
     const [fix, setFix] = useState('false');
-    const [text, setText] = useState(data.text);
     const contents = () => {
       if (data.image === undefined) {
         return <Text style={styles.cardtext}> {data.text}</Text>;
@@ -20,7 +19,7 @@ const SC = ({change, isChange}) => {
       }
     };
     const changecontents = () => {
-      isChange();
+      isChange(!change);
     };
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>

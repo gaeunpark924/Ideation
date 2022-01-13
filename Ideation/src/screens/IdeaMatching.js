@@ -7,13 +7,16 @@ import {
   TouchableOpacity,
   TextInput,
   Button,
+  ViewPagerAndroidBase,
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
 import ModalSelector from 'react-native-modal-selector';
 import Save from 'react-native-vector-icons/MaterialIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
-
+import TextIcon from 'react-native-vector-icons/Ionicons';
+import PictureIcon from 'react-native-vector-icons/FontAwesome';
+import VideoIcon from 'react-native-vector-icons/AntDesign';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -61,7 +64,7 @@ const IdeaMatching = () => {
       <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />
     ) : null,
   );
-  const [change, setChange] = useState('false');
+  const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
@@ -106,28 +109,77 @@ const IdeaMatching = () => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <SC style={styles.card} isChange={isChange} />
-            <SC style={styles.card} isChange={isChange} />
+            <SC style={styles.card} change={change} isChange={isChange} />
+            <SC style={styles.card} change={change} isChange={isChange} />
           </View>
           <View style={styles.contents}>
-            <SC style={styles.card} isChange={isChange} />
-            <SC style={styles.card} isChange={isChange} />
+            <SC style={styles.card} change={change} isChange={isChange} />
+            <SC style={styles.card} change={change} isChange={isChange} />
           </View>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.cardsave}
-        onPress={() => alert('카드 조합을 저장합니다.')}>
-        <View flexDirection="row">
-          <Save size={25} name="save-alt" style={{marginRight: 5}} />
-          <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+      {change === false ? (
+        <View style={styles.bottomBar}>
+          <TouchableOpacity
+            style={styles.cardsave}
+            onPress={() => alert('카드 조합을 저장합니다.')}>
+            <View flexDirection="row">
+              <Save size={25} name="save-alt" style={{marginRight: 5}} />
+              <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.randommatching}
+            onPress={() => alert('카드를 랜덤매칭합니다.')}>
+            <Text style={{fontSize: 25}}>전체 카드 랜덤 매칭</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.randommatching}
-        onPress={() => alert('카드를 랜덤매칭합니다.')}>
-        <Text style={{fontSize: 25}}>전체 카드 랜덤 매칭</Text>
-      </TouchableOpacity>
+      ) : (
+        <View style={styles.bottomBarWrite}>
+          <View style={styles.writeButton}>
+            <TouchableOpacity
+              onPress={() => alert('텍스트 입력하기')}
+              style={styles.writeButton2}>
+              <TextIcon
+                size={25}
+                name="text"
+                style={{
+                  marginBottom: 2,
+                }}
+              />
+              <Text style={{fontSize: 18}}>텍스트 입력하기</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.writeButton}>
+            <TouchableOpacity
+              onPress={() => alert('사진 가져오기')}
+              style={styles.writeButton2}>
+              <PictureIcon
+                size={25}
+                name="picture-o"
+                style={{
+                  marginBottom: 2,
+                }}
+              />
+              <Text style={{fontSize: 18}}>사진 가져오기</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.writeButton}>
+            <TouchableOpacity
+              onPress={() => alert('영상 가져오기')}
+              style={styles.writeButton2}>
+              <VideoIcon
+                size={25}
+                name="videocamera"
+                style={{
+                  marginBottom: 2,
+                }}
+              />
+              <Text style={{fontSize: 18}}>영상 가져오기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -179,6 +231,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 3,
     borderColor: 'black',
+  },
+  bottomBar: {
+    flex: 3,
+  },
+  bottomBarWrite: {
+    flexDirection: 'row',
+    flex: 3,
+    backgroundColor: 'pink',
+  },
+  writeButton: {
+    flex: 1,
+    backgroundColor: '#E7D9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 0.7,
+    borderTopWidth: 1,
+    borderColor: 'black',
+  },
+  writeButton2: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 export default IdeaMatching;
