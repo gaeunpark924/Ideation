@@ -14,7 +14,7 @@ import JoinPwd from './src/screens/join/JoinPwd';
 import JoinPwdChecking from './src/screens/join/JoinPwdChecking';
 import JoinFinished from './src/screens/JoinFinished';
 import SearchPwd from './src/screens/pwd/SearchPwd';
-import ResetPwd from './src/screens/pwd/ResetPwd';
+// import ResetPwd from './src/screens/pwd/ResetPwd';
 // import { Icon } from 'react-native-elements';
 // import Tab from './src/navigation/Tab';
 // import Main from './src/components/Main';
@@ -109,11 +109,11 @@ const App = () => {
           component={SearchPwd}
           options={{title: '비밀번호 찾기'}}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="ResetPwd"
           component={ResetPwd}
           options={{title: '비밀번호 재설정'}}
-        />
+        /> */}
 
         {/* 메인 페이지들 */}
         <Stack.Screen name="welcome" component={welcome} />

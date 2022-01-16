@@ -29,7 +29,11 @@ const LoginEmail = ({navigation}) => {
           //   });
           navigation.navigate("welcome")
         })
-        .catch((err) => console.log(err))
+        .catch((error) => {
+          if (error.code === 'auth/wrong-password'){
+            console.log('비밀번호가 틀렸습니다')
+          }
+        })
     }
   }
 
