@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SwipeCards from 'react-native-swipe-cards-deck';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,9 +9,14 @@ import Icon2 from 'react-native-vector-icons/Octicons';
 const SC = ({change, isChange}) => {
   function Card({data}) {
     const [fix, setFix] = useState('false');
+    const [textinput, setTextinput] = useState(false);
     const contents = () => {
       if (data.image === undefined) {
-        return <Text style={styles.cardtext}> {data.text}</Text>;
+        if (textinput) {
+          return <TextInput />;
+        } else {
+          return <Text style={styles.cardtext}> {data.text}</Text>;
+        }
       } else {
         return (
           <Image style={styles.cardthumbnail} source={{uri: data.image}} />
@@ -144,8 +149,6 @@ const SC = ({change, isChange}) => {
           hasMaybeAction={false}
           yupText="좋아"
           nopeText="싫어"
-          // If you want a stack of cards instead of one-per-one view, activate stack mode
-          // stack={true}
         />
       ) : (
         <StatusCard text="Loading..." />
