@@ -5,18 +5,22 @@ import SwipeCards from 'react-native-swipe-cards-deck';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Octicons';
-import axios from 'axios';
 
-const SC = ({change, isChange}) => {
+const SC = ({change, isChange, idx, setIdx, temp}) => {
   function Card({data}) {
     const [fix, setFix] = useState('false');
     const [textinput, setTextinput] = useState(false);
     const contents = () => {
       if (data.image === undefined) {
-        if (textinput) {
-          return <TextInput />;
+        if (temp) {
+          return (
+            <TextInput
+              style={styles.cardtext}
+              placeholder="아무거나 입력해주세요"
+            />
+          );
         } else {
-          return <Text style={styles.cardtext}> {data.text}</Text>;
+          return <Text> {data.text}</Text>;
         }
       } else {
         return (
@@ -26,6 +30,11 @@ const SC = ({change, isChange}) => {
     };
     const changecontents = () => {
       isChange(!change);
+      if (change) {
+        setIdx(temp);
+      } else {
+        setIdx((temp += idx));
+      }
     };
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
@@ -67,11 +76,10 @@ const SC = ({change, isChange}) => {
           </View>
           <View style={{flex: 5}}></View>
           <View style={{flex: 1, paddingTop: 2, paddingRight: 1}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={changecontents}>
               <Icon2
                 name="pencil"
                 size={22}
-                onPress={changecontents}
                 style={{
                   borderColor: 'black',
                   borderWidth: 1,
@@ -175,8 +183,10 @@ const styles = StyleSheet.create({
     borderRadius: 70,
     marginTop: 10,
   },
-  cardText: {
-    fontSize: 28,
+  cardtext: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: -10,
   },
   cardthumbnail: {
     zIndex: -1,

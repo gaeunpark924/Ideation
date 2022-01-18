@@ -23,7 +23,7 @@ const welcome = ({navigation}) => {
               onPress={() => {
                 auth().signOut();
                 navigation.navigate('Login');
-              }}>
+                }}>
               <Text style={styles.title}>로그아웃</Text>
             </TouchableOpacity>
           </View>

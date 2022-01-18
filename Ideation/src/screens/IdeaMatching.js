@@ -17,7 +17,6 @@ import Plus from 'react-native-vector-icons/AntDesign';
 import TextIcon from 'react-native-vector-icons/Ionicons';
 import PictureIcon from 'react-native-vector-icons/FontAwesome';
 import VideoIcon from 'react-native-vector-icons/AntDesign';
-import Youtube from '../apis/youtube';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -65,10 +64,12 @@ const IdeaMatching = () => {
       <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />
     ) : null,
   );
+  const [idx, setIdx] = useState(0);
   const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
+  const [temp, setTemp] = useState([false, false, false, false]);
   return (
     <View style={styles.container}>
       <View style={styles.sv}>
@@ -110,12 +111,40 @@ const IdeaMatching = () => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <SC style={styles.card} change={change} isChange={isChange} />
-            <SC style={styles.card} change={change} isChange={isChange} />
+            <SC
+              style={styles.card}
+              change={change}
+              isChange={isChange}
+              idx={1}
+              setIdx={setIdx}
+              temp={temp[0]}
+            />
+            <SC
+              style={styles.card}
+              change={change}
+              isChange={isChange}
+              idx={3}
+              setIdx={setIdx}
+              temp={temp[1]}
+            />
           </View>
           <View style={styles.contents}>
-            <SC style={styles.card} change={change} isChange={isChange} />
-            <SC style={styles.card} change={change} isChange={isChange} />
+            <SC
+              style={styles.card}
+              change={change}
+              isChange={isChange}
+              idx={4}
+              setIdx={setIdx}
+              temp={temp[2]}
+            />
+            <SC
+              style={styles.card}
+              change={change}
+              isChange={isChange}
+              idx={5}
+              setIdx={setIdx}
+              temp={temp[3]}
+            />
           </View>
         </View>
       </View>
@@ -139,7 +168,20 @@ const IdeaMatching = () => {
         <View style={styles.bottomBarWrite}>
           <View style={styles.writeButton}>
             <TouchableOpacity
-              onPress={() => alert('텍스트 입력하기')}
+              onPress={() => {
+                {
+                  idx === 1
+                    ? setTemp([true, false, false, false])
+                    : idx === 3
+                    ? setTemp([false, true, false, false])
+                    : idx === 4
+                    ? setTemp([false, false, true, false])
+                    : idx === 5
+                    ? setTemp([false, false, false, true])
+                    : setTemp([false, false, false, false]);
+                }
+                console.log(temp);
+              }}
               style={styles.writeButton2}>
               <TextIcon
                 size={25}
