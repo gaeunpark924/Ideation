@@ -5,6 +5,7 @@ import SwipeCards from 'react-native-swipe-cards-deck';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Octicons';
+import axios from 'axios';
 
 const SC = ({change, isChange}) => {
   function Card({data}) {
