@@ -1,12 +1,7 @@
 import React, { useRef, useState, useEffect} from 'react';
-import { Text, View, TextInput, ToastAndroid, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-
+import { Text, View, TextInput, ToastAndroid, TouchableOpacity, KeyboardAvoidingView, StyleSheet } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
-import styles from '../../styles/style'
-const showToast = () =>{
-  ToastAndroid.show("로그인", ToastAndroid.SHORT);
-};
 const LoginEmail = ({navigation}) => {
     const passwordInput = useRef();
     const onPressSearchPwd = ()=>{
@@ -21,13 +16,14 @@ const LoginEmail = ({navigation}) => {
     if (email && password) {  //email, pass null, 공백 처리
       auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
-          console.log(user, '로그인 성공');
+          //console.log(user, '로그인 성공');
           // auth().onAuthStateChanged((user) => {   //firebase에서 제공하는 유저 접속 유무 알려주는 함수
           //     if(user){
           //       console.log('a')
           //     }
           //   });
-          navigation.navigate("welcome")
+          navigation.navigate("idealist")
+          //navigation.navigate("welcome")
         })
         .catch((error) => {
           if (error.code === 'auth/wrong-password'){
@@ -85,5 +81,33 @@ const LoginEmail = ({navigation}) => {
         </View>
     );
 };
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    flexDirection: 'column',
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  bottomButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    minWidth: 125, //최소 너비
+    minHeight: 56, //최소 높이
+    borderWidth: 2, //테두리 굵기
+    borderColor: 'black', //테두리
+    backgroundColor: '#E7D9FF', //배경
+  },
+  textUseCondition: {
+    color: '#000000',
+    paddingBottom: 6,
+    borderBottomWidth: 2,
+    //textDecorationLine:'underline',
+  },
+});
+
 
 export default LoginEmail;

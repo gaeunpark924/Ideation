@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import styles from '../../styles/style';
 import {Controller, useForm} from 'react-hook-form';
 
 import {KeyboardAvoidingView} from 'react-native';
@@ -30,7 +29,7 @@ const JoinEmail = ({navigation}) => {
       ? navigation.navigate('JoinPwd', {emailValue: emailValue})
       : null;
   };
-  console.log(watch()); //입력한 값을 실시간으로 확인
+  //console.log(watch());
   //console.log('errors',errors.emailForm) //에러 확인
   return (
     <View style={styles.container}>
@@ -82,5 +81,25 @@ const JoinEmail = ({navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    flexDirection: 'column',
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  bottomButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    minWidth: 125, //최소 너비
+    minHeight: 56, //최소 높이
+    borderWidth: 2, //테두리 굵기
+    borderColor: 'black', //테두리
+    backgroundColor: '#E7D9FF', //배경
+  },
+});
 
 export default JoinEmail;

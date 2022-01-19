@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import styles from '../../styles/style';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, BackHandler, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 
 //google 로그인
@@ -8,24 +8,43 @@ import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}) => {
+    const isFocused = useIsFocused()
     const onPressEmailLogin = ()=>{
       navigation.navigate("LoginEmail")
     }
     const onPressJoin = () =>{
       navigation.navigate("JoinEmail")
     }
+    navigation.add
 
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: "877649815167-8rq5c4138llk9v3mo785qee98q9hg52i.apps.googleusercontent.com",
-    });
-  }, []);
+    useEffect(() => {
+      GoogleSignin.configure({
+        webClientId: "877649815167-8rq5c4138llk9v3mo785qee98q9hg52i.apps.googleusercontent.com",
+      });
+    }, []);
 
-  async function onGoogleButtonPress() {
-    const {idToken} = await GoogleSignin.signIn(); //구글 로그인하며 유저 idToken 가져옴.
-    const googleCredential = auth.GoogleAuthProvider.credential(idToken); //유저 idToken 이용하여 google credential 생성
-    return auth().signInWithCredential(googleCredential);                 //생성된 credential 이용해 사용자 앱으로 로그인 시킴.
-  }
+    useEffect(()=>{
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        function(){
+          Alert.alert("Stop","앱을 종료하시겠습니까?",[
+            { text:"아니오",
+              onPress: ()=> null,
+              style:"cancel" },
+            { text:"네",
+              onPress: ()=> {BackHandler.exitApp()}}
+          ]);
+          return true;
+        }
+      )
+      return () => backHandler.remove()
+    }, [])
+
+    async function onGoogleButtonPress() {
+      const {idToken} = await GoogleSignin.signIn(); //구글 로그인하며 유저 idToken 가져옴.
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken); //유저 idToken 이용하여 google credential 생성
+      return auth().signInWithCredential(googleCredential);                 //생성된 credential 이용해 사용자 앱으로 로그인 시킴.
+    }
 
     return (
         <View style={styles.container}>
@@ -94,15 +113,19 @@ const Login = ({navigation}) => {
         </View>
     );
 };
-// const styles = StyleSheet.create({
-//   justifyContent : 'center',
-//         alignItems: "center",
-//         width: '100%',
-//         minWidth : 125,          //최소 너비
-//         minHeight : 56,          //최소 높이
-//         borderWidth : 2,         //테두리 굵기
-//         borderColor : 'black',   //테두리
-//         backgroundColor : '#E7D9FF',   //배경
-// });
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    flexDirection: 'column',
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  textUseCondition: {
+    color: '#000000',
+    paddingBottom: 6,
+    borderBottomWidth: 2,
+  },
+});
 export default Login;
 
