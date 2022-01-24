@@ -22,7 +22,7 @@ const LoginEmail = ({navigation}) => {
           //       console.log('a')
           //     }
           //   });
-          navigation.navigate("idealist")
+          navigation.navigate("idealist",{"userUid":user.uid})
           //navigation.navigate("welcome")
         })
         .catch((error) => {
@@ -51,7 +51,7 @@ const LoginEmail = ({navigation}) => {
                   underlineColorAndroid={'black'}
                   placeholder="비밀번호 입력"
                   secureTextEntry={true}
-                  onSubmitEditing={() =>showToast()}    //
+                  //onSubmitEditing={() =>showToast()}    //
                   ref={passwordInput}
                   onChangeText={(e) => setPassword(e)}
                 />
@@ -69,7 +69,7 @@ const LoginEmail = ({navigation}) => {
                 <TouchableOpacity
                     style={styles.bottomButton}
                     onPress={()=>{
-                      showToast();
+                      //showToast();
                       onPressLogin();
                     }}
                     activeOpacity={0.8}>

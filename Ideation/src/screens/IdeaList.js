@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,55 +11,98 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Button, Header, Card, Icon} from 'react-native-elements';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {fetchPost, deletePost, snapshotPost} from '../actions';  //현재 코드에서 사용하지 않음
 
-const IdeaComponent = () => {
+const IdeaComponent = (item, userUid) => {
   return (
-    <View style={{marginBottom: 40}}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={{fontSize: 18}}>아이디어 이름</Text>
-        <Text style={{fontSize: 12}}>작성 시간</Text>
-      </View>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
-          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet1.jpg')}></Card.Image>
-        </Card>
-        <Card
-          containerStyle={{
-            width: 162,
-            height: 80,
-            borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/,
-          }}>
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet2.jpg')}></Card.Image>
-        </Card>
-      </View>
-      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-        <Card containerStyle={{width: 162, height: 80, borderRadius: 8}}>
-          {/* <Card.Title style={{width: '100%', height: '10%'}}>콘텐츠 카드</Card.Title> */}
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet1.jpg')}></Card.Image>
-        </Card>
-        <Card
-          containerStyle={{
-            width: 162,
-            height: 80,
-            borderRadius: 8 /*width: (Dimensions.get('window').width-15)/2-2*/,
-          }}>
-          <Card.Image
-            style={{width: '100%', height: '100%'}}
-            source={require('../assets/pet2.jpg')}></Card.Image>
-        </Card>
-      </View>
-    </View>
+      <TouchableOpacity key={item.postId} style={{marginBottom: 40, flexDirection: 'row', justifyContent: 'center'}} activeOpacity={0.8}>
+         <TouchableOpacity style={{flex:1}}>
+           <Card containerStyle={{height: 100, borderRadius: 4}}>
+            <Card.Image
+              style={{width: '100%', height: '100%'}}
+              source={require('../assets/pet1.jpg')}></Card.Image>
+           </Card>
+         </TouchableOpacity>
+        <View style={{flex:1}}>
+           <Text style={{fontSize: 14, marginBottom: 5}}>{item.createDate}</Text>
+          <Text style={{fontSize: 17, marginBottom: 5, fontWeight:'bold'}}>{item.title}</Text>
+          <Text style={{fontSize: 14}}>{item.keyword}</Text>
+          <Text style={{fontSize: 14}}>{item.updateDate}</Text>
+          {/* <TouchableOpacity>
+            <Text style={styles.delete_button_text} onPress={()=>{deletePost(item.postId, userUid)}}>삭제</Text>
+          </TouchableOpacity> */}
+        </View>
+      </TouchableOpacity>
   );
 };
 
-const idealist = () => {
+const idealist = ({route,navigation}) => {
+  const ideas = [];
+  const {userUid} = route.params;
+  const [post, setPost] = useState([])
+
+  useEffect(()=>{
+    const item = [];
+    firestore()
+      .collection('userIdeaData')
+      .doc(userUid)
+      .collection('item')
+      .orderBy('updateTime','desc')  //업데이트 순으로 정렬
+      .onSnapshot(querySnapshot => {
+        querySnapshot.forEach((doc)=>{
+          let postData = doc.data(); //아이디어 필드
+          postData.postId = doc.id;
+          item.push(postData);
+        })
+        setPost(item)
+      })
+  },[])
+
+  const getToday = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ("0"+(1+date.getMonth())).slice(-2)
+    var day = ("0"+date.getDate()).slice(-2)
+    return year+"."+month+"."+day
+  }
+  const createMyIdea = () => {  //테스트용
+    console.log("userUid",userUid)
+    firestore()
+      .collection('userIdeaData')
+      .doc(userUid)
+      .collection('item')
+      .add({
+        title: '',
+        keyword: ['',''],
+        updateTime: firestore.FieldValue.serverTimestamp(),
+        createTime: firestore.FieldValue.serverTimestamp(), //수정할 것
+        createDate: getToday(),
+        updateDate: getToday(),
+      })
+      .then(()=>{
+        console.log('Completed Add!')
+      })
+      .catch(error => console.log(error))
+  }
+  const readMyIdea = () => { //테스트용
+    firestore()
+      .collection('userIdeaData')
+      .doc(userUid)
+      .collection('item')
+      .orderBy('updateTime','desc') 
+      .onSnapshot(querySnapshot => {
+        const ideas = [];
+        querySnapshot.forEach(documentSnapshot => {   
+          ideas.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+        console.log("데이터",ideas)
+      })
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,16 +121,20 @@ const idealist = () => {
         </View>
       </View>
       <View style={styles.top_buttons}>
-        <TouchableOpacity style={styles.top_button}>
-          <Text style={styles.top_button_text}>즉시 노출 아이디어 선택</Text>
+        {/* <TouchableOpacity style={styles.top_button}>
+          <Text style={styles.top_button_text} onPress={()=>{createMyIdea()}}>create</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.top_button}>
+          <Text style={styles.top_button_text}  onPress={()=>{}}>read</Text>
+        </TouchableOpacity> */}
       </View>
-      <ScrollView style={{margin: 15}}>
-        <IdeaComponent />
-        <IdeaComponent />
-        <IdeaComponent />
-        <IdeaComponent />
-      </ScrollView>
+      <ScrollView style={{margin: 5}}>
+        {post
+        ?post.map((item)=>{
+          return(IdeaComponent(item,userUid,post))
+        })
+        : null}
+      </ScrollView>  
     </View>
   );
 };
@@ -141,6 +188,14 @@ const styles = StyleSheet.create({
   CenterComponent: {
     fontSize: 24,
   },
+  delete_button_text:{
+    fontSize: 12,
+    backgroundColor: '#E7D9FF',
+    padding: 5,
+    borderRadius: 5,
+    borderColor: 'black',
+    borderWidth: 0.6,
+  }
 });
 
 export default idealist;

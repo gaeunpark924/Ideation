@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
-const welcome = ({navigation}) => {
+const welcome = ({route, navigation}) => {
   useEffect(()=>{
     setTimeout(() => {
-      navigation.navigate("idealist")
+      navigation.navigate("idealist", {"userUid":route.params})
     }, 2000)
   },[])
   return (

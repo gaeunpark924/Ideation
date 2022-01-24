@@ -34,7 +34,7 @@ const JoinPwdChecking = ({route, navigation}) => {
       console.log(emailValue, pwdValue);
       await auth().createUserWithEmailAndPassword(emailValue,pwdValue)
         .then((user) => {
-          navigation.navigate("welcome")
+          navigation.navigate("welcome",{"userUid":user.uid})
           //checkEmailVerification()       
         })
         .catch((error) => {
