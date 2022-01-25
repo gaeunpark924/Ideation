@@ -118,6 +118,7 @@ const IdeaMatching = () => {
               idx={1}
               setIdx={setIdx}
               temp={temp[0]}
+              setTemp={setTemp}
             />
             <SC
               style={styles.card}
@@ -126,6 +127,7 @@ const IdeaMatching = () => {
               idx={3}
               setIdx={setIdx}
               temp={temp[1]}
+              setTemp={setTemp}
             />
           </View>
           <View style={styles.contents}>
@@ -136,6 +138,7 @@ const IdeaMatching = () => {
               idx={4}
               setIdx={setIdx}
               temp={temp[2]}
+              setTemp={setTemp}
             />
             <SC
               style={styles.card}
@@ -144,6 +147,7 @@ const IdeaMatching = () => {
               idx={5}
               setIdx={setIdx}
               temp={temp[3]}
+              setTemp={setTemp}
             />
           </View>
         </View>

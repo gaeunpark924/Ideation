@@ -6,17 +6,18 @@ import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Octicons';
 
-const SC = ({change, isChange, idx, setIdx, temp}) => {
+const SC = ({change, isChange, idx, setIdx, temp, setTemp}) => {
   function Card({data}) {
-    const [fix, setFix] = useState('false');
-    const [textinput, setTextinput] = useState(false);
+    const [fix, setFix] = useState('false'); //card 고정된건지 아닌지
+    // 텍스트 입력 받을것인지 그냥 보여줄것인지
     const contents = () => {
       if (data.image === undefined) {
         if (temp) {
           return (
             <TextInput
               style={styles.cardtext}
-              placeholder="아무거나 입력해주세요"
+              placeholder="텍스트를 입력하세요."
+              onEndEditing={() => alert('끝났음')}
             />
           );
         } else {
@@ -187,6 +188,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: -10,
+    fontSize: 18,
   },
   cardthumbnail: {
     zIndex: -1,
