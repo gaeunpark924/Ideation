@@ -26,10 +26,10 @@ import auth from '@react-native-firebase/auth';
 const Stack = createStackNavigator();
 
 const App = () => {
-
   //유저 접속(로그인) 상태에 따라 다른 화면 보여주기
   const [loggedIn, setLoggedIn] = useState(false);
-  auth().onAuthStateChanged((user) => {   //firebase에서 제공하는 유저 접속 유무 알려주는 함수
+  auth().onAuthStateChanged(user => {
+    //firebase에서 제공하는 유저 접속 유무 알려주는 함수
     if (user) {
       setLoggedIn(true);
     } else {
@@ -55,7 +55,7 @@ const App = () => {
   //     </NavigationContainer >
   //   );
   // }
-  
+
   return (
     //네비게이션의 트리를 관리해주는 컴포넌트
     <NavigationContainer>
@@ -64,7 +64,7 @@ const App = () => {
         screenOptions={{
           headerShown: true,
           headerBackTitleVisible: false,
-          headerStyle: {backgroundColor: '#E7D9FF'},
+          headerStyle: {backgroundColor: '#FDF8FF'},
         }}>
         {/* 회원가입 페이지 
         <Stack.Screen
@@ -116,10 +116,26 @@ const App = () => {
         />
 */}
         {/* 메인 페이지들 */}
-        <Stack.Screen name="welcome" component={welcome} />
-        <Stack.Screen name="idealist" component={idealist} />
-        <Stack.Screen name="ideadevelop" component={ideadevelop} />
-        <Stack.Screen name="ideamatching" component={ideamatching} />
+        <Stack.Screen
+          name="welcome"
+          component={welcome}
+          options={{title: 'Puzzling'}}
+        />
+        <Stack.Screen
+          name="idealist"
+          component={idealist}
+          options={{title: ''}}
+        />
+        <Stack.Screen
+          name="ideadevelop"
+          component={ideadevelop}
+          options={{title: ''}}
+        />
+        <Stack.Screen
+          name="ideamatching"
+          component={ideamatching}
+          options={{title: ''}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

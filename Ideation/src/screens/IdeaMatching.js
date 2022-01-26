@@ -61,7 +61,13 @@ const IdeaMatching = () => {
   /* 키워드 표시 */
   const keywordlists = keyword.map(k =>
     k.select ? (
-      <Keyword name={k.label} key={k.key} select={k.select} remove={remove} />
+      <Keyword
+        name={k.label}
+        key={k.key}
+        select={k.select}
+        remove={remove}
+        style={styles.keyword}
+      />
     ) : null,
   );
   const [idx, setIdx] = useState(0);
@@ -72,9 +78,11 @@ const IdeaMatching = () => {
   const [temp, setTemp] = useState([false, false, false, false]);
   return (
     <View style={styles.container}>
+      <View style={styles.projectname}>
+        <Text style={styles.projecttitle}>Puzzling</Text>
+      </View>
       <View style={styles.sv}>
         <ScrollView
-          style={styles.keyword}
           horizontal={true}
           contentContainerStyle={{
             alignContent: 'center',
@@ -231,9 +239,19 @@ const IdeaMatching = () => {
   );
 };
 const styles = StyleSheet.create({
-  container: {flex: 1},
-  sv: {flex: 1},
-  topsidebar: {flex: 1, backgroundColor: 'blue'},
+  container: {flex: 1, backgroundColor: '#FDF8FF'},
+  projectname: {
+    flex: 1,
+  },
+  projecttitle: {
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    fontFamily: 'SB Aggro',
+    fontSize: 24,
+    marginLeft: 16,
+  },
+  sv: {flex: 1, marginLeft: 16},
+  topsidebar: {flex: 1},
   addkeyword: {
     flexDirection: 'row',
     width: 120,
@@ -243,7 +261,11 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     borderColor: 'black',
-    borderWidth: 0.9,
+    borderWidth: 1,
+    marginRight: 8,
+  },
+  keyword: {
+    marginRight: 8,
   },
   addbutton: {},
   body: {flex: 10, marginBottom: 50},

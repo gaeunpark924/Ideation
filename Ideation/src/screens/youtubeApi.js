@@ -1,8 +1,9 @@
 import React, {useState, useCallback, useEffect} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
 import axios from 'axios';
-import {firebase} from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import googletrends from 'google-trends-api';
 const YoutubeApi = () => {
   // axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
   // const [params, setParams] = useState({
@@ -47,20 +48,23 @@ const YoutubeApi = () => {
   //   .catch(function (error) {
   //     console.log(error);
   //   });
-  // const user = auth().currentUser;
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  //파이어베이스 스토리지 이미지 가져오기 https://wit-idea-20fa8-default-rtdb.firebaseio.com/
+  // const reference = firebase
+  //   .app()
+  //   .database('https://wit-idea-20fa8-default-rtdb.firebaseio.com/')
+  //   .ref('/users/123');
+  // console.log(reference);
 
-  useEffect(() => {
-    auth().onAuthStateChanged(userState => {
-      setUser(userState);
-
-      if (loading) {
-        setLoading(false);
-      }
-    });
-    console.log(user);
-  });
+  // useEffect(() => {
+  //   const db = firestore()
+  //     .collection('userIdeaData')
+  //     .doc('2A1NC1xuvKTSZ66p9UZp15qnGLL2')
+  //     .collection('item')
+  //     .doc('6OdI7wrzLU5iULHDALJI')
+  //     .onSnapshot(documentSnapshot => {
+  //       console.log(documentSnapshot.data().keyword[0]);
+  //     });
+  // }, []);
   return (
     <View style={{flex: 1, backgroundColor: 'pink'}}>
       <Text>안녕하세요</Text>

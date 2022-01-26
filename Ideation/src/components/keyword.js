@@ -18,18 +18,21 @@ const Keyword = props => {
 
 const styles = StyleSheet.create({
   keyword: {
-    borderRightColor: 'black',
-    borderWidth: 0.8,
-    backgroundColor: '#E7D9FF',
-    width: 100,
+    borderColor: 'black',
+    borderWidth: 1,
+    backgroundColor: '#FDF8FF',
+    width: 94,
     height: '100%',
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    marginRight: 8,
+    fontFamily: 'SB Aggro',
   },
   keywordname: {
     fontSize: 16,
-    marginRight: 10,
+    paddingRight: 10,
+    fontFamily: 'SB Aggro',
   },
 });
 export default Keyword;
