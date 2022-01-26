@@ -6,18 +6,19 @@ import { ToastAndroid } from 'react-native';
 const Loading = ({navigation}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  const onCompelete = () => {
-    var unsubscribe = auth().onAuthStateChanged((user)=>{
-      if(user){
-          navigation.navigate("idealist",{"userUid":user.uid})
-      }else{
-        navigation.navigate("Login")
-      }
-    })
-    setTimeout(()=>{
-      unsubscribe()   //구독 해지
-    },3000)
+  const [initializing, setInitializing] = useState(false);
+  const [userUid, setUserUid] = useState();
+  
+  function onAuthStateChanged(user){
+    if(user){
+      setInitializing(true)
+      setUserUid(user.uid)
+    }
   }
+  
+  useEffect(()=>{
+    return auth().onAuthStateChanged(onAuthStateChanged);
+  },[])
 
   const onLoad = () => {
     Animated.timing(fadeAnim,
@@ -25,7 +26,7 @@ const Loading = ({navigation}) => {
         duration: 2000,  //2초 지속
         useNativeDriver: true, 
       }).start(()=>{
-        onCompelete()
+        initializing ? navigation.navigate("idealist",{"userUid":userUid}) : navigation.navigate("Login")
       })
   };
 
