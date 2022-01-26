@@ -28,10 +28,13 @@ import { transform } from '@babel/core';
 const idealist = ({route,navigation}) => {
   const ideas = [];
   const {userUid} = route.params;
-  const [post, setPost] = useState(null)
+  const [post, setPost] = useState([])
+  const [postSearch, setPostSearch] = useState([])
+  const [postFilter, setPostFilter] = useState([])
   const sortList = ['','생성 순 ','수정 순 ','이름 순 ']
   const [index, setIndex] = useState(0)
   const [deleted, setDeleted] = useState(false)
+  const [search, setSearch] = useState('')
 
   const getPosts = async (userUid) => {
     const list = []
@@ -49,6 +52,8 @@ const idealist = ({route,navigation}) => {
           })
         })
     setPost(list)
+    setPostFilter(list)
+    setPostSearch(list)
     console.log("list",list)
   }
   const deletePost = (postId) => {
@@ -78,10 +83,9 @@ const idealist = ({route,navigation}) => {
   }
   useEffect(()=>{
     getPosts("userUid",userUid);
-    console.log(userUid);
   },[])
   useEffect(()=>{
-    getPosts(userUid);  //다시 받아옴
+    getPosts(userUid);  //삭제 후 서버에서 데이터 다시
     setDeleted(false);
   },[deleted])
   //백 버튼
@@ -102,27 +106,72 @@ const idealist = ({route,navigation}) => {
     var day = ("0"+date.getDate()).slice(-2)
     return year+"."+month+"."+day
   }
+  const searchTitle = (text) => {
+    if(text){
+      const tmpPost = post.filter(item=>item.title.includes(text))
+      setPostSearch(tmpPost)
+      setPostFilter(tmpPost)
+    }else{
+      setPostSearch(post)
+      setPostFilter(post)
+    }
+  }
+  const plusIndex = ()=>{
+    var idx = index
+    if (index < 3){
+      idx = index+1
+      setIndex(index+1)
+    }else{
+      idx = 0
+      setIndex(0)
+    }
+    filterItem(idx)
+  }
+  const filterItem = (idx)=>{
+    const tmpPost = postSearch
+    console.log(idx)
+    switch(idx){
+      case 1: //생성
+        tmpPost.sort((a,b)=>a.createTime-b.createTime)
+        setPostFilter(tmpPost)
+        break;
+      case 2: //수정
+        tmpPost.sort((a,b)=>a.updateTime-b.updateTime)
+        setPostFilter(tmpPost)
+        break;
+      case 3: //이름
+        tmpPost.sort((a,b)=>a.title>b.title?1:-1)
+        setPostFilter(tmpPost)
+        break;
+      default:
+        setPostFilter(postSearch)
+        break;
+    }
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
+            numberOfLines={1}
             // autoComplete='off'  //키보드 자동완성 끄기
-            placeholder='아이디어 이름을 검색해보세요.'>
+            placeholder='아이디어 이름을 검색해보세요.'
+            //value={search}
+            onChangeText={searchTitle}>
           </TextInput>
-          <TouchableOpacity>
+          <TouchableOpacity disabled={true}>
             <Search style={{marginEnd:15, transform:[{rotate: '15deg'}]}} name='ios-search' size={22} color="#000"/>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flexDirection:'row',justifyContent: 'space-between', alignItems: 'center', marginStart:15, marginEnd:15, marginBottom:5, marginTop:5}}>
+      <View style={{flexDirection:'row',justifyContent: 'space-between', alignItems: 'center', marginHorizontal:15, marginVertical:5}}>
         <Text style={{fontSize:30}}>
           Puzzles
         </Text>
         <View style={{flexDirection:'row',alignItems:'center'}}>
           <Text style={{fontSize:20}}>{sortList[index]}</Text>
-          <TouchableOpacity onPress={()=>{index<3? setIndex(index+1) : setIndex(0)}}>
+          <TouchableOpacity onPress={plusIndex}>
             <Sort style={{marginEnd:12, transform:[{rotate: '270deg'}]}} name='arrow-swap' size={22} color="#000"/>
           </TouchableOpacity>
         </View>
@@ -130,7 +179,7 @@ const idealist = ({route,navigation}) => {
       <View>
       </View>
       <FlatList
-        data={post}
+        data={postFilter}
         renderItem={({item})=>(
           <IdeaComponent
             item={item}
@@ -138,7 +187,7 @@ const idealist = ({route,navigation}) => {
             />
         )}
         keyExtractor={(item)=>item.postId}
-        style={{paddingStart:15, paddingEnd:15}}>
+        style={{paddingHorizontal: 15}}>
       </FlatList>
       <TouchableOpacity
         style={styles.touchableOpacity}
@@ -173,7 +222,7 @@ const styles = StyleSheet.create({
     borderStyle:'solid',
     padding:0,
     margin:0,
-    marginStart:5,
+    marginHorizontal:5,
     fontSize:20
   },
   header: {
