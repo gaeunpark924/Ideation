@@ -22,7 +22,7 @@ const LoginEmail = ({navigation}) => {
           //       console.log('a')
           //     }
           //   });
-          navigation.navigate("idealist",{"userUid":user.uid})
+          navigation.navigate("idealist",{"userUid":user.user.uid})
           //navigation.navigate("welcome")
         })
         .catch((error) => {
