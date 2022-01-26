@@ -9,7 +9,7 @@ const Loading = ({navigation}) => {
   const onCompelete = () => {
     var unsubscribe = auth().onAuthStateChanged((user)=>{
       if(user){
-          navigation.navigate("idealist")
+          navigation.navigate("idealist",{"userUid":user.uid})
       }else{
         navigation.navigate("Login")
       }

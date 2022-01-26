@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import React, {useCallback, useEffect} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, Text, View, TouchableOpacity, Image, BackHandler, Alert } from 'react-native';
 import { Icon } from 'react-native-elements';
 
@@ -8,7 +8,6 @@ import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Login = ({navigation}) => {
-    const isFocused = useIsFocused()
     const onPressEmailLogin = ()=>{
       navigation.navigate("LoginEmail")
     }
@@ -23,22 +22,16 @@ const Login = ({navigation}) => {
       });
     }, []);
 
-    useEffect(()=>{
-      const backHandler = BackHandler.addEventListener(
-        "hardwareBackPress",
-        function(){
-          Alert.alert("Stop","앱을 종료하시겠습니까?",[
-            { text:"아니오",
-              onPress: ()=> null,
-              style:"cancel" },
-            { text:"네",
-              onPress: ()=> {BackHandler.exitApp()}}
-          ]);
-          return true;
-        }
-      )
-      return () => backHandler.remove()
-    }, [])
+    useFocusEffect(
+      useCallback(()=>{
+        const backHandler = BackHandler.addEventListener("hardwareBackPress",
+          ()=>{
+            Alert.alert("Stop","앱을 종료하시겠습니까?",[{text: "아니오", onPress: ()=> null, style:"cancel"},{text:"네", onPress: ()=> {BackHandler.exitApp()}}]);
+            return true;
+          })
+        return () => backHandler.remove();
+      },[])   
+    )
 
     async function onGoogleButtonPress() {
       const {idToken} = await GoogleSignin.signIn(); //구글 로그인하며 유저 idToken 가져옴.

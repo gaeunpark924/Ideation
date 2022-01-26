@@ -1252,7 +1252,7 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/masked-view/-/masked-view-0.1.11.tgz"
   "version" "0.1.11"
 
-"@react-native-firebase/app@^14.2.2", "@react-native-firebase/app@14.2.2":
+"@react-native-firebase/app@^14.2.2", "@react-native-firebase/app@14.2.2", "@react-native-firebase/app@14.2.3":
   "integrity" "sha512-kp4diBisEJVKwhPMFCj0kLoG+1ofuj3WHH4lx8OPgnSi6hsfYiyN1BrDJLTYTyouhLkNYdyoRYl6sAxFY7K62Q=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-14.2.2.tgz"
   "version" "14.2.2"
@@ -1265,6 +1265,11 @@
   "integrity" "sha512-FI/ykYFg/cbBL3uRxS1+OiaqlsJ8yJOl1k6CcStAzbZ46UBASuh66CvnBmW1VZ9j/yw5vh8jRHMGM+zWEmmbjQ=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-14.2.2.tgz"
   "version" "14.2.2"
+
+"@react-native-firebase/firestore@^14.2.3":
+  "integrity" "sha512-ktsS314Hu7N6BT7YrhC+K9/gTpwuXVgeLUuMYzNXhd0oFb3iy6S97kfOOKdz2oyHEDjEmBiI4IWDPTvm77HdNA=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-14.2.3.tgz"
+  "version" "14.2.3"
 
 "@react-native-google-signin/google-signin@^7.0.4":
   "integrity" "sha512-N5uVDlTp/mgpa5gFr6VIr8pldt68jlmHOlqcTSnSwBuZXusXMiK53DCIOWuYk4OJ1rlb8Esa9J4FJwUB0psU9Q=="
@@ -6180,6 +6185,11 @@
   "integrity" "sha512-s2Ia7M5t609LE9LWygMj3ALVPUlKhK7R9XcMb67fP4EYJv0oLcwg5pc+8ftv9XXaUuTW/WgL3zJlBYxAvtvMJg=="
   "resolved" "https://registry.npmjs.org/react-native-ionicons/-/react-native-ionicons-4.6.5.tgz"
   "version" "4.6.5"
+
+"react-native-material-menu@^2.0.0":
+  "integrity" "sha512-SmO9PLE3E469EPbVWZqvdu6JGPPZIm7YjqDcWs2PPoY0k7w2V9tFo3BmmLXNzNZDCVCAi+PPSsL7h/5WkfHcSg=="
+  "resolved" "https://registry.npmjs.org/react-native-material-menu/-/react-native-material-menu-2.0.0.tgz"
+  "version" "2.0.0"
 
 "react-native-modal-picker@0.0.16":
   "integrity" "sha1-yTJNiAo7uPNrdy83gWSXfi9DHLw="
