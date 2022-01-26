@@ -28,10 +28,12 @@ import { transform } from '@babel/core';
 const idealist = ({route,navigation}) => {
   const ideas = [];
   const {userUid} = route.params;
-  const [post, setPost] = useState(null)
+  const [post, setPost] = useState([])
+  const [postFiltered, setPostFiltered] = useState([])
   const sortList = ['','생성 순 ','수정 순 ','이름 순 ']
   const [index, setIndex] = useState(0)
   const [deleted, setDeleted] = useState(false)
+  const [search, setSearch] = useState('')
 
   const getPosts = async (userUid) => {
     const list = []
@@ -49,6 +51,7 @@ const idealist = ({route,navigation}) => {
           })
         })
     setPost(list)
+    setPostFiltered(list)
     console.log("list",list)
   }
   const deletePost = (postId) => {
@@ -102,6 +105,15 @@ const idealist = ({route,navigation}) => {
     var day = ("0"+date.getDate()).slice(-2)
     return year+"."+month+"."+day
   }
+  const searchTitle = (text) => {
+    if(text){
+      const tmpPost = post.filter(item=>item.title.includes(text))
+      console.log(tmpPost)
+      setPostFiltered(tmpPost)
+    }else{
+      setPostFiltered(post)
+    }
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -109,7 +121,9 @@ const idealist = ({route,navigation}) => {
           <TextInput
             style={styles.searchInput}
             // autoComplete='off'  //키보드 자동완성 끄기
-            placeholder='아이디어 이름을 검색해보세요.'>
+            placeholder='아이디어 이름을 검색해보세요.'
+            //value={search}
+            onChangeText={searchTitle}>
           </TextInput>
           <TouchableOpacity>
             <Search style={{marginEnd:15, transform:[{rotate: '15deg'}]}} name='ios-search' size={22} color="#000"/>
@@ -130,7 +144,7 @@ const idealist = ({route,navigation}) => {
       <View>
       </View>
       <FlatList
-        data={post}
+        data={postFiltered}
         renderItem={({item})=>(
           <IdeaComponent
             item={item}
