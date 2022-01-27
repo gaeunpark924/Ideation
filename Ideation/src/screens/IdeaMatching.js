@@ -11,12 +11,14 @@ import {
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
-import ModalSelector from 'react-native-modal-selector';
+import addKey from '../components/addKeyword';
+import Modal from 'react-native-modal';
 import Save from 'react-native-vector-icons/MaterialIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
 import TextIcon from 'react-native-vector-icons/Ionicons';
 import PictureIcon from 'react-native-vector-icons/FontAwesome';
 import VideoIcon from 'react-native-vector-icons/AntDesign';
+import Icon2 from 'react-native-vector-icons/Octicons';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -70,12 +72,31 @@ const IdeaMatching = () => {
       />
     ) : null,
   );
+  const keywordlists2 = keyword.map(k => (
+    <View
+      style={{
+        borderBottomWidth: 0.8,
+        flex: 1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <TouchableOpacity
+        style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{fontSize: 16}}>{k.label}</Text>
+      </TouchableOpacity>
+    </View>
+  ));
   const [idx, setIdx] = useState(0);
   const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
   const [temp, setTemp] = useState([false, false, false, false]);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -90,28 +111,58 @@ const IdeaMatching = () => {
           }}>
           <View style={styles.addkeyword}>
             <Text style={{fontSize: 16, marginRight: 7}}>키워드 추가</Text>
-            <ModalSelector
-              data={keyword}
-              onChange={changeKeyword}
-              cancelText="태그 추가"
-              optionStyle={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                alignContent: 'center',
-                borderBottomColor: 'black',
-              }}
-              supportedOrientations={['landscape']}
-              accessible={true}
-              scrollViewAccessibilityLabel={'Scrollable options'}
-              optionTextStyle={{
-                justifyContent: 'center',
-                color: 'black',
-                alignContent: 'center',
-                alignItems: 'center',
-              }}>
+            <TouchableOpacity onPress={toggleModal}>
               <Plus name="plus" size={15} style={styles.addbutton} />
-            </ModalSelector>
+            </TouchableOpacity>
+            <Modal isVisible={isModalVisible}>
+              <View style={styles.modalview}>
+                <View
+                  style={{
+                    flex: 1,
+                    borderColor: 'black',
+                    borderBottomWidth: 0.8,
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    <Icon2 name="pencil" size={22} style={{marginRight: 10}} />
+                    <Text style={{fontSize: 16, fontFamily: 'SB Aggro'}}>
+                      키워드 직접입력
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {keywordlists2}
+                <View
+                  style={{
+                    flex: 1,
+                    borderColor: 'black',
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <TouchableOpacity
+                    onPress={toggleModal}
+                    style={{
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '100%',
+                      backgroundColor: '#E7D9FF',
+                    }}>
+                    <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                      키워드 추가하기
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
           </View>
           {keywordlists}
         </ScrollView>
@@ -266,6 +317,12 @@ const styles = StyleSheet.create({
   },
   keyword: {
     marginRight: 8,
+  },
+  modalview: {
+    flex: 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   addbutton: {},
   body: {flex: 10, marginBottom: 50},

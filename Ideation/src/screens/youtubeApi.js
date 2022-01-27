@@ -3,7 +3,6 @@ import {Text, View, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import googletrends from 'google-trends-api';
 const YoutubeApi = () => {
   // axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
   // const [params, setParams] = useState({
