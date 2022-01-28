@@ -6,9 +6,12 @@ import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Icon2 from 'react-native-vector-icons/Octicons';
 
-const SC = ({change, isChange, idx, setIdx, temp, setTemp}) => {
+const SC = ({change, isChange, idx, setIdx, temp, setTemp, pinicon}) => {
   function Card({data}) {
     const [fix, setFix] = useState('false'); //card 고정된건지 아닌지
+    const togglefix = () => {
+      setFix(!fix);
+    };
     // 텍스트 입력 받을것인지 그냥 보여줄것인지
     const contents = () => {
       if (data.image === undefined) {
@@ -45,51 +48,58 @@ const SC = ({change, isChange, idx, setIdx, temp, setTemp}) => {
             flex: 1,
           }}>
           <View style={{flex: 1, paddingTop: 2}}>
-            <TouchableOpacity>
-              {fix === 'true' ? (
-                <Pin
-                  name="pin"
-                  size={24}
-                  rotation={90}
-                  onPress={() => setFix('false')}
-                  borderColor="black"
-                  style={{
-                    borderColor: 'black',
-                    borderWidth: 1,
-                    padding: 2,
-                    backgroundColor: 'white',
-                  }}
-                />
+            {pinicon ? (
+              fix ? (
+                <TouchableOpacity
+                  style={{borderColor: 'black', borderWidth: 1}}>
+                  <Pinoutline
+                    name="pin-outline"
+                    size={24}
+                    onPress={togglefix}
+                    style={{
+                      padding: 2,
+                      backgroundColor: 'white',
+                    }}
+                  />
+                </TouchableOpacity>
               ) : (
-                <Pinoutline
-                  name="pin-outline"
-                  size={24}
-                  onPress={() => setFix('true')}
+                <TouchableOpacity
                   style={{
                     borderColor: 'black',
                     borderWidth: 1,
-                    padding: 2,
-                    backgroundColor: 'white',
-                  }}
-                />
-              )}
-            </TouchableOpacity>
-          </View>
-          <View style={{flex: 5}}></View>
-          <View style={{flex: 1, paddingTop: 2, paddingRight: 1}}>
-            <TouchableOpacity onPress={changecontents}>
-              <Icon2
-                name="pencil"
-                size={22}
+                    backgroundColor: 'gray',
+                  }}>
+                  <Pinoutline
+                    name="pin-outline"
+                    size={24}
+                    onPress={togglefix}
+                    style={{
+                      padding: 2,
+                      transform: [{rotate: '45deg'}],
+                    }}
+                  />
+                </TouchableOpacity>
+              )
+            ) : fix ? null : (
+              <TouchableOpacity
                 style={{
                   borderColor: 'black',
                   borderWidth: 1,
-                  padding: 4,
-                  backgroundColor: 'white',
-                }}
-              />
-            </TouchableOpacity>
+                  backgroundColor: 'gray',
+                }}>
+                <Pinoutline
+                  name="pin-outline"
+                  size={24}
+                  onPress={togglefix}
+                  style={{
+                    padding: 2,
+                    transform: [{rotate: '45deg'}],
+                  }}
+                />
+              </TouchableOpacity>
+            )}
           </View>
+          <View style={{flex: 5}}></View>
         </View>
         <View style={{flex: 1}}>{contents()}</View>
       </View>
@@ -150,15 +160,12 @@ const SC = ({change, isChange, idx, setIdx, temp, setTemp}) => {
           cards={cards}
           renderCard={cardData => <Card data={cardData} />}
           keyExtractor={cardData => String(cardData.text)}
-          renderNoMoreCards={() => <StatusCard text="No more cards..." />}
+          loop={true}
           actions={{
-            nope: {onAction: handleNope},
-            yup: {onAction: handleYup},
-            maybe: {onAction: handleMaybe},
+            nope: {onAction: handleNope, text: '패스..!'},
+            yup: {onAction: handleYup, text: '또 볼 아이디어!'},
           }}
           hasMaybeAction={false}
-          yupText="좋아"
-          nopeText="싫어"
         />
       ) : (
         <StatusCard text="Loading..." />

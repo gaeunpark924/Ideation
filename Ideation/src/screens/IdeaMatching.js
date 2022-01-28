@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,6 +19,10 @@ import TextIcon from 'react-native-vector-icons/Ionicons';
 import PictureIcon from 'react-native-vector-icons/FontAwesome';
 import VideoIcon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Octicons';
+import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
+import Pin from 'react-native-vector-icons/Entypo';
+import Check from 'react-native-vector-icons/AntDesign';
+import {BottomSheet} from 'react-native-elements/dist/bottomSheet/BottomSheet';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -72,15 +76,8 @@ const IdeaMatching = () => {
       />
     ) : null,
   );
-  const keywordlists2 = keyword.map(k => (
-    <View
-      style={{
-        borderBottomWidth: 0.8,
-        flex: 1,
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
+  const modalkeywordlists = keyword.map(k => (
+    <View style={styles.modalkeywordlistView}>
       <TouchableOpacity
         style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
         <Text style={{fontSize: 16}}>{k.label}</Text>
@@ -97,6 +94,11 @@ const IdeaMatching = () => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  const [pinicon, setPinicon] = useState(false);
+  const togglepinicon = () => {
+    setPinicon(!pinicon);
+  };
+  const sheetRef = useRef(null);
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -105,12 +107,9 @@ const IdeaMatching = () => {
       <View style={styles.sv}>
         <ScrollView
           horizontal={true}
-          contentContainerStyle={{
-            alignContent: 'center',
-            alignItems: 'center',
-          }}>
+          contentContainerStyle={styles.keywordscrollview}>
           <View style={styles.addkeyword}>
-            <Text style={{fontSize: 16, marginRight: 7}}>키워드 추가</Text>
+            <Text style={styles.addkeywordtext}>키워드 추가</Text>
             <TouchableOpacity onPress={toggleModal}>
               <Plus name="plus" size={15} style={styles.addbutton} />
             </TouchableOpacity>
@@ -138,7 +137,7 @@ const IdeaMatching = () => {
                     </Text>
                   </TouchableOpacity>
                 </View>
-                {keywordlists2}
+                {modalkeywordlists}
                 <View
                   style={{
                     flex: 1,
@@ -178,6 +177,7 @@ const IdeaMatching = () => {
               setIdx={setIdx}
               temp={temp[0]}
               setTemp={setTemp}
+              pinicon={pinicon}
             />
             <SC
               style={styles.card}
@@ -187,6 +187,7 @@ const IdeaMatching = () => {
               setIdx={setIdx}
               temp={temp[1]}
               setTemp={setTemp}
+              pinicon={pinicon}
             />
           </View>
           <View style={styles.contents}>
@@ -198,6 +199,7 @@ const IdeaMatching = () => {
               setIdx={setIdx}
               temp={temp[2]}
               setTemp={setTemp}
+              pinicon={pinicon}
             />
             <SC
               style={styles.card}
@@ -207,85 +209,103 @@ const IdeaMatching = () => {
               setIdx={setIdx}
               temp={temp[3]}
               setTemp={setTemp}
+              pinicon={pinicon}
             />
           </View>
         </View>
       </View>
-      {change === false ? (
-        <View style={styles.bottomBar}>
-          <TouchableOpacity
-            style={styles.cardsave}
-            onPress={() => alert('카드 조합을 저장합니다.')}>
-            <View flexDirection="row">
-              <Save size={25} name="save-alt" style={{marginRight: 5}} />
-              <Text style={{fontSize: 20}}>카드 조합 저장</Text>
+      <View style={styles.bottomBar}>
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          {pinicon ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: 'black',
+                borderWidth: 0.8,
+                margin: 5,
+                backgroundColor: 'gray',
+              }}>
+              <TouchableOpacity onPress={togglepinicon}>
+                <Check name="check" size={24} borderColor="black" />
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: 'black',
+                borderWidth: 0.8,
+                margin: 5,
+              }}>
+              <TouchableOpacity onPress={togglepinicon}>
+                <Pinoutline name="pin-outline" size={24} borderColor="black" />
+              </TouchableOpacity>
+            </View>
+          )}
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderColor: 'black',
+              borderWidth: 0.8,
+              margin: 5,
+            }}>
+            <TouchableOpacity onPress={() => sheetRef.current.snapTo(0)}>
+              <Icon2 name="pencil" size={22} />
+            </TouchableOpacity>
+            <BottomSheet
+              snapPoints={[450, 300, 0]}
+              borderRadius={10}
+              renderContent="dd"
+            />
+          </View>
+          <View
+            style={{
+              flex: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderColor: 'black',
+              borderWidth: 0.8,
+              margin: 5,
+              width: '100%',
+            }}>
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Save size={25} name="save-alt" style={{paddingRight: 10}} />
+              <Text style={{fontSize: 16}}>퍼즐 조합 저장</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            backgroundColor: '#DABDFF',
+            justifyContent: 'center',
+            borderColor: 'black',
+            borderWidth: 1,
+            margin: 5,
+          }}>
           <TouchableOpacity
-            style={styles.randommatching}
-            onPress={() => alert('카드를 랜덤매칭합니다.')}>
-            <Text style={{fontSize: 25}}>전체 카드 랜덤 매칭</Text>
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text style={{fontSize: 24}}>전체 퍼즐 랜덤 매칭</Text>
           </TouchableOpacity>
         </View>
-      ) : (
-        <View style={styles.bottomBarWrite}>
-          <View style={styles.writeButton}>
-            <TouchableOpacity
-              onPress={() => {
-                {
-                  idx === 1
-                    ? setTemp([true, false, false, false])
-                    : idx === 3
-                    ? setTemp([false, true, false, false])
-                    : idx === 4
-                    ? setTemp([false, false, true, false])
-                    : idx === 5
-                    ? setTemp([false, false, false, true])
-                    : setTemp([false, false, false, false]);
-                }
-                console.log(temp);
-              }}
-              style={styles.writeButton2}>
-              <TextIcon
-                size={25}
-                name="text"
-                style={{
-                  marginBottom: 2,
-                }}
-              />
-              <Text style={{fontSize: 18}}>텍스트 입력하기</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.writeButton}>
-            <TouchableOpacity
-              onPress={() => alert('사진 가져오기')}
-              style={styles.writeButton2}>
-              <PictureIcon
-                size={25}
-                name="picture-o"
-                style={{
-                  marginBottom: 2,
-                }}
-              />
-              <Text style={{fontSize: 18}}>사진 가져오기</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.writeButton}>
-            <TouchableOpacity
-              onPress={() => alert('영상 가져오기')}
-              style={styles.writeButton2}>
-              <VideoIcon
-                size={25}
-                name="videocamera"
-                style={{
-                  marginBottom: 2,
-                }}
-              />
-              <Text style={{fontSize: 18}}>영상 가져오기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      </View>
     </View>
   );
 };
@@ -301,6 +321,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginLeft: 16,
   },
+  keywordscrollview: {
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+  modalkeywordlistView: {
+    borderBottomWidth: 0.8,
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   sv: {flex: 1, marginLeft: 16},
   topsidebar: {flex: 1},
   addkeyword: {
@@ -315,6 +346,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 8,
   },
+  addkeywordtext: {fontSize: 16, marginRight: 7},
   keyword: {
     marginRight: 8,
   },
@@ -360,6 +392,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     flex: 3,
+    margin: 8,
   },
   bottomBarWrite: {
     flexDirection: 'row',
