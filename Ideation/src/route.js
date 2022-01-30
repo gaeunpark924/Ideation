@@ -19,7 +19,7 @@ const Stack = createStackNavigator();
 const App = () => {
   console.log("route")
   return (
-    <Stack.Navigator initialRouteName='Loading'>
+    <Stack.Navigator initialRouteName='Loading' options={{headerStyle:{backgroundColor:'#fdf8ff'},}}>
         {/* // screenOptions={{headerShown:false,headerBackTitleVisible: true, headerStyle: {backgroundColor: '#E7D9FF'},}}> */}
       <Stack.Screen name="Loading" component={Loading} options={{headerShown:false}}/>
       <Stack.Screen name="Login" component={Login} options={{title: '로그인', headerLeft: null}}/>
@@ -30,7 +30,13 @@ const App = () => {
       <Stack.Screen name="SearchPwd" component={SearchPwd} options={{title: '비밀번호 찾기'}}/>
       <Stack.Screen name="welcome" component={welcome} options={{headerShown:false}}/>
       <Stack.Screen name="idealist" component={idealist} options={{headerShown:false}} />
-      <Stack.Screen name="ideadevelop" component={ideadevelop} />
+      <Stack.Screen name="ideadevelop" component={ideadevelop}
+                                       options={{headerStyle:{backgroundColor:'#fdf8ff',borderBottomWidth:2,borderBottomColor:'#1D1D1D',},
+                                                headerTitle: "Puzzle name",
+                                                headerTitleStyle:{
+                                                  fontFamily: 'SB_Aggro_B',
+                                                   fontSize: 20
+                                                }}}/>
       <Stack.Screen name="ideamatching" component={ideamatching} />
     </Stack.Navigator>
   );

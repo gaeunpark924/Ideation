@@ -24,14 +24,13 @@ import IdeaComponent from '../components/Idea';
 //import { fetchPost } from '../actions';
 import { transform } from '@babel/core';
 //import { Icon } from 'react-native-elements';
-
 const idealist = ({route,navigation}) => {
   const ideas = [];
   const {userUid} = route.params;
   const [post, setPost] = useState([])
   const [postSearch, setPostSearch] = useState([])
   const [postFilter, setPostFilter] = useState([])
-  const sortList = ['','생성 순 ','수정 순 ','이름 순 ']
+  const sortList = ['수정 순 ','생성 순 ','이름 순 ']
   const [index, setIndex] = useState(0)
   const [deleted, setDeleted] = useState(false)
   const [search, setSearch] = useState('')
@@ -50,10 +49,11 @@ const idealist = ({route,navigation}) => {
             postData.postId = doc.id; //문서 id
             list.push(postData);
           })
+          setIndex(0)
         })
     setPost(list)
-    setPostFilter(list)
     setPostSearch(list)
+    setPostFilter(list)
     console.log("list",list)
   }
   const deletePost = (postId) => {
@@ -129,13 +129,17 @@ const idealist = ({route,navigation}) => {
   }
   const filterItem = (idx)=>{
     const tmpPost = postSearch
-    console.log(idx)
+    // console.log("출력",idx, postSearch)
     switch(idx){
+      case 0: //수정
+        setPostFilter(postSearch)
+        break;
       case 1: //생성
         tmpPost.sort((a,b)=>a.createTime-b.createTime)
         setPostFilter(tmpPost)
+        console.log("xxx",postSearch)
         break;
-      case 2: //수정
+      case 2: //이름
         tmpPost.sort((a,b)=>a.updateTime-b.updateTime)
         setPostFilter(tmpPost)
         break;
@@ -145,96 +149,122 @@ const idealist = ({route,navigation}) => {
         break;
       default:
         setPostFilter(postSearch)
+        // console.log("출력")
         break;
     }
   }
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      {/* <View style={styles.header}> */}
+        <TouchableOpacity onPress={()=>{navigation.navigate("ideadevelop")}}>
+          <Text> 아이디어 발전 </Text>
+        </TouchableOpacity>
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
             numberOfLines={1}
-            // autoComplete='off'  //키보드 자동완성 끄기
+            autoComplete='off'  //키보드 자동완성
             placeholder='아이디어 이름을 검색해보세요.'
             //value={search}
             onChangeText={searchTitle}>
           </TextInput>
           <TouchableOpacity disabled={true}>
-            <Search style={{marginEnd:15, transform:[{rotate: '15deg'}]}} name='ios-search' size={22} color="#000"/>
+            <Image
+              style={{resizeMode:'cover',marginEnd:15}}
+              source={require('../assets/list_search.png')}/>
+            {/* <Search style={{marginEnd:15, transform:[{rotate: '15deg'}]}} name='ios-search' size={22} color="#000"/>   */}
           </TouchableOpacity>
         </View>
-      </View>
-      <View style={{flexDirection:'row',justifyContent: 'space-between', alignItems: 'center', marginHorizontal:15, marginVertical:5}}>
-        <Text style={{fontSize:30}}>
-          Puzzles
-        </Text>
+      {/* </View> */}
+      <View style={styles.title}>
+        <Text style={styles.titlePuzzle}>Puzzles</Text>
         <View style={{flexDirection:'row',alignItems:'center'}}>
-          <Text style={{fontSize:20}}>{sortList[index]}</Text>
+          <Text style={styles.titleSort}>{sortList[index]}</Text>
           <TouchableOpacity onPress={plusIndex}>
-            <Sort style={{marginEnd:12, transform:[{rotate: '270deg'}]}} name='arrow-swap' size={22} color="#000"/>
+            <Image
+              style={{resizeMode:'cover',marginEnd:10}}
+              source={require('../assets/list_sort.png')}/>
+            {/* <Sort style={{marginEnd:12, transform:[{rotate: '270deg'}]}} name='arrow-swap' size={22} color="#000"/> */}
           </TouchableOpacity>
         </View>
-      </View>
-      <View>
       </View>
       <FlatList
         data={postFilter}
         renderItem={({item})=>(
           <IdeaComponent
             item={item}
-            onDelete={deletePost}
-            />
+            onDelete={deletePost}/>
         )}
         keyExtractor={(item)=>item.postId}
         style={{paddingHorizontal: 15}}>
       </FlatList>
       <TouchableOpacity
         style={styles.touchableOpacity}
-        // onPress={()=>{navigation.navigate("ideamatching")}}
-        >
+        activeOpacity={1}
+        onPress={()=>{navigation.navigate("ideamatching")}}>
         <Image
-          style={styles.plus}
-          source={{uri: 'https://raw.githubusercontent.com/tranhonghan/images/main/plus_icon.png'}}/>
+          //style={styles.plus}
+          style={{resizeMode:'cover'}}
+          source={require('../assets/develop1.png')}/>
       </TouchableOpacity>
-      </View>
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fdf8ff',
     //margin: 10
     //marginTop: StatusBar.currentHeight || 0,  //상태바 높이만큼 낮추는 코드
   },
   searchContainer:{
-    flex:1,
+    //flex:1,
     borderColor:'#000',
     borderWidth:1,
-    height:50,
-    marginTop:15,
+    height:48,
     flexDirection:'row',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems:'center',
+    backgroundColor: '#fdf8ff',
+    marginHorizontal:15,
+    marginTop: 25,
+    marginBottom: 25
   },
   searchInput:{
     flex:1,
     borderStyle:'solid',
     padding:0,
     margin:0,
-    marginHorizontal:5,
-    fontSize:20
+    marginHorizontal:8,
+    fontSize:18,
+    fontFamily:'SB_Aggro_L'
   },
-  header: {
+  title:{
     flexDirection: 'row',
-    //borderBottomColor: 'black',
-    //borderBottomWidth: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderStyle: 'solid',
-    margin: 15
+    marginHorizontal:15,
+    marginBottom:12
   },
+  titlePuzzle:{
+    fontSize:24,
+    fontFamily:'SB_Aggro_B'
+  },
+  titleSort:{
+    marginEnd:3,
+    fontSize:14,
+    fontFamily:'SB_Aggro_L'
+  },
+  // header: {
+  //   flexDirection: 'row',
+  //   //borderBottomColor: 'black',
+  //   //borderBottomWidth: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: '#fdf8ff',
+  //   borderStyle: 'solid',
+  //   margin: 15
+  // },
   card_button_row: {
     flex: 1,
     flexDirection: 'row',
@@ -253,11 +283,11 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 30
   },
-  plus:{
-    resizeMode: 'contain',
-    width: 50,
-    height: 50
-  },
+  // plus:{
+  //   resizeMode: 'contain',
+  //   width: 50,
+  //   height: 50
+  // },
 });
 
 export default idealist;

@@ -26,7 +26,7 @@ const Login = ({navigation}) => {
       useCallback(()=>{
         const backHandler = BackHandler.addEventListener("hardwareBackPress",
           ()=>{
-            Alert.alert("Stop","앱을 종료하시겠습니까?",[{text: "아니오", onPress: ()=> null, style:"cancel"},{text:"네", onPress: ()=> {BackHandler.exitApp()}}]);
+            Alert.alert("경고","앱을 종료하시겠습니까?",[{text: "아니오", onPress: ()=> null, style:"cancel"},{text:"네", onPress: ()=> {BackHandler.exitApp()}}]);
             return true;
           })
         return () => backHandler.remove();
