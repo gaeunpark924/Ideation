@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
-import addKey from '../components/addKeyword';
+import addKey from '../components/AddKeyword';
 import Modal from 'react-native-modal';
 import Save from 'react-native-vector-icons/MaterialIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
@@ -23,6 +23,7 @@ import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Check from 'react-native-vector-icons/AntDesign';
 import {BottomSheet} from 'react-native-elements/dist/bottomSheet/BottomSheet';
+import {ListItem} from 'react-native-elements/dist/list/ListItem';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -77,7 +78,7 @@ const IdeaMatching = () => {
     ) : null,
   );
   const modalkeywordlists = keyword.map(k => (
-    <View style={styles.modalkeywordlistView}>
+    <View key={k.key} style={styles.modalkeywordlistView}>
       <TouchableOpacity
         style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
         <Text style={{fontSize: 16}}>{k.label}</Text>
@@ -99,6 +100,12 @@ const IdeaMatching = () => {
     setPinicon(!pinicon);
   };
   const sheetRef = useRef(null);
+  const bottomlist = [
+    {title: '텍스트 입력하기'},
+    {title: '사진 가져오기'},
+    {title: '영상 가져오기'},
+  ];
+  const [isVisible, setIsVisible] = useState(false);
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -255,14 +262,25 @@ const IdeaMatching = () => {
               borderWidth: 0.8,
               margin: 5,
             }}>
-            <TouchableOpacity onPress={() => sheetRef.current.snapTo(0)}>
+            <TouchableOpacity onPress={() => setIsVisible(true)}>
               <Icon2 name="pencil" size={22} />
             </TouchableOpacity>
-            <BottomSheet
-              snapPoints={[450, 300, 0]}
-              borderRadius={10}
-              renderContent="dd"
-            />
+            {/* <BottomSheet
+              isVisible={isVisible}
+              containerStyle={{backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)'}}>
+              {bottomlist.map((l, i) => (
+                <ListItem
+                  key={i}
+                  containerStyle={l.containerStyle}
+                  onPress={l.onPress}>
+                  <ListItem.Content>
+                    <ListItem.Title style={l.titleStyle}>
+                      {l.title}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                </ListItem>
+              ))}
+            </BottomSheet> */}
           </View>
           <View
             style={{
