@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
-import addKey from '../components/AddKeyword';
+import AddKey from '../components/AddKeyword';
 import Modal from 'react-native-modal';
 import Save from 'react-native-vector-icons/MaterialIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
@@ -28,14 +28,55 @@ const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
-    {key: index++, label: '랜덤', select: true},
-    {key: index++, label: '자연', select: true},
-    {key: index++, label: '건축', select: true},
-    {key: index++, label: '예술', select: true},
-    {key: index++, label: '뷰티', select: true},
-    {key: index++, label: '교육', select: true},
-    {key: index++, label: '테크', select: true},
+    {key: index++, label: '랜덤', select: false},
+    {key: index++, label: '자연', select: false},
+    {key: index++, label: '건축', select: false},
+    {key: index++, label: '예술', select: false},
+    {key: index++, label: '뷰티', select: false},
+    {key: index++, label: '교육', select: false},
+    {key: index++, label: '테크', select: false},
   ]);
+
+  /* 선택된 키워드 상단바에 표시 */
+  const showselectedkeywords = keyword.map(k =>
+    k.select ? (
+      <Keyword
+        name={k.label}
+        key={k.key}
+        select={k.select}
+        remove={remove}
+        style={styles.keyword}
+      />
+    ) : null,
+  );
+
+  const modalkeywordtoggle = e => {
+    let newKeywords = keyword.map(k => {
+      if (k.label === e.label) {
+        return {
+          ...k,
+          select: !k.select,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
+  };
+  /* 상단바 키워드 x 버튼 누른 경우 */
+  const remove = e => {
+    let newKeywords = keyword.map(k => {
+      if (k.label === e.label) {
+        return {
+          ...k,
+          select: false,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
+  };
   /* 키워드 추가 */
   const changeKeyword = e => {
     let newKeywords = keyword.map(k => {
@@ -50,61 +91,51 @@ const IdeaMatching = () => {
     });
     setKeyword(newKeywords);
   };
-  /* 키워드 삭제 */
-  const remove = e => {
-    console.log(e);
-    let newKeywords = keyword.map(k => {
-      if (k.label === e) {
-        return {
-          ...k,
-          select: false,
-        };
-      } else {
-        return k;
-      }
-    });
-    setKeyword(newKeywords);
-  };
-  /* 키워드 표시 */
-  const keywordlists = keyword.map(k =>
+  /* 모달창에 있는 키워드 */
+  const modalkeywordlists = keyword.map(k =>
     k.select ? (
-      <Keyword
-        name={k.label}
-        key={k.key}
-        select={k.select}
-        remove={remove}
-        style={styles.keyword}
-      />
-    ) : null,
+      <View key={k.key} style={styles.modalkeywordlistViewSelected}>
+        <TouchableOpacity
+          onPress={() => remove(k)}
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{fontSize: 16}}>{k.label}</Text>
+        </TouchableOpacity>
+      </View>
+    ) : (
+      <View key={k.key} style={styles.modalkeywordlistView}>
+        <TouchableOpacity
+          onPress={() => changeKeyword(k)}
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{fontSize: 16}}>{k.label}</Text>
+        </TouchableOpacity>
+      </View>
+    ),
   );
-  const modalkeywordlists = keyword.map(k => (
-    <View key={k.key} style={styles.modalkeywordlistView}>
-      <TouchableOpacity
-        style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{fontSize: 16}}>{k.label}</Text>
-      </TouchableOpacity>
-    </View>
-  ));
   const [idx, setIdx] = useState(0);
   const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
   const [temp, setTemp] = useState([false, false, false, false]);
+  /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+  // pinicon toggleButton
   const [pinicon, setPinicon] = useState(false);
   const togglepinicon = () => {
     setPinicon(!pinicon);
   };
-  const sheetRef = useRef(null);
-  const bottomlist = [
-    {title: '텍스트 입력하기'},
-    {title: '사진 가져오기'},
-    {title: '영상 가져오기'},
-  ];
+
   const [isVisible, setIsVisible] = useState(false);
   return (
     <View style={styles.container}>
@@ -137,7 +168,8 @@ const IdeaMatching = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       flexDirection: 'row',
-                    }}>
+                    }}
+                    onPress={() => alert('키워드 입력하기...!')}>
                     <Icon2 name="pencil" size={22} style={{marginRight: 10}} />
                     <Text style={{fontSize: 16, fontFamily: 'SB Aggro'}}>
                       키워드 직접입력
@@ -170,7 +202,7 @@ const IdeaMatching = () => {
               </View>
             </Modal>
           </View>
-          {keywordlists}
+          {showselectedkeywords}
         </ScrollView>
       </View>
       <View style={styles.body}>
@@ -335,12 +367,20 @@ const styles = StyleSheet.create({
   projecttitle: {
     fontWeight: 'bold',
     fontStyle: 'normal',
-    fontFamily: 'SB Aggro',
+    fontFamily: 'SB 어그로 B',
     fontSize: 24,
     marginLeft: 16,
   },
   keywordscrollview: {
     alignContent: 'center',
+    alignItems: 'center',
+  },
+  modalkeywordlistViewSelected: {
+    backgroundColor: '#D8D8D8',
+    borderBottomWidth: 0.8,
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   modalkeywordlistView: {

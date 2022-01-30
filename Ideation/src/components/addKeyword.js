@@ -54,8 +54,9 @@ const Addkeyword = tempkey => {
 
   // firestore에 키워드 추가하기
   let idx = 0;
-  // YoutubeApi(tempkey.tempkey);
-  console.log(titleList[0]);
+  console.log(tempkey);
+  YoutubeApi(tempkey.tempkey);
+  // console.log(titleList[0]);
   const keyworddata = {
     index: idx++,
     label: titleList[0],
