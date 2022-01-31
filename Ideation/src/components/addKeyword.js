@@ -25,10 +25,10 @@ const YoutubeApi = searchItem => {
           let i = 0;
           for (i = 0; i < params.maxResults; i++) {
             // console.log(response.data.items[i].snippet.title);
-            titleList[i] = response.data.items[i].snippet.title;
+            titleList[i] = response.data.items[i].snippet;
           }
         }
-        // console.log(titleList);
+        console.log(titleList);
       })
       .catch(error => {
         console.log(error);
@@ -57,11 +57,18 @@ const Addkeyword = tempkey => {
   console.log(tempkey);
   YoutubeApi(tempkey.tempkey);
   // console.log(titleList[0]);
-  const keyworddata = {
-    index: idx++,
-    label: titleList[0],
-    // label: '예빛',
-    select: false,
+  const [keyworddata, setKeyworddata] = useState({
+    key: 0,
+    label: '',
+    selected: false,
+  });
+  const change = () => {
+    setKeyworddata(
+      {key: idx++, label: titleList[idx], selected: false},
+      {key: idx++, label: titleList[idx], selected: false},
+      {key: idx++, label: titleList[idx], selected: false},
+      {key: idx++, label: titleList[idx], selected: false},
+    );
   };
   //categoryData -> doc(keyword) -> keyworddata
   useEffect(() => {
@@ -74,7 +81,9 @@ const Addkeyword = tempkey => {
   });
   return (
     <View>
-      <Text>키워드 추가</Text>
+      <TouchableOpacity onPress={change}>
+        <Text>키워드 추가</Text>
+      </TouchableOpacity>
     </View>
   );
 };

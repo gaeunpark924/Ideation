@@ -24,6 +24,7 @@ import Pin from 'react-native-vector-icons/Entypo';
 import Check from 'react-native-vector-icons/AntDesign';
 import {BottomSheet} from 'react-native-elements/dist/bottomSheet/BottomSheet';
 import {ListItem} from 'react-native-elements/dist/list/ListItem';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -63,7 +64,7 @@ const IdeaMatching = () => {
     });
     setKeyword(newKeywords);
   };
-  /* 상단바 키워드 x 버튼 누른 경우 */
+  /* 상단바 키워드 x 버튼 누른 경우 ==> 수정 필요...! */
   const remove = e => {
     let newKeywords = keyword.map(k => {
       if (k.label === e.label) {
@@ -135,7 +136,11 @@ const IdeaMatching = () => {
   const togglepinicon = () => {
     setPinicon(!pinicon);
   };
-
+  // save toggleButton
+  const [saveicon, setSaveicon] = useState(false);
+  const togglesaveiocn = () => {
+    setSaveicon(!saveicon);
+  };
   const [isVisible, setIsVisible] = useState(false);
   return (
     <View style={styles.container}>
@@ -208,48 +213,12 @@ const IdeaMatching = () => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <SC
-              style={styles.card}
-              change={change}
-              isChange={isChange}
-              idx={1}
-              setIdx={setIdx}
-              temp={temp[0]}
-              setTemp={setTemp}
-              pinicon={pinicon}
-            />
-            <SC
-              style={styles.card}
-              change={change}
-              isChange={isChange}
-              idx={3}
-              setIdx={setIdx}
-              temp={temp[1]}
-              setTemp={setTemp}
-              pinicon={pinicon}
-            />
+            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
           </View>
           <View style={styles.contents}>
-            <SC
-              style={styles.card}
-              change={change}
-              isChange={isChange}
-              idx={4}
-              setIdx={setIdx}
-              temp={temp[2]}
-              setTemp={setTemp}
-              pinicon={pinicon}
-            />
-            <SC
-              style={styles.card}
-              change={change}
-              isChange={isChange}
-              idx={5}
-              setIdx={setIdx}
-              temp={temp[3]}
-              setTemp={setTemp}
-              pinicon={pinicon}
-            />
+            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
           </View>
         </View>
       </View>
@@ -325,6 +294,7 @@ const IdeaMatching = () => {
               width: '100%',
             }}>
             <TouchableOpacity
+              onPress={togglesaveiocn}
               style={{
                 flexDirection: 'row',
                 width: '100%',

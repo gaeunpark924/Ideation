@@ -3,43 +3,37 @@ import {StyleSheet, Text, View, Image, Button, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SwipeCards from 'react-native-swipe-cards-deck';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
-import Pin from 'react-native-vector-icons/Entypo';
-import Icon2 from 'react-native-vector-icons/Octicons';
-
-const SC = ({change, isChange, idx, setIdx, temp, setTemp, pinicon}) => {
+import Checkbox from 'react-native-vector-icons/Fontisto';
+const SC = ({pinicon, saveicon}) => {
   function Card({data}) {
     const [fix, setFix] = useState('false'); //card 고정된건지 아닌지
     const togglefix = () => {
       setFix(!fix);
     };
-    // 텍스트 입력 받을것인지 그냥 보여줄것인지
+
+    const [checked, setChecked] = useState(false);
+    const togglecheck = () => {
+      setChecked(!checked);
+      console.log(checked);
+    };
+    // 텍스트인지 이미지인지 판단
     const contents = () => {
       if (data.image === undefined) {
-        if (temp) {
-          return (
-            <TextInput
-              style={styles.cardtext}
-              placeholder="텍스트를 입력하세요."
-              onEndEditing={() => alert('끝났음')}
-            />
-          );
-        } else {
-          return <Text> {data.text}</Text>;
-        }
+        return <Text> {data.text}</Text>;
       } else {
         return (
           <Image style={styles.cardthumbnail} source={{uri: data.image}} />
         );
       }
     };
-    const changecontents = () => {
-      isChange(!change);
-      if (change) {
-        setIdx(temp);
-      } else {
-        setIdx((temp += idx));
-      }
-    };
+    // const changecontents = () => {
+    //   isChange(!change);
+    //   if (change) {
+    //     setIdx(temp);
+    //   } else {
+    //     setIdx((temp += idx));
+    //   }
+    // };
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
         <View
@@ -48,7 +42,26 @@ const SC = ({change, isChange, idx, setIdx, temp, setTemp, pinicon}) => {
             flex: 1,
           }}>
           <View style={{flex: 1, paddingTop: 2}}>
-            {pinicon ? (
+            {saveicon ? (
+              checked ? (
+                <TouchableOpacity>
+                  <Checkbox
+                    name="checkbox-active"
+                    size={24}
+                    onPress={togglecheck}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity>
+                  <Checkbox
+                    name="checkbox-passive"
+                    size={24}
+                    onPress={togglecheck}
+                    backgroundColor="white"
+                  />
+                </TouchableOpacity>
+              )
+            ) : pinicon ? (
               fix ? (
                 <TouchableOpacity
                   style={{borderColor: 'black', borderWidth: 1}}>
