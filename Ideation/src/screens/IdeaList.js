@@ -1,5 +1,5 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import {Text, View, TouchableOpacity} from 'react-native';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
+import {Text, View, TouchableOpacity, Button, StyleSheet} from 'react-native';
 import axios from 'axios';
 import Addkeyword from '../components/AddKeyword';
 const Idealist = () => {
@@ -10,5 +10,4 @@ const Idealist = () => {
     </View>
   );
 };
-
 export default Idealist;

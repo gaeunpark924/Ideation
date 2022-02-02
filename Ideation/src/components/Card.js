@@ -6,7 +6,7 @@ import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Checkbox from 'react-native-vector-icons/Fontisto';
 const SC = ({pinicon, saveicon}) => {
   function Card({data}) {
-    const [fix, setFix] = useState('false'); //card 고정된건지 아닌지
+    const [fix, setFix] = useState(false); //card 고정된건지 아닌지
     const togglefix = () => {
       setFix(!fix);
     };
@@ -26,14 +26,6 @@ const SC = ({pinicon, saveicon}) => {
         );
       }
     };
-    // const changecontents = () => {
-    //   isChange(!change);
-    //   if (change) {
-    //     setIdx(temp);
-    //   } else {
-    //     setIdx((temp += idx));
-    //   }
-    // };
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
         <View
@@ -64,19 +56,6 @@ const SC = ({pinicon, saveicon}) => {
             ) : pinicon ? (
               fix ? (
                 <TouchableOpacity
-                  style={{borderColor: 'black', borderWidth: 1}}>
-                  <Pinoutline
-                    name="pin-outline"
-                    size={24}
-                    onPress={togglefix}
-                    style={{
-                      padding: 2,
-                      backgroundColor: 'white',
-                    }}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
                   style={{
                     borderColor: 'black',
                     borderWidth: 1,
@@ -92,8 +71,21 @@ const SC = ({pinicon, saveicon}) => {
                     }}
                   />
                 </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={{borderColor: 'black', borderWidth: 1}}>
+                  <Pinoutline
+                    name="pin-outline"
+                    size={24}
+                    onPress={togglefix}
+                    style={{
+                      padding: 2,
+                      backgroundColor: 'white',
+                    }}
+                  />
+                </TouchableOpacity>
               )
-            ) : fix ? null : (
+            ) : fix ? (
               <TouchableOpacity
                 style={{
                   borderColor: 'black',
@@ -110,7 +102,7 @@ const SC = ({pinicon, saveicon}) => {
                   }}
                 />
               </TouchableOpacity>
-            )}
+            ) : null}
           </View>
           <View style={{flex: 5}}></View>
         </View>
@@ -133,22 +125,23 @@ const SC = ({pinicon, saveicon}) => {
       setCards([
         {
           text: '공동체 참여 설계',
-          backgroundColor: '#E7D9FF',
+          backgroundColor: '#FFF6DF',
         },
         {
           text: '',
-          backgroundColor: '#E7D9FF',
-          image: 'https://media.giphy.com/media/GfXFVHUzjlbOg/giphy.gif',
+          backgroundColor: '#FFF6DF',
+          image:
+            'https://i.ytimg.com/vi/NSusIPQiSVA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCeKWUwyVSsbQZRGnfiZVIHYTlpfg',
         },
         {
           text: '점심 먹기',
-          backgroundColor: '#E7D9FF',
+          backgroundColor: '#FFF6DF',
           image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
         },
-        {text: '냉장고 청소하기', backgroundColor: '#E7D9FF'},
-        {text: '대충 씻기', backgroundColor: '#E7D9FF'},
-        {text: '음...', backgroundColor: '#E7D9FF'},
-        {text: '파카 유튜브 시청', backgroundColor: '#E7D9FF'},
+        {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+        {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+        {text: '음...', backgroundColor: '#FFF6DF'},
+        {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
       ]);
     }, 1000);
   }, []);

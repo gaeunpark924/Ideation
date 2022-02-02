@@ -22,14 +22,14 @@ import Icon2 from 'react-native-vector-icons/Octicons';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Pin from 'react-native-vector-icons/Entypo';
 import Check from 'react-native-vector-icons/AntDesign';
-import {BottomSheet} from 'react-native-elements/dist/bottomSheet/BottomSheet';
+import BottomSheet from 'react-native-gesture-bottom-sheet';
 import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
-    {key: index++, label: '랜덤', select: false},
+    {key: index++, label: '랜덤', select: true},
     {key: index++, label: '자연', select: false},
     {key: index++, label: '건축', select: false},
     {key: index++, label: '예술', select: false},
@@ -45,7 +45,6 @@ const IdeaMatching = () => {
         name={k.label}
         key={k.key}
         select={k.select}
-        remove={remove}
         style={styles.keyword}
       />
     ) : null,
@@ -120,6 +119,7 @@ const IdeaMatching = () => {
       </View>
     ),
   );
+  // textInput에 사용하기 위함
   const [idx, setIdx] = useState(0);
   const [change, setChange] = useState(false);
   const isChange = change => {
@@ -142,6 +142,12 @@ const IdeaMatching = () => {
     setSaveicon(!saveicon);
   };
   const [isVisible, setIsVisible] = useState(false);
+  // pen toggleButton
+  const [pen, setPen] = useState(false);
+  const togglepen = () => {
+    setPen(!pen);
+  };
+  const bottomSheet = useRef();
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -213,15 +219,67 @@ const IdeaMatching = () => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
-            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            <BottomSheet radius={1} ref={bottomSheet} height={200}>
+              <TouchableOpacity style={styles.bottomModal}>
+                <TextIcon name="text" size={24} style={{marginRight: 7}} />
+                <Text>텍스트 입력하기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.bottomModal}>
+                <PictureIcon
+                  name="picture-o"
+                  size={24}
+                  style={{marginRight: 7}}
+                />
+                <Text>사진 가져오기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.bottomModal}>
+                <VideoIcon
+                  name="videocamera"
+                  size={24}
+                  style={{marginRight: 7}}
+                />
+                <Text>영상 가져오기</Text>
+              </TouchableOpacity>
+            </BottomSheet>
+            {pen ? (
+              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
+                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              </TouchableOpacity>
+            ) : (
+              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            )}
+
+            {pen ? (
+              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
+                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              </TouchableOpacity>
+            ) : (
+              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            )}
           </View>
           <View style={styles.contents}>
-            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
-            <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            {pen ? (
+              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
+                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              </TouchableOpacity>
+            ) : (
+              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            )}
+            {pen ? (
+              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
+                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              </TouchableOpacity>
+            ) : (
+              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+            )}
           </View>
         </View>
       </View>
+      {saveicon ? (
+        <View style={styles.saveinfo}>
+          <Text style={styles.saveinfotext}>저장할 퍼즐을 선택해주세요</Text>
+        </View>
+      ) : null}
       <View style={styles.bottomBar}>
         <View style={{flex: 1, flexDirection: 'row'}}>
           {pinicon ? (
@@ -254,35 +312,37 @@ const IdeaMatching = () => {
               </TouchableOpacity>
             </View>
           )}
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderColor: 'black',
-              borderWidth: 0.8,
-              margin: 5,
-            }}>
-            <TouchableOpacity onPress={() => setIsVisible(true)}>
-              <Icon2 name="pencil" size={22} />
-            </TouchableOpacity>
-            {/* <BottomSheet
-              isVisible={isVisible}
-              containerStyle={{backgroundColor: 'rgba(0.5, 0.25, 0, 0.2)'}}>
-              {bottomlist.map((l, i) => (
-                <ListItem
-                  key={i}
-                  containerStyle={l.containerStyle}
-                  onPress={l.onPress}>
-                  <ListItem.Content>
-                    <ListItem.Title style={l.titleStyle}>
-                      {l.title}
-                    </ListItem.Title>
-                  </ListItem.Content>
-                </ListItem>
-              ))}
-            </BottomSheet> */}
-          </View>
+          {pen ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: 'black',
+                borderWidth: 0.8,
+                margin: 5,
+                backgroundColor: 'gray',
+              }}>
+              <TouchableOpacity onPress={togglepen}>
+                <Icon2 name="pencil" size={22} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: 'black',
+                borderWidth: 0.8,
+                margin: 5,
+              }}>
+              <TouchableOpacity onPress={togglepen}>
+                <Icon2 name="pencil" size={22} />
+              </TouchableOpacity>
+            </View>
+          )}
+
           <View
             style={{
               flex: 5,
@@ -402,6 +462,16 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
   },
+  bottomModal: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+  },
+  saveinfo: {justifyContent: 'center', alignItems: 'center', paddingBottom: 10},
+  saveinfotext: {opacity: 0.33},
   cardsave: {
     flex: 1,
     borderColor: 'black',

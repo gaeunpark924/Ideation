@@ -24,8 +24,8 @@ const YoutubeApi = searchItem => {
         } else {
           let i = 0;
           for (i = 0; i < params.maxResults; i++) {
-            // console.log(response.data.items[i].snippet.title);
-            titleList[i] = response.data.items[i].snippet;
+            // console.log(response.data.items[i].snippet);
+            titleList[i] = response.data.items[i].snippet.thumbnails;
           }
         }
         console.log(titleList);
@@ -72,12 +72,10 @@ const Addkeyword = tempkey => {
   };
   //categoryData -> doc(keyword) -> keyworddata
   useEffect(() => {
-    setTimeout(() => {
-      const res = firestore()
-        .collection('categoryData')
-        .doc(tempkey.tempkey)
-        .set(keyworddata);
-    }, 1000);
+    const res = firestore()
+      .collection('categoryData')
+      .doc(tempkey.tempkey)
+      .set(keyworddata);
   });
   return (
     <View>

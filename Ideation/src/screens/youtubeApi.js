@@ -13,6 +13,7 @@ const YoutubeApi = ({search}) => {
     q: {search},
     maxResults: 5,
     type: 'video',
+    order: 'viewCount',
   });
   const titleList = [];
   axios
@@ -21,8 +22,8 @@ const YoutubeApi = ({search}) => {
       if (!response) {
         return;
       } else {
-        const jso = response.json();
-        console.log(jso);
+        // const jso = response.json();
+        // console.log(jso);
         let i = 0;
         for (i = 0; i < params.maxResults; i++) {
           console.log(response.data.items[i].snippet.title);
