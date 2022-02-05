@@ -25,6 +25,8 @@ import Check from 'react-native-vector-icons/AntDesign';
 import BottomSheet from 'react-native-gesture-bottom-sheet';
 import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -63,10 +65,9 @@ const IdeaMatching = () => {
     });
     setKeyword(newKeywords);
   };
-  /* 상단바 키워드 x 버튼 누른 경우 ==> 수정 필요...! */
   const remove = e => {
     let newKeywords = keyword.map(k => {
-      if (k.label === e.label) {
+      if (k === e) {
         return {
           ...k,
           select: false,
@@ -102,7 +103,9 @@ const IdeaMatching = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 16}}>{k.label}</Text>
+          <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+            {k.label}
+          </Text>
         </TouchableOpacity>
       </View>
     ) : (
@@ -114,18 +117,20 @@ const IdeaMatching = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 16}}>{k.label}</Text>
+          <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+            {k.label}
+          </Text>
         </TouchableOpacity>
       </View>
     ),
   );
   // textInput에 사용하기 위함
-  const [idx, setIdx] = useState(0);
   const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
-  const [temp, setTemp] = useState([false, false, false, false]);
+  // 어떤 card 선택되었는지
+  const [whichcard, setWhichCard] = useState([false, false, false, false]);
   /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
@@ -147,11 +152,108 @@ const IdeaMatching = () => {
   const togglepen = () => {
     setPen(!pen);
   };
+  const bottomModalShow1 = () => {
+    bottomSheet.current.show();
+    setWhichCard([true, false, false, false]);
+    //setIdx(1);
+  };
+  const bottomModalShow2 = () => {
+    bottomSheet.current.show();
+    setWhichCard([false, true, false, false]);
+    //setIdx(2);
+  };
+  const bottomModalShow3 = () => {
+    bottomSheet.current.show();
+    setWhichCard([false, false, true, false]);
+    //setIdx(3);
+  };
+  const bottomModalShow4 = () => {
+    bottomSheet.current.show();
+    setWhichCard([false, false, false, true]);
+    //setIdx(4);
+  };
   const bottomSheet = useRef();
+  const eachCard = useRef();
+  const optionsImage = {
+    mediaType: 'photo',
+    maxWidth: 180,
+    storageOptions: {
+      skipBackup: true,
+      path: 'images',
+    },
+  };
+  const optionsVideo = {
+    mediaType: 'video',
+    maxWidth: 180,
+    storageOptions: {
+      skipBackup: true,
+      path: 'video',
+    },
+  };
+  const textModal = () => {
+    console.log(eachCard);
+  };
+  const takeImagefromphone = () =>
+    launchImageLibrary(optionsImage, response => {
+      // console.log('Response = ', response);
+      if (response.didCancel) {
+        // setProcessing(false)
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        // setProcessing(false)
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        // setProcessing(false)
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        console.log('Response = ', response.assets[0].uri);
+        const tmp = response.assets[0];
+        // const source = {
+        //   uri:
+        //     Platform.OS === 'android' ? tmp.uri : tmp.uri.replace('file://', ''),
+        //   fileName: response.fileName,
+        // };
+        // var arr = [...items];
+        // console.log('source.uri', source.uri);
+        // arr.push(source.uri);
+        // setItems(arr); ////xxxxx
+      }
+    });
+  const takeVideofromphone = () =>
+    launchImageLibrary(optionsVideo, response => {
+      // console.log('Response = ', response);
+      if (response.didCancel) {
+        // setProcessing(false)
+        console.log('User cancelled video picker');
+      } else if (response.error) {
+        // setProcessing(false)
+        console.log('VideoPicker Error: ', response.error);
+      } else if (response.customButton) {
+        // setProcessing(false)
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        console.log('Response = ', response.assets[0].uri);
+        const tmp = response.assets[0];
+        // const source = {
+        //   uri:
+        //     Platform.OS === 'android' ? tmp.uri : tmp.uri.replace('file://', ''),
+        //   fileName: response.fileName,
+        // };
+        // var arr = [...items];
+        // console.log('source.uri', source.uri);
+        // arr.push(source.uri);
+        // setItems(arr); ////xxxxx
+      }
+    });
+  const [isfix, setIsfix] = useState([false, false, false, false]);
+  const [ischeck, setIscheck] = useState();
+  const allrandommatching = () => {
+    alert('전체카드 랜덤 매칭');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
-        <Text style={styles.projecttitle}>Puzzling</Text>
+        <Text style={styles.projecttitle}>Let's Puzzling</Text>
       </View>
       <View style={styles.sv}>
         <ScrollView
@@ -182,7 +284,7 @@ const IdeaMatching = () => {
                     }}
                     onPress={() => alert('키워드 입력하기...!')}>
                     <Icon2 name="pencil" size={22} style={{marginRight: 10}} />
-                    <Text style={{fontSize: 16, fontFamily: 'SB Aggro'}}>
+                    <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
                       키워드 직접입력
                     </Text>
                   </TouchableOpacity>
@@ -205,7 +307,11 @@ const IdeaMatching = () => {
                       height: '100%',
                       backgroundColor: '#E7D9FF',
                     }}>
-                    <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontFamily: 'SB 어그로 M',
+                      }}>
                       키워드 추가하기
                     </Text>
                   </TouchableOpacity>
@@ -220,57 +326,149 @@ const IdeaMatching = () => {
         <View style={styles.contents_card}>
           <View style={styles.contents}>
             <BottomSheet radius={1} ref={bottomSheet} height={200}>
-              <TouchableOpacity style={styles.bottomModal}>
+              <TouchableOpacity onPress={textModal} style={styles.bottomModal}>
                 <TextIcon name="text" size={24} style={{marginRight: 7}} />
-                <Text>텍스트 입력하기</Text>
+                <Text style={{fontFamily: 'SB 어그로 L'}}>텍스트 입력하기</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.bottomModal}>
+              <TouchableOpacity
+                onPress={takeImagefromphone}
+                style={styles.bottomModal}>
                 <PictureIcon
                   name="picture-o"
                   size={24}
                   style={{marginRight: 7}}
                 />
-                <Text>사진 가져오기</Text>
+                <Text style={{fontFamily: 'SB 어그로 L'}}>사진 가져오기</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.bottomModal}>
+              <TouchableOpacity
+                onPress={takeVideofromphone}
+                style={styles.bottomModal}>
                 <VideoIcon
                   name="videocamera"
                   size={24}
                   style={{marginRight: 7}}
                 />
-                <Text>영상 가져오기</Text>
+                <Text style={{fontFamily: 'SB 어그로 L'}}>영상 가져오기</Text>
               </TouchableOpacity>
             </BottomSheet>
             {pen ? (
-              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
-                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <TouchableOpacity onPress={bottomModalShow1}>
+                <SC
+                  style={styles.card}
+                  pinicon={pinicon}
+                  saveicon={saveicon}
+                  whichcard={whichcard}
+                  idx={0}
+                  keyword="노래"
+                  isfix={isfix}
+                  ischeck={ischeck}
+                  penicon={pen}
+                  setIsfix={setIsfix}
+                />
               </TouchableOpacity>
             ) : (
-              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <SC
+                style={styles.card}
+                pinicon={pinicon}
+                saveicon={saveicon}
+                whichcard={whichcard}
+                idx={0}
+                keyword="노래"
+                isfix={isfix}
+                ischeck={ischeck}
+                penicon={pen}
+                setIsfix={setIsfix}
+              />
             )}
 
             {pen ? (
-              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
-                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <TouchableOpacity onPress={bottomModalShow2}>
+                <SC
+                  style={styles.card}
+                  pinicon={pinicon}
+                  saveicon={saveicon}
+                  whichcard={whichcard}
+                  idx={1}
+                  keyword="노래"
+                  isfix={isfix}
+                  ischeck={ischeck}
+                  penicon={pen}
+                  setIsfix={setIsfix}
+                />
               </TouchableOpacity>
             ) : (
-              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <SC
+                style={styles.card}
+                pinicon={pinicon}
+                saveicon={saveicon}
+                whichcard={whichcard}
+                idx={1}
+                keyword="노래"
+                isfix={isfix}
+                ischeck={ischeck}
+                penicon={pen}
+                setIsfix={setIsfix}
+              />
             )}
           </View>
           <View style={styles.contents}>
             {pen ? (
-              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
-                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <TouchableOpacity onPress={bottomModalShow3}>
+                <SC
+                  style={styles.card}
+                  pinicon={pinicon}
+                  penicon={pen}
+                  saveicon={saveicon}
+                  whichcard={whichcard}
+                  idx={2}
+                  keyword="노래"
+                  isfix={isfix}
+                  ischeck={ischeck}
+                  setIsfix={setIsfix}
+                />
               </TouchableOpacity>
             ) : (
-              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <SC
+                style={styles.card}
+                pinicon={pinicon}
+                saveicon={saveicon}
+                whichcard={whichcard}
+                idx={2}
+                keyword="노래"
+                isfix={isfix}
+                ischeck={ischeck}
+                penicon={pen}
+                setIsfix={setIsfix}
+              />
             )}
             {pen ? (
-              <TouchableOpacity onPress={() => bottomSheet.current.show()}>
-                <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <TouchableOpacity onPress={bottomModalShow4}>
+                <SC
+                  style={styles.card}
+                  pinicon={pinicon}
+                  saveicon={saveicon}
+                  whichcard={whichcard}
+                  idx={3}
+                  keyword="노래"
+                  isfix={isfix}
+                  ischeck={ischeck}
+                  penicon={pen}
+                  setIsfix={setIsfix}
+                />
               </TouchableOpacity>
             ) : (
-              <SC style={styles.card} pinicon={pinicon} saveicon={saveicon} />
+              <SC
+                style={styles.card}
+                pinicon={pinicon}
+                saveicon={saveicon}
+                whichcard={whichcard}
+                idx={3}
+                keyword="노래"
+                isfix={isfix}
+                ischeck={ischeck}
+                penicon={pen}
+                setIsfix={setIsfix}
+              />
             )}
           </View>
         </View>
@@ -342,29 +540,58 @@ const IdeaMatching = () => {
               </TouchableOpacity>
             </View>
           )}
-
-          <View
-            style={{
-              flex: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderColor: 'black',
-              borderWidth: 0.8,
-              margin: 5,
-              width: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={togglesaveiocn}
+          {saveicon ? (
+            <View
               style={{
-                flexDirection: 'row',
-                width: '100%',
-                alignItems: 'center',
+                flex: 5,
                 justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: 'black',
+                borderWidth: 0.8,
+                margin: 5,
+                width: '100%',
+                backgroundColor: 'grey',
               }}>
-              <Save size={25} name="save-alt" style={{paddingRight: 10}} />
-              <Text style={{fontSize: 16}}>퍼즐 조합 저장</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity
+                onPress={togglesaveiocn}
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Save size={25} name="save-alt" style={{paddingRight: 10}} />
+                <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+                  퍼즐 조합 저장
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 5,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderColor: 'black',
+                borderWidth: 0.8,
+                margin: 5,
+                width: '100%',
+              }}>
+              <TouchableOpacity
+                onPress={togglesaveiocn}
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Save size={25} name="save-alt" style={{paddingRight: 10}} />
+                <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+                  퍼즐 조합 저장
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
         <View
           style={{
@@ -377,12 +604,15 @@ const IdeaMatching = () => {
             margin: 5,
           }}>
           <TouchableOpacity
+            onPress={allrandommatching}
             style={{
               width: '100%',
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 24}}>전체 퍼즐 랜덤 매칭</Text>
+            <Text style={{fontSize: 24, fontFamily: 'SB 어그로 M'}}>
+              전체 퍼즐 랜덤 매칭
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -395,7 +625,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   projecttitle: {
-    fontWeight: 'bold',
     fontStyle: 'normal',
     fontFamily: 'SB 어그로 B',
     fontSize: 24,
@@ -434,7 +663,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 8,
   },
-  addkeywordtext: {fontSize: 16, marginRight: 7},
+  addkeywordtext: {fontSize: 16, marginRight: 7, fontFamily: 'SB 어그로 M'},
   keyword: {
     marginRight: 8,
   },
@@ -459,8 +688,6 @@ const styles = StyleSheet.create({
   card: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 300,
-    height: 300,
   },
   bottomModal: {
     flex: 1,

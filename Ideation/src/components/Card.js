@@ -1,29 +1,59 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {StyleSheet, Text, View, Image, Button, TextInput} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import SwipeCards from 'react-native-swipe-cards-deck';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Checkbox from 'react-native-vector-icons/Fontisto';
-const SC = ({pinicon, saveicon}) => {
+import firestore from '@react-native-firebase/firestore';
+//pinicon,saveicon : icon누름 여부
+const SC = ({
+  penicon,
+  pinicon,
+  saveicon,
+  whichcard,
+  idx,
+  isfix,
+  ischeck,
+  keyword,
+  setIsfix,
+}) => {
   function Card({data}) {
-    const [fix, setFix] = useState(false); //card 고정된건지 아닌지
+    // card 고정된건지 여부
+    const [fix, setFix] = useState();
     const togglefix = () => {
       setFix(!fix);
+      //isfix[idx]만 toggle로 바꿔야함
+      console.log(isfix[idx]);
     };
-
+    // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
     const togglecheck = () => {
       setChecked(!checked);
-      console.log(checked);
     };
     // 텍스트인지 이미지인지 판단
+    const [text, setText] = useState('');
     const contents = () => {
-      if (data.image === undefined) {
-        return <Text> {data.text}</Text>;
-      } else {
+      const onChange = e => {
+        setText(e.target.value);
+        // console.log(text);
+      };
+      if (whichcard[idx]) {
         return (
-          <Image style={styles.cardthumbnail} source={{uri: data.image}} />
+          <View>
+            <TextInput
+              placeholder="텍스트를 입력해주세요"
+              onChange={onChange}
+            />
+          </View>
         );
+      } else {
+        if (data.image === undefined || data.image === '') {
+          return <Text>{data.text}</Text>;
+        } else {
+          return (
+            <Image style={styles.cardthumbnail} source={{uri: data.image}} />
+          );
+        }
       }
     };
     return (
@@ -119,19 +149,28 @@ const SC = ({pinicon, saveicon}) => {
     );
   }
   const [cards, setCards] = useState();
-
+  // Youtube api -> firestore -> setCards를 통해서 이미지나 텍스트 저장.
+  let newCards = useRef();
   useEffect(() => {
+    const db = firestore()
+      .collection('categoryData')
+      .doc(keyword)
+      .onSnapshot(documentSnapshot => {
+        newCards.current = documentSnapshot.data();
+      });
+  }, [keyword]);
+  useEffect(() => {
+    // setCards(newCards.current.title);
     setTimeout(() => {
       setCards([
         {
-          text: '공동체 참여 설계',
+          text: newCards.current.title[0],
           backgroundColor: '#FFF6DF',
         },
         {
           text: '',
           backgroundColor: '#FFF6DF',
-          image:
-            'https://i.ytimg.com/vi/NSusIPQiSVA/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCeKWUwyVSsbQZRGnfiZVIHYTlpfg',
+          image: newCards.current.thumbnail[0],
         },
         {
           text: '점심 먹기',
@@ -144,8 +183,8 @@ const SC = ({pinicon, saveicon}) => {
         {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
       ]);
     }, 1000);
-  }, []);
-
+  }, [pinicon]);
+  // console.log(cards);
   function handleYup(card) {
     console.log(`Yup for ${card.text} ${card.image}`);
     return true; // return false if you wish to cancel the action
@@ -154,11 +193,6 @@ const SC = ({pinicon, saveicon}) => {
     console.log(`Nope for ${card.text} ${card.image}`);
     return true;
   }
-  function handleMaybe(card) {
-    console.log(`Maybe for ${card.text} ${card.image}`);
-    return true;
-  }
-
   return (
     <View style={styles.container}>
       {cards ? (
@@ -174,12 +208,12 @@ const SC = ({pinicon, saveicon}) => {
           hasMaybeAction={false}
         />
       ) : (
-        <StatusCard text="Loading..." />
+        <StatusCard text="불러오는중..." />
       )}
     </View>
   );
 };
-export default SC;
+export default React.memo(SC);
 
 const styles = StyleSheet.create({
   container: {
@@ -200,8 +234,8 @@ const styles = StyleSheet.create({
   cardtext: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -10,
     fontSize: 18,
+    fontFamily: 'SB 어그로 L',
   },
   cardthumbnail: {
     zIndex: -1,
