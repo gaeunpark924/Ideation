@@ -18,7 +18,6 @@ const SC = ({
   setIsfix,
   clicktextModal,
 }) => {
-  // console.log(penicon,pinicon,saveicon,whichcard,idx,isfix,ischeck,keyword,setIsfix,clicktextModal);
   function Card({data}) {
     // card 고정된건지 여부
     const togglefix = () => {
@@ -31,23 +30,31 @@ const SC = ({
     };
     // 텍스트인지 이미지인지 판단
     const [text, setText] = useState('');
+    // console.log(text);
     const contents = () => {
-      const onChange = e => {
+      const onChangeTextinput = e => {
         setText(e.target.value);
         // console.log(text);
       };
       if (whichcard[idx]&&clicktextModal) {
         return (
-          <View>
+          <View style={{marginTop:-20}}>
             <TextInput
-              placeholder="텍스트를 입력해주세요"
-              onChange={onChange}
+              placeholder="생각나는 아이디어를 입력해주세요!(30자)"
+              // onChange={onChangeTextinput}
+              onChangeText={newtext=>setText(newtext)}
+              // onSubmitEditing={newtext=>setText(newtext)}
+              value={text}
+              style={{textAlign:'center',fontFamily:'SB 어그로 L'}}
+              numberOfLines={2}
+              //editable
+              maxLength={30}
             />
           </View>
         );
       } else {
         if (data.image === undefined || data.image === '') {
-          return <Text>{data.text}</Text>;
+          return <Text style={{fontFamily:'SB 어그로 L'}}>{data.text}</Text>;
         } else {
           return (
             <Image style={styles.cardthumbnail} source={{uri: data.image}} />
@@ -150,40 +157,126 @@ const SC = ({
   const [cards, setCards] = useState();
   // Youtube api -> firestore -> setCards를 통해서 이미지나 텍스트 저장.
   let newCards = useRef();
+  // useEffect(() => {
+  //   const db = firestore()
+  //     .collection('categoryData')
+  //     .doc(keyword)
+  //     .onSnapshot(documentSnapshot => {
+  //       newCards.current = documentSnapshot.data();
+  //     });
+  // }, [keyword]);
   useEffect(() => {
-    const db = firestore()
-      .collection('categoryData')
-      .doc(keyword)
-      .onSnapshot(documentSnapshot => {
-        newCards.current = documentSnapshot.data();
-      });
-  }, [keyword]);
-  useEffect(() => {
-    // setCards(newCards.current.title);
     setTimeout(() => {
-      setCards([
-        {
-          text: newCards.current.title[0],
-          backgroundColor: '#FFF6DF',
-        },
-        {
-          text: '',
-          backgroundColor: '#FFF6DF',
-          image: newCards.current.thumbnail[0],
-        },
-        {
-          text: '점심 먹기',
-          backgroundColor: '#FFF6DF',
-          image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
-        },
-        {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-        {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-        {text: '음...', backgroundColor: '#FFF6DF'},
-        {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-      ]);
+      if(keyword==='노래'){
+        setCards([
+          {
+            text:keyword,
+            backgroundColor:'#FFF6DF'
+          },
+          {
+            text: '예빛',
+            backgroundColor: '#FFF6DF',
+          },
+          {
+            text: '검정치마',
+            backgroundColor: '#FFF6DF',
+            // image: newCards.current.thumbnail[0],
+          },
+          {
+            text: '점심 먹기',
+            backgroundColor: '#FFF6DF',
+            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+          },
+          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+          {text: '음...', backgroundColor: '#FFF6DF'},
+          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+        ]);
+      }
+      else if(keyword==='유튜브'){
+        setCards([
+          {
+            text:keyword,
+            backgroundColor:'#FFF6DF'
+          },
+          {
+            text: '유튜브 관련!',
+            backgroundColor: '#FFF6DF',
+          },
+          {
+            text: '괴물쥐',
+            backgroundColor: '#FFF6DF',
+            // image: newCards.current.thumbnail[1],
+          },
+          {
+            text: '점심 먹기',
+            backgroundColor: '#FFF6DF',
+            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+          },
+          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+          {text: '음...', backgroundColor: '#FFF6DF'},
+          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+        ]);
+      }
+      else if(keyword==='영화'){
+        setCards([
+          {
+            text:keyword,
+            backgroundColor:'#FFF6DF'
+          },
+          {
+            text: '유튜브 관련!',
+            backgroundColor: '#FFF6DF',
+            image:'https://i.ytimg.com/vi/I1V7LE9NBAM/hq720.jpg'
+          },
+          {
+            text: '괴물쥐',
+            backgroundColor: '#FFF6DF',
+            // image: newCards.current.thumbnail[1],
+          },
+          {
+            text: '점심 먹기',
+            backgroundColor: '#FFF6DF',
+            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+          },
+          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+          {text: '음...', backgroundColor: '#FFF6DF'},
+          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+        ]);
+      }
+      else if(keyword==='드라마'){
+        setCards([
+          {
+            text:keyword,
+            backgroundColor:'#FFF6DF'
+          },
+          {
+            text: '유튜브 관련!',
+            backgroundColor: '#FFF6DF',
+            image:'https://i.ytimg.com/vi/vORDkdgLzEs/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfx5vbQqtKCvnbHsh0JSvQrCCrug'
+          },
+          {
+            text: '괴물쥐',
+            backgroundColor: '#FFF6DF',
+            image: 'https://i.ytimg.com/an_webp/eYp6P-9ayUY/mqdefault_6s.webp?du=3000&sqp=CO6y_o8G&rs=AOn4CLBxbVxq_e-B-aFVRUpionQP0Mgf2Q',
+          },
+          {
+            text: '점심 먹기',
+            backgroundColor: '#FFF6DF',
+            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+          },
+          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+          {text: '음...', backgroundColor: '#FFF6DF'},
+          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+        ]);
+      }
     }, 1000);
   }, [pinicon]);
   // console.log(cards);
+  console.log(keyword);
   function handleYup(card) {
     console.log(`Yup for ${card.text} ${card.image}`);
     return true; // return false if you wish to cancel the action
@@ -201,8 +294,8 @@ const SC = ({
           keyExtractor={cardData => String(cardData.text)}
           loop={true}
           actions={{
-            nope: {onAction: handleNope, text: '패스..!'},
-            yup: {onAction: handleYup, text: '또 볼 아이디어!'},
+            nope: {onAction: handleNope, text: '그냥 패스',containerStyle:{width:120},textStyle:{/*fontFamily:'SB 어그로 B'*/alignItems:'center'}},
+            yup: {onAction: handleYup, text: '다시 보기',containerStyle:{width:120},textStyle:{/*fontFamily:'SB 어그로 B'*/alignItems:'center'}},
           }}
           hasMaybeAction={false}
         />
@@ -238,8 +331,8 @@ const styles = StyleSheet.create({
   },
   cardthumbnail: {
     zIndex: -1,
-    marginTop: -103,
+    marginTop: -110,
     width: 180,
-    height: 205,
+    height: 220,
   },
 });

@@ -32,10 +32,10 @@ const IdeaMatching = () => {
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
     {key: index++, label: '랜덤', select: true},
-    {key: index++, label: '자연', select: false},
-    {key: index++, label: '건축', select: false},
-    {key: index++, label: '예술', select: false},
-    {key: index++, label: '뷰티', select: false},
+    {key: index++, label: '노래', select: false},
+    {key: index++, label: '유튜브', select: false},
+    {key: index++, label: '영화', select: false},
+    {key: index++, label: '드라마', select: false},
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
@@ -269,6 +269,7 @@ const IdeaMatching = () => {
   const allrandommatching = () => {
     alert('전체카드 랜덤 매칭');
   };
+  // console.log(isfix);
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -378,7 +379,7 @@ const IdeaMatching = () => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={0}
-                  keyword="노래"
+                  keyword={keyword[1].label}
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
@@ -393,7 +394,7 @@ const IdeaMatching = () => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={0}
-                keyword="노래"
+                keyword={keyword[1].label}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -410,7 +411,7 @@ const IdeaMatching = () => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={1}
-                  keyword="노래"
+                  keyword={keyword[2].label}
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
@@ -425,7 +426,7 @@ const IdeaMatching = () => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={1}
-                keyword="노래"
+                keyword={keyword[2].label}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -444,7 +445,7 @@ const IdeaMatching = () => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={2}
-                  keyword="노래"
+                  keyword={keyword[3].label}
                   isfix={isfix}
                   ischeck={ischeck}
                   setIsfix={isfix3}
@@ -458,7 +459,7 @@ const IdeaMatching = () => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={2}
-                keyword="노래"
+                keyword={keyword[3].label}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -474,7 +475,7 @@ const IdeaMatching = () => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={3}
-                  keyword="노래"
+                  keyword={keyword[4].label}
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
@@ -489,7 +490,7 @@ const IdeaMatching = () => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={3}
-                keyword="노래"
+                keyword={keyword[4].label}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
