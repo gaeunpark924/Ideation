@@ -36,7 +36,7 @@
     "react-native-modal-picker": "0.0.16",
     "react-native-modal-selector": "2.1.0",
     "react-native-modalbox": "2.0.2",
-    "react-native-reanimated": "1.13.3",
+    "react-native-reanimated": "^2.4.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "3.8.0",
     "react-native-swipe-cards": "0.1.1",

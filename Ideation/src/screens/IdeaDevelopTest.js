@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -22,60 +22,49 @@ import exampleImage5 from '../assets/unsplash3.png'
 import exampleImageFrame from '../assets/frame.png'
 import exampleImageFrame1 from '../assets/frame1.png'
 import Animated, { 
+  useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
+  runOnJS,
+  withTiming
 } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window"); //안드로이드는 상태바를 포함하지 않고 영역 추출함
 const COL = 4;
 const ROW = 6;
 const circleSize = width - 36;
-const itemSize = width / 4; //네모칸의 가로 세로 크기
-const radius = circleSize / 2 - itemSize / 2;
+//const itemSize = width / 4; //네모칸의 가로 세로 크기
+const radius = circleSize / 2 - (width / 4) / 2;
 const center = radius;
 const pad = (width - (COL*(width/COL - 6)))/2;
-const itemSizeC = width/COL - 6; 
+const itemSizeC = width/COL - 6; //박스 크기
 
 const App = ({ navigation, route }) => {
   const [movingDraggable, setMovingDraggable] = useState(null);
   const [releaseDraggable, setReleaseDraggable] = useState(null);
+  const [onOff, setOnOff] = useState(false)
   const [items, setItems] = useState([]);
   const uri1 = Image.resolveAssetSource(exampleImage1).uri;
   const uri2 = Image.resolveAssetSource(exampleImage2).uri;
   const uri3 = Image.resolveAssetSource(exampleImage3).uri;
   const uri4 = Image.resolveAssetSource(exampleImage4).uri;
   const uri5 = Image.resolveAssetSource(exampleImage5).uri;
-
-  useEffect(()=>{
-    // setItems([Image.resolveAssetSource(exampleImageFrame).uri,
-    //   Image.resolveAssetSource(exampleImage1).uri])
-    console.log("마운트")
-  },[])
-  // useEffect(() => {
-  //   setMovingDraggable(null);
-  //   setReleaseDraggable(null);
-  //   return () => {};
-  // }, [items]);
-  const testdata = [
-    {"row":1,
-     "column":1,
-     "uri":Image.resolveAssetSource(exampleImage1).uri,
-     "text":""},
-     {"row":1,
-     "column":2,
-     "uri":Image.resolveAssetSource(exampleImage2).uri,
-     "text":""},
-     {"row":1,
-     "column":3,
-     "uri":Image.resolveAssetSource(exampleImage3).uri,
-     "text":""},
-     {"row":3,
-     "column":3,
-     "uri":Image.resolveAssetSource(exampleImage4).uri,
-     "text":""},
-  ]
   const MaxRows = 6;
   const MaxColumns = 4;
+  
+  const blankMatrix = useRef([]);
+  //console.log('렌더링.onoff:',onOff, blankMatrix.current)
+  useEffect(()=>{
+    blankMatrix.current = [
+      [uri1, 0, uri2, 0],
+      [0, uri3, 0, 0],
+      [0, 0, uri4, 0],
+      [0, uri1, 0, 0],
+      [0, uri2, 0, 0],
+      [0, 0, 0, uri5]
+    ]
+    //console.log("마운트")
+  },[])
   const pickImageFromPhone = () => {
     const options = {
       title: "Select Avatar",
@@ -113,98 +102,42 @@ const App = ({ navigation, route }) => {
     });
   };
   
-  const degToRad = (deg) => {
-    return (deg * Math.PI) / 180;
-  };
-
-  const setup = (index) => {
-    const dividedAngle = 360 / items.length;
-    const angleRad = degToRad(270 + index * dividedAngle);
-    const x = radius * Math.cos(angleRad) + center;
-    const y = radius * Math.sin(angleRad) + center;
-    return { x, y };
-  };
-
-  const onMovingDraggable = (movingDraggable) => {
-    setMovingDraggable(movingDraggable);
-  };
-
-  const onReleaseDraggable = (releaseDraggable) => {
-    setMovingDraggable(null);
-    setReleaseDraggable(releaseDraggable);
-  };
-
-  const swap = (index1, index2) => {
-    var arr = [...items];
-    var temp = arr[index1];
-    arr[index1] = arr[index2];
-    arr[index2] = temp;
-    console.log("swap 전",arr)
-    setItems(arr);
-    console.log("swap 후",items)
-  };
-
-  const deleteItem = (index) => {
-    var arr = [...items];
-    arr.splice(index, 1);
-    setItems(arr);
-  };
+  // const degToRad = (deg) => {
+  //   return (deg * Math.PI) / 180;
+  // };
+  // const setup = (index) => {
+  //   const dividedAngle = 360 / items.length;
+  //   const angleRad = degToRad(270 + index * dividedAngle);
+  //   const x = radius * Math.cos(angleRad) + center;
+  //   const y = radius * Math.sin(angleRad) + center;
+  //   return { x, y };
+  // };
+  // const onMovingDraggable = (movingDraggable) => {
+  //   setMovingDraggable(movingDraggable);
+  // };
+  // const onReleaseDraggable = (releaseDraggable) => {
+  //   setMovingDraggable(null);
+  //   setReleaseDraggable(releaseDraggable);
+  // };
+  // const swap = (index1, index2) => {
+  //   var arr = [...items];
+  //   var temp = arr[index1];
+  //   arr[index1] = arr[index2];
+  //   arr[index2] = temp;
+  //   console.log("swap 전",arr)
+  //   setItems(arr);
+  //   console.log("swap 후",items)
+  // };
+  // const deleteItem = (index) => {
+  //   var arr = [...items];
+  //   arr.splice(index, 1);
+  //   setItems(arr);
+  // };
 
   useEffect(()=>{
     console.log('idea test')
   },[])
-
-  const renderHeader = () => {
-    return (
-      <View style={{width:'100%', backgroundColor:'#E7D9FF', alignItems:'center', justifyContent:'center'}}>
-        <TouchableOpacity
-          style={styles.addBtn}
-          onPress={() => {
-            pickImageFromPhone();
-          }}>
-          <Feather name="plus" color={"#20232A"} size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          // style={styles.randommatching}
-          style={{alignItems:'center',justifyContent:'center',backgroundColor:'#E7D9FF'}}
-          onPress={() => alert('카드를 수정합니다')}>
-          <Text style={{fontSize: 25}}>수정하기</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-  const renderPhoto = (item) =>{
-    navigation.navigate('showImage',{itemValue: item});
-  }
-  // <Draggable
-  //               key={4}
-  //               index={4}
-  //               movingDraggable={movingDraggable}  //state 드래그하는 요소 정보를 담는 듯
-  //               onMovingDraggable={onMovingDraggable} //함수 
-  //               releaseDraggable={releaseDraggable}  //드롭되는 요소 정보를 담는 듯
-  //               onReleaseDraggable={onReleaseDraggable}
-  //               swap={swap}  //스와이프
-  //               onPress={renderPhoto}
-  //               item={Image.resolveAssetSource(exampleImage3).uri}
-  //               // position={{
-  //               //    position: 'absolute',
-  //               //    left: x,
-  //               //    top: y,
-  //               // }}
-  //               renderChild={(isMovedOver) => { 
-  //                 return (
-  //                   <View
-  //                     style={[
-  //                       isMovedOver && styles.moreThan10ItemMovedOver, //isMovedOver가 true이면 테두리 노란색됨
-  //                       styles.moreThan10Item, //isMovedOver가 true가 아니어도 실행됨 기본임
-  //                     ]}>
-  //                     {/* {console.log(isMovedOver,"출력",index)} */}
-  //                     <Image source={{ uri: Image.resolveAssetSource(exampleImage3).uri }} style={styles.img} />
-                      
-  //                   </View>
-  //                 );
-  //               }}
-  //             />
+  
   //#FFF4D9 노란색 #E7D9FF 보라색 매인컬러 #D9E3FF 파란색 #FFD9D9 분홍색
   const Square = ({ onoff, row, col }) => {
     const backgroundColor = '#fdf8ff';
@@ -212,27 +145,17 @@ const App = ({ navigation, route }) => {
       <View
         style={{
           flex: 1,
-          backgroundColor,
-          //padding: 4,
+          backgroundColor,//padding: 4,
           justifyContent: "space-between",
           borderColor : "#000",
           borderWidth : 0.5,
           height: itemSizeC,
           width: itemSizeC,
         }}> 
-       {/* <Text>puzzle</Text> */}
        {onoff === true
         ? <Image source={{uri:Image.resolveAssetSource(exampleImageFrame).uri}} style={styles.img}></Image>
         : <Image source={{uri:Image.resolveAssetSource(exampleImageFrame1).uri}} style={styles.img}></Image>
        }
-        {/* <Text style={[textStyle, { opacity: col === 0 ? 1 : 0 }]}>
-          {"" + (6 - row)}
-        </Text>
-        {row === 5 && (
-          <Text style={[textStyle, { alignSelf: "flex-end" }]}>
-            {String.fromCharCode(97 + col)}
-          </Text>
-        )} */}
       </View>
     );
   };
@@ -251,7 +174,6 @@ const App = ({ navigation, route }) => {
       </View>
     );
   };
-  const [onOff, setOnOff] = useState(false)
   const Background = () => {
     return (
       <View style={{ flex:1}}>
@@ -261,97 +183,127 @@ const App = ({ navigation, route }) => {
       </View>
     );
   };
-  // const onGestureHandler = Animated.event([
-  //   {nativeEvent: {
-  //     translateX:position.x,
-  //     translateY:position.y,
-  //   }}
-  // ],{useNativeDriver:true})
-
   const Photo = ({uri,position})=>{
-    // const pan = useRef(new Animated.ValueXY());
-    // const [translateX, setTranslateX] = useState()
-    // const [translateY, setTranslateY] = useState()
-    // useEffect(()=>{
-    //   setTranslateX(new Animated.Value(position.x))
-    //   setTranslateY(new Animated.Value(position.y))
-    // },[])
+    const isGestureActive = useSharedValue(false);
+    const offsetX = useSharedValue(0);
+    const offsetY = useSharedValue(0);
+    const translateX = useSharedValue(position.x);
+    const translateY = useSharedValue(position.y);
+    const movePiece = useCallback(
+      (to,from) => {
+        if (to.x >= 0 && to.x < 4 && to.y >= 0 && to.y < 6){
+          //withTiming 부드럽게 움직이게함
+          translateX.value = withTiming( 
+            to.x*itemSizeC, {}, () => (offsetX.value = translateX.value)
+          );
+          translateY.value = withTiming(
+            to.y*itemSizeC,{},
+              () => {
+            offsetY.value = translateY.value;
+            isGestureActive.value = false; //zIndex 조절
+          });
+          //blanKMatrix값 변경
+          var temp = blankMatrix.current[from.y][from.x] 
+          blankMatrix.current[from.y][from.x] = blankMatrix.current[to.y][to.x]
+          blankMatrix.current[to.y][to.x] = temp
+          //UI swap
+          //
+        } else{
+          translateX.value = withTiming(
+            offsetX.value,{},()=>(offsetX.value = offsetX.value)
+          )
+          translateY.value = withTiming(
+            offsetY.value,{},()=>(offsetY.value = offsetY.value)
+          )
+        }
+      },
+      [isGestureActive, offsetX, offsetY, translateX, translateY]
+    );
+    const toTranslation = (x, y) => {
+      return {x:y*itemSizeC, y: x*itemSizeC}
+    }
+    const toPosition = (obj)=>{
+      // console.log("열",Math.round(y.value/itemSizeC))
+      // console.log("행",Math.round(x.value/itemSizeC))
+      return {x:Math.round(y/itemSizeC),y:Math.round(x/itemSizeC)}
+    }
     
-    return(
-      // <PanGestureHandler
-        // onGestureEvent={
-        //   Animated.event([
-        //     {nativeEvent: { translateX: pan.current.x._value, translateY:pan.current.y._value,}}
-        //   ],{useNativeDriver:true})
-        // }
-        // >
-      <Animated.View
-        // style={piece}
-        style={{
+    const onGestureEvent = useAnimatedGestureHandler({
+      onStart: () => {
+        isGestureActive.value = true
+        offsetX.value = translateX.value;
+        offsetY.value = translateY.value;
+      },
+      onActive: ({translationX, translationY}) =>{
+        translateX.value = translationX + offsetX.value;
+        translateY.value = translationY + offsetY.value;
+      },
+      onEnd: () => {
+        // console.log("translateX",translateX.value, "translateY", translateY.value)
+        // console.log("offsetX",offsetX.value, "offsetY", offsetY.value)
+        // console.log("열",Math.round(translateY.value/itemSizeC))
+        // console.log("행",Math.round(translateX.value/itemSizeC))
+        //translateX = 박스의 열
+        //translateY = 박스의 행
+        runOnJS(movePiece)(
+         {x:Math.round(translateX.value/itemSizeC),y:Math.round(translateY.value/itemSizeC)},
+         {x:Math.round(offsetX.value/itemSizeC),y:Math.round(offsetY.value/itemSizeC)}
+        );
+      },
+    });
+    const piece = useAnimatedStyle(()=>({
+      position : "absolute",
+      zIndex: isGestureActive.value ? 100 : 0,
+      width: itemSizeC,
+      height: itemSizeC,
+      transform:[
+        {translateX: translateX.value},
+        {translateY: translateY.value}
+      ]
+    }))
+    const underlay = useAnimatedStyle(() => {
+      const position = {x:Math.round(translateX.value/itemSizeC), y:Math.round(translateY.value/itemSizeC)};
+      const translation = {x:position.x*itemSizeC, y:position.y*itemSizeC};
+        return {
           position: "absolute",
-            height: itemSizeC,
-            width: itemSizeC,
-                    //flex :1,
-            transform: [{ translateX: position.x }, { translateY: position.y }]
-        }}
-        >
+          width: itemSizeC,
+          height: itemSizeC,
+          zIndex: 0,
+          backgroundColor: isGestureActive.value
+            ? (position.x >= 0 && position.x < 4 && position.y >= 0 && position.y < 6 ? "rgba(255, 255, 0, 0.5)" : "transparent")
+            : "transparent",
+          transform: [{ translateX: translation.x }, { translateY: translation.y }],
+        };
+    });
+    return(
+      <>
+      <Animated.View style={underlay}/>
+      <PanGestureHandler onGestureEvent={onGestureEvent}>
+      <Animated.View style={piece}>
         <Image
           source={{uri:uri}}
           style={{
-            width: itemSizeC,  //체스말 크기
+            width: itemSizeC,  
             height: itemSizeC,
-          }}
-          // style={{
-          //   position: "absolute",
-          //   height: itemSizeC,
-          //   width: itemSizeC,
-          //           //flex :1,
-          //   transform: [{ translateX: position.x }, { translateY: position.y }]
-          // }}
-          />
+          }}/>
       </Animated.View>
-      // </PanGestureHandler>
+      </PanGestureHandler>
+      </>
     )
-
   }
-  const blankMatrix = [
-    [uri1, 0, uri2, 0],
-    [0, uri3, 0, 0],
-    [0, 0, uri4, 0],
-    [0, uri1, 0, 0],
-    [0, uri2, 0, 0],
-    [0, 0, 0, uri5]
-  ];
-
   return (
     <SafeAreaView style={styles.safeAreaView}>
        {/* backgroundColor:'#fdf8ff' */}
       <View style={{margin:pad, width:width-pad*2, height:itemSizeC*6, backgroundColor:'blue'}}>
         <Background/>
-          {blankMatrix.map((row, i)=>
+          {blankMatrix.current.map((row, i)=>
             row.map((square, j)=>{
               if(square === 0){
                 return null;
-                  // <Text>0</Text>
               }
-              console.log(square)
               return(
-                // <Text style={{transform:  [{ translateX: j*itemSizeC }, { translateY: i*itemSizeC }]}}>
-                //   출력
-                // </Text>
-                // // <View>
-                // <Image
-                //   source={{uri:square}}
-                //   style={{
-                //     position: "absolute",
-                //     height: itemSizeC,
-                //     width: itemSizeC,
-                //     //flex :1,
-                //     transform: [{ translateX: j*itemSizeC }, { translateY: i*itemSizeC }]
-                //   }}
-                //       />
-                // </View>
                 <Photo
+                  key={`${j}-${i}`}
                   position={{x:j*itemSizeC, y: i*itemSizeC}}
                   uri={square}
                 />
@@ -405,22 +357,8 @@ const styles = StyleSheet.create({
   viewContainer: {
     flex: 1,
     width,
-    backgroundColor: "#fdf8ff"//"#fdf8ff"//"#20232A",
+    backgroundColor: "#fdf8ff"//"#20232A",
   },
-  // scrollView: {
-  //   flexGrow: 1,
-  //   alignItems: "center",
-  //   paddingTop: 18,
-  // },
-  // header: {
-  //   width,
-  //   height: 50,
-  //   alignItems: "center",
-  //   flexDirection: "row",
-  //   justifyContent: "flex-end",
-  //   paddingHorizontal: 18,
-  //   paddingTop: 15,
-  // },
   bottom:{
     width: "100%",
     height: "10%",   //하단 공간
@@ -448,47 +386,5 @@ const styles = StyleSheet.create({
     width: null,
     height: null,
     resizeMode: "cover",
-  },
-  moreThan10Container: {
-    flex: 1,
-    width: "100%",
-    //height: "100%",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    paddingBottom: 0,//height * 0.2, //
-    backgroundColor:'#fdf8ff'
-  },
-  squaresViewContainer: {
-    //flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    height:itemSize*6,
-    // position: "absolute",
-    // top: 0,
-    // left: 0,
-    marginHorizontal: 0, //width: "95%",
-    marginVertical: 0,
-    //height: "90%", ///xxxx
-    flexWrap: "wrap",
-    //marginVertical : 10,
-    // paddingVertical: 20,
-    // paddingHorizontal: 20,
-    borderColor:'#000',
-    //borderWidth:1,
-    //padding: 3,//16
-    backgroundColor: '#fdf8ff',//'blue',//'#fdf8ff'//'blue'
-    borderColor: 'black'
-  },
-  moreThan10Item: {
-    width: itemSize,   //
-    height: itemSize,  //
-    borderRadius: 0, //8
-    margin: 0, //박스들 사이 간격
-    overflow: "hidden",
-  },
-  moreThan10ItemMovedOver: {
-    borderWidth: 6,
-    borderColor: "#FEDC33",
   },
 });
