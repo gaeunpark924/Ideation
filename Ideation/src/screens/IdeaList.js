@@ -156,7 +156,7 @@ const idealist = ({route,navigation}) => {
   return (
     <View style={styles.container}>
       {/* <View style={styles.header}> */}
-        <TouchableOpacity onPress={()=>{navigation.navigate("ideadevelop")}}>
+        <TouchableOpacity onPress={()=>{navigation.navigate("ideadeveloptest")}}>
           <Text> 아이디어 발전 </Text>
         </TouchableOpacity>
         <View style={styles.searchContainer}>

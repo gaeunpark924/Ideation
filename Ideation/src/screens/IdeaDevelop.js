@@ -1,7 +1,7 @@
 import React, {useState}from 'react';
 import {StyleSheet, Text, View, TextInput, Switch, TouchableOpacity,Image, Animated} from 'react-native';
 import ModalSelector from 'react-native-modal-selector';
-import { WebView } from 'react-native-webview';
+//import { WebView } from 'react-native-webview';
 
 var WEB_URL = "https://condescending-haibt-ae4398.netlify.app/";
 
@@ -22,8 +22,8 @@ export default function IdeaDevelop() {
   }
   return (
     <View style={{flex:1,backgroundColor: '#fdf8ff'}}>
-      <WebView
-          source={{uri:WEB_URL}}/>
+      {/* <WebView
+          source={{uri:WEB_URL}}/> */}
        {!buttonClicked ?   
         <TouchableOpacity
           style={styles.buttonRight}
