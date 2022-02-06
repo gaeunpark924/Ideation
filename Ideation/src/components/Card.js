@@ -16,14 +16,13 @@ const SC = ({
   ischeck,
   keyword,
   setIsfix,
+  clicktextModal,
 }) => {
+  // console.log(penicon,pinicon,saveicon,whichcard,idx,isfix,ischeck,keyword,setIsfix,clicktextModal);
   function Card({data}) {
     // card 고정된건지 여부
-    const [fix, setFix] = useState();
     const togglefix = () => {
-      setFix(!fix);
-      //isfix[idx]만 toggle로 바꿔야함
-      console.log(isfix[idx]);
+      setIsfix(idx);
     };
     // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
@@ -37,7 +36,7 @@ const SC = ({
         setText(e.target.value);
         // console.log(text);
       };
-      if (whichcard[idx]) {
+      if (whichcard[idx]&&clicktextModal) {
         return (
           <View>
             <TextInput
@@ -84,7 +83,7 @@ const SC = ({
                 </TouchableOpacity>
               )
             ) : pinicon ? (
-              fix ? (
+              isfix[idx] ? (
                 <TouchableOpacity
                   style={{
                     borderColor: 'black',
@@ -115,7 +114,7 @@ const SC = ({
                   />
                 </TouchableOpacity>
               )
-            ) : fix ? (
+            ) : isfix[idx] ? (
               <TouchableOpacity
                 style={{
                   borderColor: 'black',

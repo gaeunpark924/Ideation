@@ -190,7 +190,10 @@ const IdeaMatching = () => {
       path: 'video',
     },
   };
+  const [clicktextModal,isClickTextModal] = useState(false);
   const textModal = () => {
+    isClickTextModal(!clicktextModal);
+    bottomSheet.current.close();
     console.log(eachCard);
   };
   const takeImagefromphone = () =>
@@ -246,6 +249,22 @@ const IdeaMatching = () => {
       }
     });
   const [isfix, setIsfix] = useState([false, false, false, false]);
+  const isfix1 = (idx) => {
+    let newfix = [!isfix[0],isfix[1],isfix[2],isfix[3]];
+    setIsfix(newfix);
+  };
+  const isfix2 = (idx) => {
+    let newfix = [isfix[0],!isfix[1],isfix[2],isfix[3]];
+    setIsfix(newfix);
+  };
+  const isfix3 = (idx) => {
+    let newfix = [isfix[0],isfix[1],!isfix[2],isfix[3]];
+    setIsfix(newfix);
+  };
+  const isfix4 = (idx) => {
+    let newfix = [isfix[0],isfix[1],isfix[2],!isfix[3]];
+    setIsfix(newfix);
+  };
   const [ischeck, setIscheck] = useState();
   const allrandommatching = () => {
     alert('전체카드 랜덤 매칭');
@@ -363,7 +382,8 @@ const IdeaMatching = () => {
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
-                  setIsfix={setIsfix}
+                  setIsfix={isfix1}
+                  clicktextModal={clicktextModal}
                 />
               </TouchableOpacity>
             ) : (
@@ -377,7 +397,8 @@ const IdeaMatching = () => {
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
-                setIsfix={setIsfix}
+                setIsfix={isfix1}
+                clicktextModal={clicktextModal}
               />
             )}
 
@@ -393,7 +414,8 @@ const IdeaMatching = () => {
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
-                  setIsfix={setIsfix}
+                  setIsfix={isfix2}
+                  clicktextModal={clicktextModal}
                 />
               </TouchableOpacity>
             ) : (
@@ -407,7 +429,8 @@ const IdeaMatching = () => {
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
-                setIsfix={setIsfix}
+                setIsfix={isfix2}
+                clicktextModal={clicktextModal}
               />
             )}
           </View>
@@ -424,7 +447,8 @@ const IdeaMatching = () => {
                   keyword="노래"
                   isfix={isfix}
                   ischeck={ischeck}
-                  setIsfix={setIsfix}
+                  setIsfix={isfix3}
+                  clicktextModal={clicktextModal}
                 />
               </TouchableOpacity>
             ) : (
@@ -438,7 +462,8 @@ const IdeaMatching = () => {
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
-                setIsfix={setIsfix}
+                setIsfix={isfix3}
+                clicktextModal={clicktextModal}
               />
             )}
             {pen ? (
@@ -453,7 +478,8 @@ const IdeaMatching = () => {
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
-                  setIsfix={setIsfix}
+                  setIsfix={isfix4}
+                  clicktextModal={clicktextModal}
                 />
               </TouchableOpacity>
             ) : (
@@ -467,7 +493,8 @@ const IdeaMatching = () => {
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
-                setIsfix={setIsfix}
+                setIsfix={isfix4}
+                clicktextModal={clicktextModal}
               />
             )}
           </View>
