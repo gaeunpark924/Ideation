@@ -37,16 +37,16 @@ const SC = ({
         setText(e.target.value);
         // console.log(text);
       };
-      if (whichcard[idx]&&clicktextModal) {
+      if (whichcard[idx] && clicktextModal) {
         return (
-          <View style={{marginTop:-20}}>
+          <View style={{marginTop: -20}}>
             <TextInput
               placeholder="생각나는 아이디어를 입력해주세요!(30자)"
               // onChange={onChangeTextinput}
-              onChangeText={newtext=>setText(newtext)}
+              onChangeText={newtext => setText(newtext)}
               // onSubmitEditing={newtext=>setText(newtext)}
               value={text}
-              style={{textAlign:'center',fontFamily:'SB 어그로 L'}}
+              style={{textAlign: 'center', fontFamily: 'SB 어그로 L'}}
               numberOfLines={2}
               //editable
               maxLength={30}
@@ -55,7 +55,7 @@ const SC = ({
         );
       } else {
         if (data.image === undefined || data.image === '') {
-          return <Text style={{fontFamily:'SB 어그로 L'}}>{data.text}</Text>;
+          return <Text style={{fontFamily: 'SB 어그로 L'}}>{data.text}</Text>;
         } else {
           return (
             <Image style={styles.cardthumbnail} source={{uri: data.image}} />
@@ -167,32 +167,34 @@ const SC = ({
   //     });
   // }, [keyword]);
   // YoutubeAPI, FireStore 사용해서 이 부분 수정해주기
-  let cards1 = [{
-    text:keyword,
-    backgroundColor:'#FFF6DF'
-  },
-  {
-    text: '예빛',
-    backgroundColor: '#FFF6DF',
-  },
-  {
-    text: '검정치마',
-    backgroundColor: '#FFF6DF',
-    // image: newCards.current.thumbnail[0],
-  },
-  {
-    text: '점심 먹기',
-    backgroundColor: '#FFF6DF',
-    image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
-  },
-  {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-  {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-  {text: '음...', backgroundColor: '#FFF6DF'},
-  {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'}]
+  let cards1 = [
+    {
+      text: keyword,
+      backgroundColor: '#FFF6DF',
+    },
+    {
+      text: '예빛',
+      backgroundColor: '#FFF6DF',
+    },
+    {
+      text: '검정치마',
+      backgroundColor: '#FFF6DF',
+      // image: newCards.current.thumbnail[0],
+    },
+    {
+      text: '점심 먹기',
+      backgroundColor: '#FFF6DF',
+      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+    },
+    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+    {text: '음...', backgroundColor: '#FFF6DF'},
+    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+  ];
   let cards2 = [
     {
-      text:keyword,
-      backgroundColor:'#FFF6DF'
+      text: keyword,
+      backgroundColor: '#FFF6DF',
     },
     {
       text: '유튜브 관련!',
@@ -212,46 +214,59 @@ const SC = ({
     {text: '대충 씻기', backgroundColor: '#FFF6DF'},
     {text: '음...', backgroundColor: '#FFF6DF'},
     {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-  ]
+  ];
   let cards3 = [
     {
-      text:keyword,
-      backgroundColor:'#FFF6DF'
+      text: keyword,
+      backgroundColor: '#FFF6DF',
     },
     {
       text: '유튜브 관련!',
       backgroundColor: '#FFF6DF',
-      image:'https://i.ytimg.com/vi/I1V7LE9NBAM/hq720.jpg'
+      image: 'https://i.ytimg.com/vi/I1V7LE9NBAM/hq720.jpg',
     },
     {
       text: '호롤룰루',
       backgroundColor: '#FFF6DF',
-      // image: newCards.current.thumbnail[1],
+      image:
+        'https://i.ytimg.com/vi/9yOnlf_FMsI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLARAhxek4qEAj-B4d7G1MyH6Fc2oA',
     },
     {
       text: '점심 먹기',
       backgroundColor: '#FFF6DF',
       image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
     },
-    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+    {
+      text: '냉장고 청소하기',
+      backgroundColor: '#FFF6DF',
+      image:
+        'https://i.ytimg.com/vi/9yOnlf_FMsI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLARAhxek4qEAj-B4d7G1MyH6Fc2oA',
+    },
+    {
+      text: '대충 씻기',
+      backgroundColor: '#FFF6DF',
+      image:
+        'https:i.ytimg.com/vi/9yOnlf_FMsI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLARAhxek4qEAj-B4d7G1MyH6Fc2oA',
+    },
     {text: '음...', backgroundColor: '#FFF6DF'},
     {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-  ]
+  ];
   let cards4 = [
     {
-      text:keyword,
-      backgroundColor:'#FFF6DF'
+      text: keyword,
+      backgroundColor: '#FFF6DF',
     },
     {
       text: '유튜브 관련!',
       backgroundColor: '#FFF6DF',
-      image:'https://i.ytimg.com/vi/vORDkdgLzEs/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfx5vbQqtKCvnbHsh0JSvQrCCrug'
+      image:
+        'https://i.ytimg.com/vi/vORDkdgLzEs/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfx5vbQqtKCvnbHsh0JSvQrCCrug',
     },
     {
       text: '괴물쥐',
       backgroundColor: '#FFF6DF',
-      image: 'https://i.ytimg.com/an_webp/eYp6P-9ayUY/mqdefault_6s.webp?du=3000&sqp=CO6y_o8G&rs=AOn4CLBxbVxq_e-B-aFVRUpionQP0Mgf2Q',
+      image:
+        'https://i.ytimg.com/an_webp/eYp6P-9ayUY/mqdefault_6s.webp?du=3000&sqp=CO6y_o8G&rs=AOn4CLBxbVxq_e-B-aFVRUpionQP0Mgf2Q',
     },
     {
       text: '점심 먹기',
@@ -262,7 +277,7 @@ const SC = ({
     {text: '대충 씻기', backgroundColor: '#FFF6DF'},
     {text: '음...', backgroundColor: '#FFF6DF'},
     {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-  ]
+  ];
   // useEffect(()=>{
   //   let newcards1=[];
   //   for(let i=0;i=cards1.length;i++){
@@ -271,9 +286,8 @@ const SC = ({
   //   console.log(newcards1);
   // })
 
-
   // 전체 카드 랜덤 매칭 -> 랜덤으로 섞어주는 함수
-  function shuffle(sourceArray){
+  function shuffle(sourceArray) {
     for (var i = 0; i < sourceArray.length - 1; i++) {
       var j = i + Math.floor(Math.random() * (sourceArray.length - i));
       var temp = sourceArray[j];
@@ -284,22 +298,27 @@ const SC = ({
   }
   useEffect(() => {
     setTimeout(() => {
-      if(allrandom){
-        shuffle(cards1);
-        shuffle(cards2);
-        shuffle(cards3);
-        shuffle(cards4);
+      if (allrandom) {
+        if (!isfix[0]) {
+          shuffle(cards1);
+        }
+        if (!isfix[1]) {
+          shuffle(cards2);
+        }
+        if (!isfix[2]) {
+          shuffle(cards3);
+        }
+        if (!isfix[3]) {
+          shuffle(cards4);
+        }
       }
-      if(keyword==='노래'){
+      if (keyword === '노래') {
         setCards(cards1);
-      }
-      else if(keyword==='유튜브'){
+      } else if (keyword === '유튜브') {
         setCards(cards2);
-      }
-      else if(keyword==='영화'){
+      } else if (keyword === '영화') {
         setCards(cards3);
-      }
-      else if(keyword==='드라마'){
+      } else if (keyword === '드라마') {
         setCards(cards4);
       }
     }, 1000);
@@ -312,7 +331,7 @@ const SC = ({
   }
   function handleNope(card) {
     console.log(`Nope for ${card.text} ${card.image}`);
-    cardremo
+    cardremo;
     return true;
   }
   return (
@@ -324,8 +343,18 @@ const SC = ({
           keyExtractor={cardData => String(cardData.text)}
           loop={true}
           actions={{
-            nope: {onAction: handleNope, text: '그냥 패스',containerStyle:{width:120},textStyle:{/*fontFamily:'SB 어그로 B'*/alignItems:'center'}},
-            yup: {onAction: handleYup, text: '다시 보기',containerStyle:{width:120},textStyle:{/*fontFamily:'SB 어그로 B'*/alignItems:'center'}},
+            nope: {
+              onAction: handleNope,
+              text: '그냥 패스',
+              containerStyle: {width: 120},
+              textStyle: {/*fontFamily:'SB 어그로 B'*/ alignItems: 'center'},
+            },
+            yup: {
+              onAction: handleYup,
+              text: '다시 보기',
+              containerStyle: {width: 120},
+              textStyle: {/*fontFamily:'SB 어그로 B'*/ alignItems: 'center'},
+            },
           }}
           hasMaybeAction={false}
         />
