@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, ToastAndroid, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ToastAndroid, TouchableOpacity,Alert } from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import auth from '@react-native-firebase/auth';
@@ -40,9 +40,9 @@ const JoinPwdChecking = ({route, navigation}) => {
         })
         .catch((error) => {
           if (error.code === 'auth/email-already-in-use'){
-            showEmailAlreadyToast()
+            Alert.alert("경고","사용 중인 이메일 입니다.",[{text:"확인"}]);
           } else if (error.code == 'auth/invalid-email'){
-            showEmailInvalidToast()
+            Alert.alert("경고","이메일 형식이 아닙니다.",[{text:"확인"}]);
           }
         })
     }

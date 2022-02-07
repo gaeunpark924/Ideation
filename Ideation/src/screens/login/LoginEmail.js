@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect} from 'react';
-import { Text, View, TextInput, ToastAndroid, TouchableOpacity, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { Text, View, TextInput, ToastAndroid, TouchableOpacity, KeyboardAvoidingView, StyleSheet, Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 const LoginEmail = ({navigation}) => {
@@ -27,7 +27,7 @@ const LoginEmail = ({navigation}) => {
         })
         .catch((error) => {
           if (error.code === 'auth/wrong-password'){
-            console.log('비밀번호가 틀렸습니다')
+            Alert.alert("경고",'비밀번호가 틀렸습니다.',[{text:"확인"}]);
           }
         })
     }
