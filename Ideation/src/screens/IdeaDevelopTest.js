@@ -10,7 +10,7 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { PanGestureHandler, Swipeable } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
 import Feather from "react-native-vector-icons/Feather";
 import { Col, Row, Grid } from "react-native-easy-grid";
@@ -26,7 +26,8 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   runOnJS,
-  withTiming
+  withTiming,
+  Value
 } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("window"); //안드로이드는 상태바를 포함하지 않고 영역 추출함
@@ -36,13 +37,16 @@ const circleSize = width - 36;
 //const itemSize = width / 4; //네모칸의 가로 세로 크기
 const radius = circleSize / 2 - (width / 4) / 2;
 const center = radius;
-const pad = (width - (COL*(width/COL - 6)))/2;
-const itemSizeC = width/COL - 6; //박스 크기
+const pad = 0;
+const itemSizeC = width/COL; //박스 크기
+// const pad = (width - (COL*(width/COL - 6)))/2;
+// const itemSizeC = width/COL - 6; //박스 크기
 
 const App = ({ navigation, route }) => {
   const [movingDraggable, setMovingDraggable] = useState(null);
   const [releaseDraggable, setReleaseDraggable] = useState(null);
-  const [onOff, setOnOff] = useState(false)
+  const [init, setInit] = useState(false);
+  //const [onOff, setOnOff] = useState(false)
   const [items, setItems] = useState([]);
   const uri1 = Image.resolveAssetSource(exampleImage1).uri;
   const uri2 = Image.resolveAssetSource(exampleImage2).uri;
@@ -57,12 +61,40 @@ const App = ({ navigation, route }) => {
   useEffect(()=>{
     blankMatrix.current = [
       [uri1, 0, uri2, 0],
-      [0, uri3, 0, 0],
-      [0, 0, uri4, 0],
+      [0, uri3, "뷰티", 0],
+      ["건축", 0, uri4, 0],
       [0, uri1, 0, 0],
       [0, uri2, 0, 0],
       [0, 0, 0, uri5]
     ]
+    // position={{x:j*itemSizeC, y: i*itemSizeC}}
+    // blankMatrix.current = [
+    //   [ {value:uri1, x:0,           y:0},
+    //     {value:0,    x:itemSizeC,   y:0},
+    //     {value:uri2, x:2*itemSizeC, y:0},
+    //     {value:0,    x:3*itemSizeC, y:0}],
+    //   [ {value:0,    x:0,           y:1*itemSizeC},
+    //     {value:0,    x:itemSizeC,   y:1*itemSizeC},
+    //     {value:0,    x:2*itemSizeC, y:1*itemSizeC},
+    //     {value:0,    x:3*itemSizeC, y:1*itemSizeC}],
+    //   [ {value:0,    x:0,           y:2*itemSizeC},
+    //     {value:0,    x:itemSizeC,   y:2*itemSizeC},
+    //     {value:0,    x:2*itemSizeC, y:2*itemSizeC},
+    //     {value:0,    x:3*itemSizeC, y:2*itemSizeC}],
+    //   [ {value:0,    x:0,           y:3*itemSizeC},
+    //     {value:0,    x:itemSizeC,   y:3*itemSizeC},
+    //     {value:0,    x:2*itemSizeC, y:3*itemSizeC},
+    //     {value:0,    x:3*itemSizeC, y:3*itemSizeC}],
+    //   [ {value:0,    x:0,           y:4*itemSizeC},
+    //     {value:0,    x:itemSizeC,   y:4*itemSizeC},
+    //     {value:0,    x:2*itemSizeC, y:4*itemSizeC},
+    //     {value:0,    x:3*itemSizeC, y:4*itemSizeC}],
+    //   [ {value:0,    x:0,           y:5*itemSizeC},
+    //     {value:0,    x:itemSizeC,   y:5*itemSizeC},
+    //     {value:0,    x:2*itemSizeC, y:5*itemSizeC},
+    //     {value:0,    x:3*itemSizeC, y:5*itemSizeC}]
+    // ]
+    setInit(true)
     //console.log("마운트")
   },[])
   const pickImageFromPhone = () => {
@@ -139,7 +171,7 @@ const App = ({ navigation, route }) => {
   },[])
   
   //#FFF4D9 노란색 #E7D9FF 보라색 매인컬러 #D9E3FF 파란색 #FFD9D9 분홍색
-  const Square = ({ onoff, row, col }) => {
+  const Square = ({row, col }) => {
     const backgroundColor = '#fdf8ff';
     return (
       <View
@@ -147,20 +179,21 @@ const App = ({ navigation, route }) => {
           flex: 1,
           backgroundColor,//padding: 4,
           justifyContent: "space-between",
-          borderColor : "#000",
+          borderColor : "#D8D8D8", //색깔 확인
           borderWidth : 0.5,
           height: itemSizeC,
           width: itemSizeC,
-        }}> 
-       {onoff === true
+        }}>
+       <Image source={{uri:Image.resolveAssetSource(exampleImageFrame).uri}} style={styles.img}></Image>
+       {/* {onoff === true
         ? <Image source={{uri:Image.resolveAssetSource(exampleImageFrame).uri}} style={styles.img}></Image>
         : <Image source={{uri:Image.resolveAssetSource(exampleImageFrame1).uri}} style={styles.img}></Image>
-       }
+       } */}
       </View>
     );
   };
   
-  const Row = ({ onoff, white, row }) => {
+  const Row = ({ white, row }) => {
     const offset = white ? 0 : 1;
     return (
       <View style={{
@@ -169,7 +202,7 @@ const App = ({ navigation, route }) => {
         //backgroundColor : "#fdf8ff"
         }}>
         {new Array(4).fill(0).map((_, i) => (
-          <Square row={row} col={i} key={i} white={(i + offset) % 2 === 1} onoff={onoff}/>
+          <Square row={row} col={i} key={i} white={(i + offset) % 2 === 1}/>
         ))}
       </View>
     );
@@ -178,12 +211,17 @@ const App = ({ navigation, route }) => {
     return (
       <View style={{ flex:1}}>
         {new Array(6).fill(0).map((_, i) => (
-          <Row key={i} white={i % 2 === 0} row={i} onoff={onOff}/>
+          // <Row key={i} white={i % 2 === 0} row={i} onoff={onOff}/>
+          <Row key={i} white={i % 2 === 0} row={i}/>
         ))}
       </View>
     );
   };
-  const Photo = ({uri,position})=>{
+  const swap = (to, from) => {
+    blankMatrix.current[to.y][to.x] 
+
+  }
+  const Photo = ({uri,text,position})=>{
     const isGestureActive = useSharedValue(false);
     const offsetX = useSharedValue(0);
     const offsetY = useSharedValue(0);
@@ -203,11 +241,17 @@ const App = ({ navigation, route }) => {
             isGestureActive.value = false; //zIndex 조절
           });
           //blanKMatrix값 변경
-          var temp = blankMatrix.current[from.y][from.x] 
+          // var temp = blankMatrix.current[from.y][from.x].value 
+          // blankMatrix.current[from.y][from.x].value = blankMatrix.current[to.y][to.x].value
+          // blankMatrix.current[to.y][to.x].value = temp
+          // console.log("blankMatrix",blankMatrix.current)
+          var temp = blankMatrix.current[from.y][from.x]
           blankMatrix.current[from.y][from.x] = blankMatrix.current[to.y][to.x]
           blankMatrix.current[to.y][to.x] = temp
+          //console.log("blankMatrix",blankMatrix.current)
           //UI swap
-          //
+          //swap(to, from)
+          //blankMatrix.current[to.y][to.x].x = 
         } else{
           translateX.value = withTiming(
             offsetX.value,{},()=>(offsetX.value = offsetX.value)
@@ -251,11 +295,27 @@ const App = ({ navigation, route }) => {
         );
       },
     });
-    const piece = useAnimatedStyle(()=>({
+    const imageStyle = useAnimatedStyle(()=>({
       position : "absolute",
       zIndex: isGestureActive.value ? 100 : 0,
       width: itemSizeC,
       height: itemSizeC,
+      transform:[
+        {translateX: translateX.value},
+        {translateY: translateY.value}
+      ]
+    }))
+    const textStyle = useAnimatedStyle(()=>({
+      position : "absolute",
+      justifyContents: 'center',
+      // flexDirection : 'column',
+      alignContent : 'center',
+      alignItems: 'center',
+      backgroundColor : '#D9E3FF',
+      zIndex: isGestureActive.value ? 100 : 0,
+      width: itemSizeC,
+      height: itemSizeC,
+      borderRadius : 30,
       transform:[
         {translateX: translateX.value},
         {translateY: translateY.value}
@@ -277,51 +337,109 @@ const App = ({ navigation, route }) => {
     });
     return(
       <>
-      <Animated.View style={underlay}/>
+      {/* <Animated.View style={underlay}/> */}
       <PanGestureHandler onGestureEvent={onGestureEvent}>
-      <Animated.View style={piece}>
+      {uri.match(/.(jpeg|jpg|gif|png)/)
+      ? (
+        <Animated.View style={imageStyle}>
         <Image
           source={{uri:uri}}
           style={{
             width: itemSizeC,  
             height: itemSizeC,
           }}/>
-      </Animated.View>
+        </Animated.View>
+      )
+      : ( 
+        <Animated.View style={textStyle}>
+          <Text style={{
+            width: itemSizeC,  
+            height: itemSizeC,
+            textAlign:'center',
+            textAlignVertical:'center',
+            fontSize:24,
+            borderRadius: 30,
+            alignContent : 'center',
+            fontFamily:'SB_Aggro_L',
+          }}>
+          {text.split(' ')[0]}
+          </Text>
+        </Animated.View>
+      )}
       </PanGestureHandler>
       </>
     )
   }
+
+  const translationYbottom = useSharedValue(0);
+  const velocityYbottom = useSharedValue(0);
+  // const onGestureEvent = onGestureEvent({
+  //   translationYbottom,
+  //   velocityYbottom
+  // })
+  const onGestureEventBottom = useAnimatedGestureHandler({
+    onStart: () => {
+      //isGestureActive.value = true
+      //offsetX.value = translateX.value;
+    },
+    onActive: ({translationX, translationY}) =>{
+      //translateYBottom.value = translationX + offsetX.value;
+    },
+    onEnd: () => {
+      // runOnJS(movePiece)(
+      //  {x:Math.round(translateX.value/itemSizeC),y:Math.round(translateY.value/itemSizeC)},
+      //  {x:Math.round(offsetX.value/itemSizeC),y:Math.round(offsetY.value/itemSizeC)}
+      // );
+    },
+  });
+  const translateYBottom = translationYbottom;
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-       {/* backgroundColor:'#fdf8ff' */}
-      <View style={{margin:pad, width:width-pad*2, height:itemSizeC*6, backgroundColor:'blue'}}>
-        <Background/>
-          {blankMatrix.current.map((row, i)=>
+      <SafeAreaView style={styles.safeAreaView}>
+        {/* backgroundColor:'#fdf8ff' */}
+        <View style={{margin:pad, width:width-pad*2, height:itemSizeC*6}}>
+          <Background/>
+          {init
+           ? (blankMatrix.current.map((row, i)=>
             row.map((square, j)=>{
+              //console.log(square.value)
               if(square === 0){
                 return null;
+              }else {
+                //console.log('이미지')
+                return(  
+                  <Photo
+                    key={`${j}-${i}`}
+                    position={{x:j*itemSizeC, y: i*itemSizeC}}
+                    //position={{x:square.x, y: square.y}}
+                    uri={square}
+                    text={square}
+                  />
+                )
               }
-              return(
-                <Photo
-                  key={`${j}-${i}`}
-                  position={{x:j*itemSizeC, y: i*itemSizeC}}
-                  uri={square}
-                />
-              )
-            }))}
+            })))
+            : null
+          }
       </View>
-      <TouchableOpacity
-        style={{backgroundColor:'yellow'}}
-        onPress={()=>{
-          setOnOff(onOff ? false : true)
-        }}>
-        <Text
-          style={{justifyContent:'center',alignContent:'center'}}>
-          수정
-        </Text>
-      </TouchableOpacity>
+      {/* <PanGestureHandler onGestureEvent={onGestureEventBottom}>
+        <Animated.View
+          style={{transform:[{translateYBottom}]}}>
+          <Text>메모하기</Text>
+        </Animated.View>
+      </PanGestureHandler> */}
+        <Animated.View
+          style={{
+            backgroundColor:'#E7D9FF',
+            height:height-itemSizeC*6,
+            alignItems:'center',
+            justifyContent:'center'}}>
+          <Text
+            style={{textAlign:'center',textAlignVertical:'center'}}>
+             메모하기
+          </Text>
+        </Animated.View>
     </SafeAreaView>
   );
+
 };
 
 export default App;
@@ -333,6 +451,14 @@ const styles = StyleSheet.create({
     //height: 20
     //height: itemSizeC,
     backgroundColor : "#fdf8ff"
+  },
+  randommatching: {
+    flex: 2,
+    backgroundColor: '#E7D9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 3,
+    borderColor: 'black',
   },
   imgX: {
     flex: 1,

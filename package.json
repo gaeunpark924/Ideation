@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/WIT-IDEA/Ideation/issues"
   },
-  "homepage": "https://github.com/WIT-IDEA/Ideation#readme"
+  "homepage": "https://github.com/WIT-IDEA/Ideation#readme",
+  "dependencies": {
+    "react-native-image-picker": "^4.7.3"
+  }
 }
