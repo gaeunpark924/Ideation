@@ -6775,6 +6775,11 @@
   "resolved" "https://registry.npmjs.org/react-native-ionicons/-/react-native-ionicons-4.6.5.tgz"
   "version" "4.6.5"
 
+"react-native-material-menu@2.0.0":
+  "integrity" "sha512-SmO9PLE3E469EPbVWZqvdu6JGPPZIm7YjqDcWs2PPoY0k7w2V9tFo3BmmLXNzNZDCVCAi+PPSsL7h/5WkfHcSg=="
+  "resolved" "https://registry.npmjs.org/react-native-material-menu/-/react-native-material-menu-2.0.0.tgz"
+  "version" "2.0.0"
+
 "react-native-modal-picker@0.0.16":
   "integrity" "sha1-yTJNiAo7uPNrdy83gWSXfi9DHLw="
   "resolved" "https://registry.npmjs.org/react-native-modal-picker/-/react-native-modal-picker-0.0.16.tgz"
