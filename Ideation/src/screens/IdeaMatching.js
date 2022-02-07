@@ -31,11 +31,11 @@ const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
-    {key: index++, label: '랜덤', select: true},
-    {key: index++, label: '노래', select: false},
-    {key: index++, label: '유튜브', select: false},
-    {key: index++, label: '영화', select: false},
-    {key: index++, label: '드라마', select: false},
+    {key: index++, label: '랜덤', select: false},
+    {key: index++, label: '노래', select: true},
+    {key: index++, label: '유튜브', select: true},
+    {key: index++, label: '영화', select: true},
+    {key: index++, label: '드라마', select: true},
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
@@ -196,6 +196,7 @@ const IdeaMatching = () => {
     bottomSheet.current.close();
     console.log(eachCard);
   };
+  console.log(isfix);
   const takeImagefromphone = () =>
     launchImageLibrary(optionsImage, response => {
       // console.log('Response = ', response);
@@ -269,7 +270,6 @@ const IdeaMatching = () => {
   const allrandommatching = () => {
     alert('전체카드 랜덤 매칭');
   };
-  // console.log(isfix);
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -371,8 +371,8 @@ const IdeaMatching = () => {
                 <Text style={{fontFamily: 'SB 어그로 L'}}>영상 가져오기</Text>
               </TouchableOpacity>
             </BottomSheet>
-            {pen ? (
-              <TouchableOpacity onPress={bottomModalShow1}>
+            {pen&&!isfix[0] ? (
+              <TouchableOpacity onPress={bottomModalShow1} style={{marginHorizontal:5}}>
                 <SC
                   style={styles.card}
                   pinicon={pinicon}
@@ -403,8 +403,8 @@ const IdeaMatching = () => {
               />
             )}
 
-            {pen ? (
-              <TouchableOpacity onPress={bottomModalShow2}>
+            {pen&&!isfix[1] ? (
+              <TouchableOpacity onPress={bottomModalShow2} style={{marginHorizontal:5}}>
                 <SC
                   style={styles.card}
                   pinicon={pinicon}
@@ -436,8 +436,8 @@ const IdeaMatching = () => {
             )}
           </View>
           <View style={styles.contents}>
-            {pen ? (
-              <TouchableOpacity onPress={bottomModalShow3}>
+            {pen&&!isfix[2] ? (
+              <TouchableOpacity onPress={bottomModalShow3} style={{marginHorizontal:5}}>
                 <SC
                   style={styles.card}
                   pinicon={pinicon}
@@ -467,8 +467,8 @@ const IdeaMatching = () => {
                 clicktextModal={clicktextModal}
               />
             )}
-            {pen ? (
-              <TouchableOpacity onPress={bottomModalShow4}>
+            {pen&&!isfix[3] ? (
+              <TouchableOpacity onPress={bottomModalShow4} style={{marginHorizontal:5}}>
                 <SC
                   style={styles.card}
                   pinicon={pinicon}
