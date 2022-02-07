@@ -17,6 +17,7 @@ const SC = ({
   keyword,
   setIsfix,
   clicktextModal,
+  allrandom,
 }) => {
   function Card({data}) {
     // card 고정된건지 여부
@@ -165,116 +166,144 @@ const SC = ({
   //       newCards.current = documentSnapshot.data();
   //     });
   // }, [keyword]);
+  // YoutubeAPI, FireStore 사용해서 이 부분 수정해주기
+  let cards1 = [{
+    text:keyword,
+    backgroundColor:'#FFF6DF'
+  },
+  {
+    text: '예빛',
+    backgroundColor: '#FFF6DF',
+  },
+  {
+    text: '검정치마',
+    backgroundColor: '#FFF6DF',
+    // image: newCards.current.thumbnail[0],
+  },
+  {
+    text: '점심 먹기',
+    backgroundColor: '#FFF6DF',
+    image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+  },
+  {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+  {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+  {text: '음...', backgroundColor: '#FFF6DF'},
+  {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'}]
+  let cards2 = [
+    {
+      text:keyword,
+      backgroundColor:'#FFF6DF'
+    },
+    {
+      text: '유튜브 관련!',
+      backgroundColor: '#FFF6DF',
+    },
+    {
+      text: '으아',
+      backgroundColor: '#FFF6DF',
+      // image: newCards.current.thumbnail[1],
+    },
+    {
+      text: '점심 먹기',
+      backgroundColor: '#FFF6DF',
+      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+    },
+    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+    {text: '음...', backgroundColor: '#FFF6DF'},
+    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+  ]
+  let cards3 = [
+    {
+      text:keyword,
+      backgroundColor:'#FFF6DF'
+    },
+    {
+      text: '유튜브 관련!',
+      backgroundColor: '#FFF6DF',
+      image:'https://i.ytimg.com/vi/I1V7LE9NBAM/hq720.jpg'
+    },
+    {
+      text: '호롤룰루',
+      backgroundColor: '#FFF6DF',
+      // image: newCards.current.thumbnail[1],
+    },
+    {
+      text: '점심 먹기',
+      backgroundColor: '#FFF6DF',
+      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+    },
+    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+    {text: '음...', backgroundColor: '#FFF6DF'},
+    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+  ]
+  let cards4 = [
+    {
+      text:keyword,
+      backgroundColor:'#FFF6DF'
+    },
+    {
+      text: '유튜브 관련!',
+      backgroundColor: '#FFF6DF',
+      image:'https://i.ytimg.com/vi/vORDkdgLzEs/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfx5vbQqtKCvnbHsh0JSvQrCCrug'
+    },
+    {
+      text: '괴물쥐',
+      backgroundColor: '#FFF6DF',
+      image: 'https://i.ytimg.com/an_webp/eYp6P-9ayUY/mqdefault_6s.webp?du=3000&sqp=CO6y_o8G&rs=AOn4CLBxbVxq_e-B-aFVRUpionQP0Mgf2Q',
+    },
+    {
+      text: '점심 먹기',
+      backgroundColor: '#FFF6DF',
+      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+    },
+    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
+    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
+    {text: '음...', backgroundColor: '#FFF6DF'},
+    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+  ]
+  // useEffect(()=>{
+  //   let newcards1=[];
+  //   for(let i=0;i=cards1.length;i++){
+  //     newcards1.push(cards1[i]);
+  //   }
+  //   console.log(newcards1);
+  // })
+
+
+  // 전체 카드 랜덤 매칭 -> 랜덤으로 섞어주는 함수
+  function shuffle(sourceArray){
+    for (var i = 0; i < sourceArray.length - 1; i++) {
+      var j = i + Math.floor(Math.random() * (sourceArray.length - i));
+      var temp = sourceArray[j];
+      sourceArray[j] = sourceArray[i];
+      sourceArray[i] = temp;
+    }
+    return sourceArray;
+  }
   useEffect(() => {
     setTimeout(() => {
+      if(allrandom){
+        shuffle(cards1);
+        shuffle(cards2);
+        shuffle(cards3);
+        shuffle(cards4);
+      }
       if(keyword==='노래'){
-        setCards([
-          {
-            text:keyword,
-            backgroundColor:'#FFF6DF'
-          },
-          {
-            text: '예빛',
-            backgroundColor: '#FFF6DF',
-          },
-          {
-            text: '검정치마',
-            backgroundColor: '#FFF6DF',
-            // image: newCards.current.thumbnail[0],
-          },
-          {
-            text: '점심 먹기',
-            backgroundColor: '#FFF6DF',
-            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
-          },
-          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-          {text: '음...', backgroundColor: '#FFF6DF'},
-          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-        ]);
+        setCards(cards1);
       }
       else if(keyword==='유튜브'){
-        setCards([
-          {
-            text:keyword,
-            backgroundColor:'#FFF6DF'
-          },
-          {
-            text: '유튜브 관련!',
-            backgroundColor: '#FFF6DF',
-          },
-          {
-            text: '괴물쥐',
-            backgroundColor: '#FFF6DF',
-            // image: newCards.current.thumbnail[1],
-          },
-          {
-            text: '점심 먹기',
-            backgroundColor: '#FFF6DF',
-            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
-          },
-          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-          {text: '음...', backgroundColor: '#FFF6DF'},
-          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-        ]);
+        setCards(cards2);
       }
       else if(keyword==='영화'){
-        setCards([
-          {
-            text:keyword,
-            backgroundColor:'#FFF6DF'
-          },
-          {
-            text: '유튜브 관련!',
-            backgroundColor: '#FFF6DF',
-            image:'https://i.ytimg.com/vi/I1V7LE9NBAM/hq720.jpg'
-          },
-          {
-            text: '괴물쥐',
-            backgroundColor: '#FFF6DF',
-            // image: newCards.current.thumbnail[1],
-          },
-          {
-            text: '점심 먹기',
-            backgroundColor: '#FFF6DF',
-            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
-          },
-          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-          {text: '음...', backgroundColor: '#FFF6DF'},
-          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-        ]);
+        setCards(cards3);
       }
       else if(keyword==='드라마'){
-        setCards([
-          {
-            text:keyword,
-            backgroundColor:'#FFF6DF'
-          },
-          {
-            text: '유튜브 관련!',
-            backgroundColor: '#FFF6DF',
-            image:'https://i.ytimg.com/vi/vORDkdgLzEs/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfx5vbQqtKCvnbHsh0JSvQrCCrug'
-          },
-          {
-            text: '괴물쥐',
-            backgroundColor: '#FFF6DF',
-            image: 'https://i.ytimg.com/an_webp/eYp6P-9ayUY/mqdefault_6s.webp?du=3000&sqp=CO6y_o8G&rs=AOn4CLBxbVxq_e-B-aFVRUpionQP0Mgf2Q',
-          },
-          {
-            text: '점심 먹기',
-            backgroundColor: '#FFF6DF',
-            image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
-          },
-          {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-          {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-          {text: '음...', backgroundColor: '#FFF6DF'},
-          {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
-        ]);
+        setCards(cards4);
       }
     }, 1000);
-  }, [pinicon]);
+  }, [allrandom]);
   // console.log(cards);
   console.log(keyword);
   function handleYup(card) {
@@ -283,6 +312,7 @@ const SC = ({
   }
   function handleNope(card) {
     console.log(`Nope for ${card.text} ${card.image}`);
+    cardremo
     return true;
   }
   return (

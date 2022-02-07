@@ -267,8 +267,10 @@ const IdeaMatching = () => {
     setIsfix(newfix);
   };
   const [ischeck, setIscheck] = useState();
+  const [allrandom,setAllRandom] = useState(false);
   const allrandommatching = () => {
-    alert('전체카드 랜덤 매칭');
+    alert('전체카드 랜덤 매칭합니다!');
+    setAllRandom(!allrandom);
   };
   return (
     <View style={styles.container}>
@@ -385,6 +387,7 @@ const IdeaMatching = () => {
                   penicon={pen}
                   setIsfix={isfix1}
                   clicktextModal={clicktextModal}
+                  allrandom={allrandom}
                 />
               </TouchableOpacity>
             ) : (
@@ -400,6 +403,7 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix1}
                 clicktextModal={clicktextModal}
+                allrandom={allrandom}
               />
             )}
 
@@ -417,6 +421,7 @@ const IdeaMatching = () => {
                   penicon={pen}
                   setIsfix={isfix2}
                   clicktextModal={clicktextModal}
+                  allrandom={allrandom}
                 />
               </TouchableOpacity>
             ) : (
@@ -432,6 +437,7 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix2}
                 clicktextModal={clicktextModal}
+                allrandom={allrandom}
               />
             )}
           </View>
@@ -450,6 +456,7 @@ const IdeaMatching = () => {
                   ischeck={ischeck}
                   setIsfix={isfix3}
                   clicktextModal={clicktextModal}
+                  allrandom={allrandom}
                 />
               </TouchableOpacity>
             ) : (
@@ -465,6 +472,7 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix3}
                 clicktextModal={clicktextModal}
+                allrandom={allrandom}
               />
             )}
             {pen&&!isfix[3] ? (
@@ -481,6 +489,7 @@ const IdeaMatching = () => {
                   penicon={pen}
                   setIsfix={isfix4}
                   clicktextModal={clicktextModal}
+                  allrandom={allrandom}
                 />
               </TouchableOpacity>
             ) : (
@@ -496,6 +505,7 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix4}
                 clicktextModal={clicktextModal}
+                allrandom={allrandom}
               />
             )}
           </View>
