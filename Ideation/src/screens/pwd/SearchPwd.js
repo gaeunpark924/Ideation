@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import {StyleSheet, Text, View, TextInput, TouchableOpacity,Alert } from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 
@@ -13,14 +13,14 @@ const SearchPwd = ({navigation}) => {
     async function sendUserEmail() {
       await auth().sendPasswordResetEmail(email)
         .then((user) => {
-          navigation.goBack()       
+          Alert.alert("경고","링크가 전송되었습니다.",[{text:"확인",onPress: ()=> {navigation.goBack() }}]);
         })
         .catch((error) => {
           console.log(error)
           if (error.code === 'auth/user-not-found'){
-            console.log('등록된 이메일이 아닙니다')
+            Alert.alert("경고","등록된 이메일이 아닙니다.",[{text:"확인"}]);
           } else if (error.code === 'auth/invalid-email'){
-            console.log('이메일 형식이 아닙니다')
+            Alert.alert("경고","'이메일 형식이 아닙니다.",[{text:"확인"}]);
           }
         })
     }
