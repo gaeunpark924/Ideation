@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     justifyContent: 'space-between',
+    backgroundColor :'#FDF8FF'
   },
   bottomButton: {
     justifyContent: 'center',

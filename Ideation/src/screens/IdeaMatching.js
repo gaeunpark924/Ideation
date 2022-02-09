@@ -27,7 +27,13 @@ import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
-const IdeaMatching = () => {
+const IdeaMatching = ({route,navigation}) => {
+  //const [userUid, setUerUid] = useState(route.params)
+  const {userUid} = route.params;
+  // useEffect(()=>{
+  //   console.log("사용자id",userUid)
+  // },[userUid])
+
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
@@ -39,7 +45,7 @@ const IdeaMatching = () => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
-
+  
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -103,7 +109,7 @@ const IdeaMatching = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+          <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
             {k.label}
           </Text>
         </TouchableOpacity>
@@ -117,7 +123,7 @@ const IdeaMatching = () => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+          <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
             {k.label}
           </Text>
         </TouchableOpacity>
@@ -143,7 +149,9 @@ const IdeaMatching = () => {
   };
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
+  const confirmCheckState = useRef([false, false, false, false])
   const togglesaveiocn = () => {
+    console.log('퍼즐 조합 저장',confirmCheckState.current)
     setSaveicon(!saveicon);
   };
   const [isVisible, setIsVisible] = useState(false);
@@ -272,6 +280,28 @@ const IdeaMatching = () => {
     alert('전체카드 랜덤 매칭합니다!');
     setAllRandom(!allrandom);
   };
+  //IdeaMatching.js
+  //const confirmCheckState = useRef([false, false, false, false])
+  // const togglesaveiocn = () => {
+  //   console.log('퍼즐 조합 저장',confirmCheckState.current)
+  //   setSaveicon(!saveicon);
+  // };
+  //체크 확인 
+  const confirmCheck = (index) => {
+    if (confirmCheckState.current[index]){ //체크된 상태면
+      confirmCheckState.current[index] = false
+    }else{ //체크가 안된 상태면
+      confirmCheckState.current[index] = true
+      console.log('출력')
+    }
+    console.log(confirmCheckState.current)
+  };
+  const [cardData, setCarddata] = useState();
+  const getData = (cd) => {
+    console.log("getData",cd)
+    setCarddata(cd);
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -390,6 +420,8 @@ const IdeaMatching = () => {
                   setIsfix={isfix1}
                   clicktextModal={clicktextModal}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -406,6 +438,8 @@ const IdeaMatching = () => {
                 setIsfix={isfix1}
                 clicktextModal={clicktextModal}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
 
@@ -426,6 +460,8 @@ const IdeaMatching = () => {
                   setIsfix={isfix2}
                   clicktextModal={clicktextModal}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -442,6 +478,8 @@ const IdeaMatching = () => {
                 setIsfix={isfix2}
                 clicktextModal={clicktextModal}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
           </View>
@@ -463,6 +501,8 @@ const IdeaMatching = () => {
                   setIsfix={isfix3}
                   clicktextModal={clicktextModal}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -479,6 +519,8 @@ const IdeaMatching = () => {
                 setIsfix={isfix3}
                 clicktextModal={clicktextModal}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
             {pen && !isfix[3] ? (
@@ -498,6 +540,8 @@ const IdeaMatching = () => {
                   setIsfix={isfix4}
                   clicktextModal={clicktextModal}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -514,6 +558,8 @@ const IdeaMatching = () => {
                 setIsfix={isfix4}
                 clicktextModal={clicktextModal}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
           </View>

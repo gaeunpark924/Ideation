@@ -3,11 +3,11 @@ import {StyleSheet, Text, View, TouchableOpacity, Animated} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { ToastAndroid } from 'react-native';
 import { useScrollToTop } from '@react-navigation/native';
+import { userInfo } from '../User';
 
 const Loading = ({navigation}) => {
   const fadeAnim = useRef(new Animated.Value(0)).current; 
   //new Animated.Value 초기값을 0으로 준다
-
   const [initializing, setInitializing] = useState(false);
   const [userUid, setUserUid] = useState();
   const [countIdea, setCountIdea] = useState(0);
@@ -16,13 +16,19 @@ const Loading = ({navigation}) => {
     if(user){
       // setInitializing(true)
       // setUserUid(user.uid)
-      //console.log("로그인됨")
+
       setTimeout(()=>{
-        navigation.navigate("idealist",{"userUid":user.uid}) 
+        userInfo.email = user.email
+        userInfo.uid = user.uid
+        userInfo.emailVerified = user.emailVerified //사용하진 않는데 그냥 넣어둠
+        navigation.navigate("StackHomeNavigator")//,{"userUid":user.uid})
       },2000)
     }else{
       setTimeout(()=>{
-        navigation.navigate("Login")
+        userInfo.email = ''
+        userInfo.uid = ''
+        userInfo.emailVerified = false
+        navigation.navigate("StackAuthNavigator")
       },2000)
     }
     // Animated.timing(fadeAnim,

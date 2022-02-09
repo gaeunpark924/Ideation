@@ -18,6 +18,8 @@ const SC = ({
   setIsfix,
   clicktextModal,
   allrandom,
+  confirmCheck,
+  getData
 }) => {
   function Card({data}) {
     // card 고정된건지 여부
@@ -26,8 +28,15 @@ const SC = ({
     };
     // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
+    const cd = useRef({text: data.text, image: data.image});
     const togglecheck = () => {
       setChecked(!checked);
+      confirmCheck(idx)
+      getcd()
+    };
+    const getcd = () => {
+      console.log(cd.current)
+      getData(cd.current);
     };
     // 텍스트인지 이미지인지 판단
     const [text, setText] = useState('');

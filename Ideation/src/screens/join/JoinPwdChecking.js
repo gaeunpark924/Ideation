@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, ToastAndroid, TouchableOpacity,Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ToastAndroid, TouchableOpacity,Alert,Keyboard } from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import auth from '@react-native-firebase/auth';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const showClauseToast = () =>{
   ToastAndroid.show("이용약관 클릭", ToastAndroid.SHORT);
@@ -34,8 +35,8 @@ const JoinPwdChecking = ({route, navigation}) => {
       console.log(emailValue, pwdValue);
       await auth().createUserWithEmailAndPassword(emailValue,pwdValue)
         .then((user) => {
-          console.log(user)
-          navigation.navigate("welcome",{"userUid":user.uid})
+          //console.log(user.user)
+          navigation.navigate("welcome",{"userUid":user.user.uid,"email":user.user.email,"emailVerified":user.user.emailVerified})
           //checkEmailVerification()       
         })
         .catch((error) => {
@@ -61,7 +62,8 @@ const JoinPwdChecking = ({route, navigation}) => {
     }
     return (
         <View style={styles.container}>
-          <KeyboardAvoidingView behavior="padding"> 
+          <KeyboardAvoidingView behavior="padding">
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={{marginTop:110}}>
               <Controller
                 control={control}
@@ -73,6 +75,10 @@ const JoinPwdChecking = ({route, navigation}) => {
                   <TextInput           //대문자로 시작하는건 React 컴포넌트//소문자는 html 컴포넌트
                     {...props}
                     underlineColorAndroid={'black'}
+                    style={{
+                      fontSize:18,
+                      fontFamily:'SB_Aggro_L',
+                    }}
                     placeholder="비밀번호를 한번 더 확인해주세요."
                     secureTextEntry={true}
                     onChange={(e)=>{setPwdCheckingValue(e.nativeEvent.text)}}  //state 업데이트
@@ -86,13 +92,16 @@ const JoinPwdChecking = ({route, navigation}) => {
                 name="pwdCheckingForm" 
               />
               {errors.pwdCheckingForm
-              ? <Text>{errors.pwdCheckingForm.message}</Text>
-              : (getValues('pwdCheckingForm') === ''
-                ? <Text>실수는 누구나 하니까요!</Text>
-                : <Text>이용 약관에 동의해주세요.</Text>
+              ? pwdCheckingValue===''
+                ? <Text style={styles.textStyle}>실수는 누구나 하니까요!</Text>
+                : <Text style={styles.textStyle2}>{errors.pwdCheckingForm.message}</Text>
+              : (getValues('pwdCheckingForm') === '' || pwdCheckingValue ===''
+                ? <Text style={styles.textStyle}>실수는 누구나 하니까요!</Text>
+                : <Text style={styles.textStyle}>이용 약관에 동의해주세요.</Text>
                 )
               }  
             </View>
+            </TouchableWithoutFeedback> 
           </KeyboardAvoidingView>
           <View>
             <View style={{alignItems:'center',marginBottom:20}}>
@@ -106,7 +115,7 @@ const JoinPwdChecking = ({route, navigation}) => {
               style={styles.bottomButton}
               onPress={onPressNavigation}
               activeOpacity={0.8}>
-              <Text>
+              <Text style={{fontSize:16, fontFamily:'SB_Aggro_M'}}>
                 이용약관에 동의하고 가입완료하기
               </Text>
             </TouchableOpacity>
@@ -123,6 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     justifyContent: 'space-between',
+    backgroundColor: '#FDF8FF'
   },
   bottomButton: {
     justifyContent: 'center',
@@ -130,7 +140,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minWidth: 125, //최소 너비
     minHeight: 56, //최소 높이
-    borderWidth: 2, //테두리 굵기
+    borderWidth: 1, //테두리 굵기
     borderColor: 'black', //테두리
     backgroundColor: '#E7D9FF', //배경
   },
@@ -138,8 +148,23 @@ const styles = StyleSheet.create({
     color: '#000000',
     paddingBottom: 6,
     borderBottomWidth: 2,
+    fontFamily:'SB_Aggro_M',
+    fontSize:14
     //textDecorationLine:'underline',
   },
+  textStyle:{
+    fontSize:14,
+    fontFamily:'SB_Aggro_M',
+    marginLeft:5,
+    marginTop:10
+  },
+  textStyle2:{
+    fontSize:14,
+    fontFamily:'SB_Aggro_M',
+    marginLeft:5,
+    marginTop:10,
+    color:'#FF3F25'
+  }
 });
 
 
