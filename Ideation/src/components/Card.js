@@ -18,6 +18,9 @@ const SC = ({
   setIsfix,
   clicktextModal,
   allrandom,
+  confirmCheck,
+  confirmCheckState,
+  getData,
 }) => {
   function Card({data}) {
     // card 고정된건지 여부
@@ -28,6 +31,13 @@ const SC = ({
     const [checked, setChecked] = useState(false);
     const togglecheck = () => {
       setChecked(!checked);
+      confirmCheck(idx);
+      getcd();
+      // getData({text: data.text, image: data.image});
+    };
+    const cd = useRef({text: data.text, image: data.image});
+    const getcd = () => {
+      getData(cd.current);
     };
     // 텍스트인지 이미지인지 판단
     const [text, setText] = useState('');
@@ -324,7 +334,7 @@ const SC = ({
     }, 1000);
   }, [allrandom]);
   // console.log(cards);
-  console.log(keyword);
+  // console.log(keyword);
   function handleYup(card) {
     console.log(`Yup for ${card.text} ${card.image}`);
     return true; // return false if you wish to cancel the action

@@ -26,7 +26,7 @@ import BottomSheet from 'react-native-gesture-bottom-sheet';
 import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-
+import firestore from '@react-native-firebase/firestore';
 const IdeaMatching = () => {
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -39,7 +39,48 @@ const IdeaMatching = () => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
+  const selectedkeyword = keyword.filter(k => k.select == true);
 
+  // console.log(selectedkeyword);
+  // firestore에 추가
+  const appnumber = useRef(1);
+  const addPosts = async userUid => {
+    const list = [];
+    await firestore()
+      .collection('userIdeaData')
+      .doc(userUid)
+      .collection('item')
+      .doc()
+      .set({
+        title: '앱아이디어',
+        text: '텍스트',
+        image: '이미지',
+        createTime: createTime(),
+        keyword: selectedkeyword,
+        createDate: createDate(),
+        updateDate: createDate(),
+        updateTime: createTime(),
+      });
+  };
+  useEffect(() => {
+    addPosts();
+  }, []);
+  // 등록 날짜
+  const createDate = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ('0' + (1 + date.getMonth())).slice(-2);
+    var day = ('0' + date.getDate()).slice(-2);
+    return year + '-' + month + '-' + day;
+  };
+  const createTime = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ('0' + (1 + date.getMonth())).slice(-2);
+    var day = ('0' + date.getDate()).slice(-2);
+    var time = date.toLocaleTimeString();
+    return year + '년 ' + month + '월 ' + day + '일 ' + time;
+  };
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -143,9 +184,40 @@ const IdeaMatching = () => {
   };
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
-  const togglesaveiocn = () => {
+  const confirmCheckState = useRef([false, false, false, false]);
+  const togglesaveiconFalse = () => {
     setSaveicon(!saveicon);
+    // alert('저장할 카드를 눌러주세요');
   };
+  // saveIcon에서 check된 상태에서 누를때 -> 배열로 받아온 부분 firestore에 저장
+  const togglesaveiconTrue = () => {
+    setSaveicon(!saveicon);
+    // alert('카드가 저장됩니다.');
+    //console.log(confirmCheckState.current);
+    // for (let i = 0; i < 4; i++) {
+    //   confirmCheckState.current[i] = false;
+    // }
+    //console.log(confirmCheckState.current);
+  };
+  // 체크 여부 판단
+  const confirmCheck = index => {
+    if (confirmCheckState.current[index]) {
+      //체크된 상태면
+      confirmCheckState.current[index] = false;
+    } else {
+      //체크가 안된 상태면
+      confirmCheckState.current[index] = true;
+      //console.log('출력');
+    }
+  };
+  const [cardData, setCarddata] = useState();
+  const getData = cd => {
+    // setCarddata(cd);
+  };
+  console.log(cardData);
+  // useEffect(() => {
+  //   () => getData;
+  // }, [saveicon]);
   const [isVisible, setIsVisible] = useState(false);
   // pen toggleButton
   const [pen, setPen] = useState(false);
@@ -194,9 +266,9 @@ const IdeaMatching = () => {
   const textModal = () => {
     isClickTextModal(!clicktextModal);
     bottomSheet.current.close();
-    console.log(eachCard);
+    //console.log(eachCard);
   };
-  console.log(isfix);
+  //console.log(isfix);
   const takeImagefromphone = () =>
     launchImageLibrary(optionsImage, response => {
       // console.log('Response = ', response);
@@ -389,6 +461,9 @@ const IdeaMatching = () => {
                   penicon={pen}
                   setIsfix={isfix1}
                   clicktextModal={clicktextModal}
+                  confirmCheckState={confirmCheckState}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                   allrandom={allrandom}
                 />
               </TouchableOpacity>
@@ -405,6 +480,9 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix1}
                 clicktextModal={clicktextModal}
+                confirmCheckState={confirmCheckState}
+                confirmCheck={confirmCheck}
+                getData={getData}
                 allrandom={allrandom}
               />
             )}
@@ -425,6 +503,9 @@ const IdeaMatching = () => {
                   penicon={pen}
                   setIsfix={isfix2}
                   clicktextModal={clicktextModal}
+                  confirmCheckState={confirmCheckState}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                   allrandom={allrandom}
                 />
               </TouchableOpacity>
@@ -441,6 +522,9 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix2}
                 clicktextModal={clicktextModal}
+                confirmCheckState={confirmCheckState}
+                confirmCheck={confirmCheck}
+                getData={getData}
                 allrandom={allrandom}
               />
             )}
@@ -462,6 +546,9 @@ const IdeaMatching = () => {
                   ischeck={ischeck}
                   setIsfix={isfix3}
                   clicktextModal={clicktextModal}
+                  confirmCheckState={confirmCheckState}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                   allrandom={allrandom}
                 />
               </TouchableOpacity>
@@ -478,6 +565,9 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix3}
                 clicktextModal={clicktextModal}
+                confirmCheckState={confirmCheckState}
+                confirmCheck={confirmCheck}
+                getData={getData}
                 allrandom={allrandom}
               />
             )}
@@ -497,6 +587,9 @@ const IdeaMatching = () => {
                   penicon={pen}
                   setIsfix={isfix4}
                   clicktextModal={clicktextModal}
+                  confirmCheckState={confirmCheckState}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                   allrandom={allrandom}
                 />
               </TouchableOpacity>
@@ -513,6 +606,9 @@ const IdeaMatching = () => {
                 penicon={pen}
                 setIsfix={isfix4}
                 clicktextModal={clicktextModal}
+                confirmCheckState={confirmCheckState}
+                confirmCheck={confirmCheck}
+                getData={getData}
                 allrandom={allrandom}
               />
             )}
@@ -599,7 +695,7 @@ const IdeaMatching = () => {
                 backgroundColor: 'grey',
               }}>
               <TouchableOpacity
-                onPress={togglesaveiocn}
+                onPress={togglesaveiconTrue}
                 style={{
                   flexDirection: 'row',
                   width: '100%',
@@ -624,7 +720,7 @@ const IdeaMatching = () => {
                 width: '100%',
               }}>
               <TouchableOpacity
-                onPress={togglesaveiocn}
+                onPress={togglesaveiconFalse}
                 style={{
                   flexDirection: 'row',
                   width: '100%',
