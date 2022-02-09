@@ -27,7 +27,11 @@ import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import firestore from '@react-native-firebase/firestore';
-const IdeaMatching = () => {
+const IdeaMatching = ({route, navigation}) => {
+  const {uid} = route.params;
+  useEffect(() => {
+    console.log('사용자id', uid);
+  }, [uid]);
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
@@ -39,48 +43,7 @@ const IdeaMatching = () => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
-  const selectedkeyword = keyword.filter(k => k.select == true);
 
-  // console.log(selectedkeyword);
-  // firestore에 추가
-  const appnumber = useRef(1);
-  const addPosts = async userUid => {
-    const list = [];
-    await firestore()
-      .collection('userIdeaData')
-      .doc(userUid)
-      .collection('item')
-      .doc()
-      .set({
-        title: '앱아이디어',
-        text: '텍스트',
-        image: '이미지',
-        createTime: createTime(),
-        keyword: selectedkeyword,
-        createDate: createDate(),
-        updateDate: createDate(),
-        updateTime: createTime(),
-      });
-  };
-  useEffect(() => {
-    addPosts();
-  }, []);
-  // 등록 날짜
-  const createDate = () => {
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = ('0' + (1 + date.getMonth())).slice(-2);
-    var day = ('0' + date.getDate()).slice(-2);
-    return year + '-' + month + '-' + day;
-  };
-  const createTime = () => {
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = ('0' + (1 + date.getMonth())).slice(-2);
-    var day = ('0' + date.getDate()).slice(-2);
-    var time = date.toLocaleTimeString();
-    return year + '년 ' + month + '월 ' + day + '일 ' + time;
-  };
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -177,10 +140,93 @@ const IdeaMatching = () => {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-  // pinicon toggleButton
+  const temp = useRef([{}, {}, {}, {}]);
+  const getData = (idx, cd) => {
+    // console.log('getData 실행');
+    // console.log(cd);
+    // console.log(confirmCheckState.current[idx]);
+    if (confirmCheckState.current[idx]) {
+      temp.current[idx] = cd;
+    } else if (!confirmCheckState.current[index]) {
+      temp.current[idx] = {};
+    }
+  };
+
+  // 현재 선택된 키워드
+  const selectedkeyword = keyword.filter(k => k.select == true);
+  // console.log(selectedkeyword);
+  // firestore에 추가하는 함수
+  const appnumber = useRef(1);
+
+  // useEffect(() => {
+  //   addPosts();
+  // }, []);
+
+  // 등록 날짜 불러오기
+  const createDate = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ('0' + (1 + date.getMonth())).slice(-2);
+    var day = ('0' + date.getDate()).slice(-2);
+    return year + '-' + month + '-' + day;
+  };
+  const createTime = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ('0' + (1 + date.getMonth())).slice(-2);
+    var day = ('0' + date.getDate()).slice(-2);
+    var time = date.toLocaleTimeString();
+    return year + '년 ' + month + '월 ' + day + '일 ' + time;
+  };
   const [pinicon, setPinicon] = useState(false);
   const togglepinicon = () => {
     setPinicon(!pinicon);
+  };
+  // useEffect(()=>{
+  //   async userUid()=>{
+  //     await firestore()
+  //     .collection('userIdeaData')
+  //     .doc(userUid)
+  //     .collection('item')
+  //     .add({
+  //       title: '앱아이디어',
+  //       data: temp.current,
+  //       keyword: selectedkeyword,
+  //       createDate: createDate(),
+  //       updateDate: createDate(),
+  //       createTime: createTime(),
+  //       updateTime: createTime(),
+  //     });
+  // },[togglesaveiconFalse]);
+  const addPosts = () => {
+    let Carddata = [];
+    for (let i = 0; i < 4; i++) {
+      if (confirmCheckState.current[i]) {
+        if (temp.current[i].image === undefined) {
+          Carddata.push(temp.current[i].text);
+        } else {
+          Carddata.push(temp.current[i].image);
+        }
+      }
+    }
+    let selectedkeyword = keyword.filter(k => k.select == true);
+    console.log(Carddata);
+    firestore()
+      .collection('userIdeaData')
+      .doc(uid)
+      .collection('item')
+      .add({
+        keyword: selectedkeyword,
+        carddata: Carddata,
+        title: '앱 아이디어',
+        createTime: firestore.FieldValue.serverTimestamp(),
+        updateTime: firestore.FieldValue.serverTimestamp(),
+        createDate: createDate(),
+        updateDate: createDate(),
+      })
+      .then(() => {
+        console.log('User added!');
+      });
   };
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
@@ -189,16 +235,34 @@ const IdeaMatching = () => {
     setSaveicon(!saveicon);
     // alert('저장할 카드를 눌러주세요');
   };
+  // const fs = useRef(false);
+  // console.log(fs.current);
+
   // saveIcon에서 check된 상태에서 누를때 -> 배열로 받아온 부분 firestore에 저장
   const togglesaveiconTrue = () => {
+    // console.log(temp);
+    // console.log(confirmCheckState);
+    // 여기에 firebase에 넣는 함수 들어가면 됨.
     setSaveicon(!saveicon);
-    // alert('카드가 저장됩니다.');
-    //console.log(confirmCheckState.current);
-    // for (let i = 0; i < 4; i++) {
-    //   confirmCheckState.current[i] = false;
-    // }
-    //console.log(confirmCheckState.current);
+    console.log(temp.current);
+    addPosts();
+    // fs.current = true;
+    // addPosts(userUid);
+    temp.current = [{}, {}, {}, {}];
+    confirmCheckState.current = [false, false, false, false];
+    // console.log(temp);
+    // console.log(confirmCheckState);
   };
+  // useEffect(async (userUid) => {
+  //   const data = await fetchUser(userId);
+  //   setUser(data);
+  //   }, [userId]);
+  // useEffect(() => {
+  //   addPosts(userUid);
+  // }, [userUid]);
+  // useEffect(() => {
+  //   addPosts('userUid', userUid);
+  // }, [togglesaveiconTrue]);
   // 체크 여부 판단
   const confirmCheck = index => {
     if (confirmCheckState.current[index]) {
@@ -211,13 +275,7 @@ const IdeaMatching = () => {
     }
   };
   const [cardData, setCarddata] = useState();
-  const getData = cd => {
-    // setCarddata(cd);
-  };
-  console.log(cardData);
-  // useEffect(() => {
-  //   () => getData;
-  // }, [saveicon]);
+
   const [isVisible, setIsVisible] = useState(false);
   // pen toggleButton
   const [pen, setPen] = useState(false);

@@ -32,13 +32,19 @@ const SC = ({
     const togglecheck = () => {
       setChecked(!checked);
       confirmCheck(idx);
-      getcd();
       // getData({text: data.text, image: data.image});
+      getcd();
     };
     const cd = useRef({text: data.text, image: data.image});
     const getcd = () => {
-      getData(cd.current);
+      // console.log(cd.current);
+      // console.log('자식');
+      // console.log(cd.current);
+      getData(idx, cd.current);
     };
+    // useEffect(() => {
+    //   getcd();
+    // });
     // 텍스트인지 이미지인지 판단
     const [text, setText] = useState('');
     // console.log(text);
