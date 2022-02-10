@@ -26,12 +26,14 @@ import BottomSheet from 'react-native-gesture-bottom-sheet';
 import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+
 import firestore from '@react-native-firebase/firestore';
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
     console.log('사용자id', uid);
-  }, [uid]);
+  }, [uid]);  //
+
   let index = 0;
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
@@ -43,7 +45,7 @@ const IdeaMatching = ({route, navigation}) => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
-
+  
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -107,7 +109,7 @@ const IdeaMatching = ({route, navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+          <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
             {k.label}
           </Text>
         </TouchableOpacity>
@@ -121,7 +123,7 @@ const IdeaMatching = ({route, navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+          <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
             {k.label}
           </Text>
         </TouchableOpacity>
@@ -230,6 +232,7 @@ const IdeaMatching = ({route, navigation}) => {
   };
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
+
   const confirmCheckState = useRef([false, false, false, false]);
   const togglesaveiconFalse = () => {
     setSaveicon(!saveicon);
@@ -402,6 +405,28 @@ const IdeaMatching = ({route, navigation}) => {
     alert('전체카드 랜덤 매칭합니다!');
     setAllRandom(!allrandom);
   };
+  //IdeaMatching.js
+  //const confirmCheckState = useRef([false, false, false, false])
+  // const togglesaveiocn = () => {
+  //   console.log('퍼즐 조합 저장',confirmCheckState.current)
+  //   setSaveicon(!saveicon);
+  // };
+  //체크 확인 
+  const confirmCheck = (index) => {
+    if (confirmCheckState.current[index]){ //체크된 상태면
+      confirmCheckState.current[index] = false
+    }else{ //체크가 안된 상태면
+      confirmCheckState.current[index] = true
+      console.log('출력')
+    }
+    console.log(confirmCheckState.current)
+  };
+  const [cardData, setCarddata] = useState();
+  const getData = (cd) => {
+    console.log("getData",cd)
+    setCarddata(cd);
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>
@@ -436,7 +461,7 @@ const IdeaMatching = ({route, navigation}) => {
                     }}
                     onPress={() => alert('키워드 입력하기...!')}>
                     <Icon2 name="pencil" size={22} style={{marginRight: 10}} />
-                    <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+                    <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
                       키워드 직접입력
                     </Text>
                   </TouchableOpacity>
@@ -462,7 +487,7 @@ const IdeaMatching = ({route, navigation}) => {
                     <Text
                       style={{
                         fontSize: 16,
-                        fontFamily: 'SB 어그로 M',
+                        fontFamily: 'SB_Aggro_M',
                       }}>
                       키워드 추가하기
                     </Text>
@@ -480,7 +505,7 @@ const IdeaMatching = ({route, navigation}) => {
             <BottomSheet radius={1} ref={bottomSheet} height={200}>
               <TouchableOpacity onPress={textModal} style={styles.bottomModal}>
                 <TextIcon name="text" size={24} style={{marginRight: 7}} />
-                <Text style={{fontFamily: 'SB 어그로 L'}}>텍스트 입력하기</Text>
+                <Text style={{fontFamily: 'SB_Aggro_L'}}>텍스트 입력하기</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={takeImagefromphone}
@@ -490,7 +515,7 @@ const IdeaMatching = ({route, navigation}) => {
                   size={24}
                   style={{marginRight: 7}}
                 />
-                <Text style={{fontFamily: 'SB 어그로 L'}}>사진 가져오기</Text>
+                <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={takeVideofromphone}
@@ -500,7 +525,7 @@ const IdeaMatching = ({route, navigation}) => {
                   size={24}
                   style={{marginRight: 7}}
                 />
-                <Text style={{fontFamily: 'SB 어그로 L'}}>영상 가져오기</Text>
+                <Text style={{fontFamily: 'SB_Aggro_L'}}>영상 가져오기</Text>
               </TouchableOpacity>
             </BottomSheet>
             {pen && !isfix[0] ? (
@@ -523,6 +548,8 @@ const IdeaMatching = ({route, navigation}) => {
                   confirmCheck={confirmCheck}
                   getData={getData}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -542,6 +569,8 @@ const IdeaMatching = ({route, navigation}) => {
                 confirmCheck={confirmCheck}
                 getData={getData}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
 
@@ -565,6 +594,8 @@ const IdeaMatching = ({route, navigation}) => {
                   confirmCheck={confirmCheck}
                   getData={getData}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -584,6 +615,8 @@ const IdeaMatching = ({route, navigation}) => {
                 confirmCheck={confirmCheck}
                 getData={getData}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
           </View>
@@ -608,6 +641,8 @@ const IdeaMatching = ({route, navigation}) => {
                   confirmCheck={confirmCheck}
                   getData={getData}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -627,6 +662,8 @@ const IdeaMatching = ({route, navigation}) => {
                 confirmCheck={confirmCheck}
                 getData={getData}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
             {pen && !isfix[3] ? (
@@ -649,6 +686,8 @@ const IdeaMatching = ({route, navigation}) => {
                   confirmCheck={confirmCheck}
                   getData={getData}
                   allrandom={allrandom}
+                  confirmCheck={confirmCheck}
+                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -668,6 +707,8 @@ const IdeaMatching = ({route, navigation}) => {
                 confirmCheck={confirmCheck}
                 getData={getData}
                 allrandom={allrandom}
+                confirmCheck={confirmCheck}
+                getData={getData}
               />
             )}
           </View>
@@ -761,7 +802,7 @@ const IdeaMatching = ({route, navigation}) => {
                   justifyContent: 'center',
                 }}>
                 <Save size={25} name="save-alt" style={{paddingRight: 10}} />
-                <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+                <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
                   퍼즐 조합 저장
                 </Text>
               </TouchableOpacity>
@@ -786,7 +827,7 @@ const IdeaMatching = ({route, navigation}) => {
                   justifyContent: 'center',
                 }}>
                 <Save size={25} name="save-alt" style={{paddingRight: 10}} />
-                <Text style={{fontSize: 16, fontFamily: 'SB 어그로 L'}}>
+                <Text style={{fontSize: 16, fontFamily: 'SB_Aggro_L'}}>
                   퍼즐 조합 저장
                 </Text>
               </TouchableOpacity>
@@ -810,7 +851,7 @@ const IdeaMatching = ({route, navigation}) => {
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text style={{fontSize: 24, fontFamily: 'SB 어그로 M'}}>
+            <Text style={{fontSize: 24, fontFamily: 'SB_Aggro_M'}}>
               전체 퍼즐 랜덤 매칭
             </Text>
           </TouchableOpacity>
@@ -826,7 +867,7 @@ const styles = StyleSheet.create({
   },
   projecttitle: {
     fontStyle: 'normal',
-    fontFamily: 'SB 어그로 B',
+    fontFamily: 'SB_Aggro_B',
     fontSize: 24,
     marginLeft: 16,
   },
@@ -863,7 +904,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 8,
   },
-  addkeywordtext: {fontSize: 16, marginRight: 7, fontFamily: 'SB 어그로 M'},
+  addkeywordtext: {fontSize: 16, marginRight: 7, fontFamily: 'SB_Aggro_M'},
   keyword: {
     marginRight: 8,
   },

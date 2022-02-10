@@ -1698,10 +1698,10 @@
   "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-14.2.2.tgz"
   "version" "14.2.2"
 
-"@react-native-firebase/firestore@14.2.4":
-  "integrity" "sha512-2+R5g3Tea1Cts+bgGUNV+ZGQ5nKHzayls5fswhtvurUICHsJjs/R6ygf7tHqf9vrJGt8Z3j4NDhbxMrb3OruwA=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-14.2.4.tgz"
-  "version" "14.2.4"
+"@react-native-firebase/firestore@^14.3.1":
+  "integrity" "sha512-0d/YQwV/ZD0YRhuNyLT7fj6vznbPLdYib5XEfPwGpP1g84Qq0rOaPR5Dsd5W4vRC3B0ovfEs2bYTQSCzMfChhA=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-14.3.1.tgz"
+  "version" "14.3.1"
 
 "@react-native-firebase/storage@14.2.4":
   "integrity" "sha512-wyvJOur3bLV/JRybLY+rPeGqT9r4cUqLJGNDxllxZy1+NHjQxnZeyEE0Z0Y1mwHKhTzHk/xy1Ouv4xrbl2U1YQ=="
@@ -1763,15 +1763,19 @@
     "query-string" "^7.0.0"
     "react-is" "^16.13.0"
 
-"@react-navigation/elements@^1.1.2":
-  "integrity" "sha512-PbPCleC1HpUlXtuP0DFNCNTEhRLd6lmB0KxY0SGRGqCemS3HpG/PajEQ1LDe7S51M03a1tDby1MfKTkNanUXAg=="
-  "resolved" "https://registry.npmjs.org/@react-navigation/elements/-/elements-1.1.2.tgz"
-  "version" "1.1.2"
+"@react-navigation/drawer@^6.3.1":
+  "integrity" "sha512-4mAoDj+qQPlThP8pK52ie+0dVPVGx83EVjTPX9o6+kUK/S3inCHXh6xyIx9Q7OEvE4ZerABvyVJ4zc5Xb1Oqrw=="
+  "resolved" "https://registry.npmjs.org/@react-navigation/drawer/-/drawer-6.3.1.tgz"
+  "version" "6.3.1"
+  dependencies:
+    "@react-navigation/elements" "^1.3.1"
+    "color" "^3.1.3"
+    "warn-once" "^0.1.0"
 
-"@react-navigation/elements@^1.2.1":
-  "integrity" "sha512-EnmAbKMsptrliRKf95rdgS6BhMjML+mIns06+G1Vdih6BrEo7/0iytThUv3WBf99AI76dyEq/cqLUwHPiFzXWg=="
-  "resolved" "https://registry.npmjs.org/@react-navigation/elements/-/elements-1.2.1.tgz"
-  "version" "1.2.1"
+"@react-navigation/elements@^1.1.2", "@react-navigation/elements@^1.2.1", "@react-navigation/elements@^1.3.1":
+  "integrity" "sha512-jIDRJaG8YPIinl4hZXJu/W3TnhDe8hLYmGSEdL1mxZ1aoNMiApCBYkgTy11oq0EfK/koZd3DPSkJNbzBAQmPJw=="
+  "resolved" "https://registry.npmjs.org/@react-navigation/elements/-/elements-1.3.1.tgz"
+  "version" "1.3.1"
 
 "@react-navigation/native-stack@^6.2.5":
   "integrity" "sha512-XCtwl4LEr06nzxMG4aXbYfbO/pAjyhGOR3QtBVBq/uGfVGkeK8utKUe925reqd1x099CiEfSJLpgeR2KzzYp+Q=="
@@ -6967,7 +6971,7 @@
     "string_decoder" "~1.1.1"
     "util-deprecate" "~1.0.1"
 
-"reanimated-bottom-sheet@1.0.0-alpha.22":
+"reanimated-bottom-sheet@^1.0.0-alpha.22":
   "integrity" "sha512-NxecCn+2iA4YzkFuRK5/b86GHHS2OhZ9VRgiM4q18AC20YE/psRilqxzXCKBEvkOjP5AaAvY0yfE7EkEFBjTvw=="
   "resolved" "https://registry.npmjs.org/reanimated-bottom-sheet/-/reanimated-bottom-sheet-1.0.0-alpha.22.tgz"
   "version" "1.0.0-alpha.22"

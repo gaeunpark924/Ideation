@@ -1,19 +1,37 @@
 import React, { useEffect } from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {userInfo} from '../User'
 
 const welcome = ({route, navigation}) => {
+  const {userUid, email, emailVerified} = route.params;
+
   useEffect(()=>{
     setTimeout(() => {
-      navigation.navigate("idealist", {"userUid":route.params})
+      //console.log('email',email, userUid)
+      userInfo.email = email;
+      userInfo.uid = userUid;
+      userInfo.emailVerified = emailVerified;
+      //console.log('email',userInfo)
+      //Stack 리셋하는 부분인데 작동 안함
+      // const resetAction = StackActions.reset({
+      //   index: 0,
+      //   actions: [NavigationActions.navigate({
+      //     routeName: "StackHomeNavigator",
+      //   })]
+      // })
+      // navigation.dispatch(resetAction)
+      //navigation.navigate("idealist", {"userUid":route.params})
+      navigation.navigate("StackHomeNavigator")
     }, 2000)
   },[])
   return (
     <View style={styles.welcome}>
         <View>
-            <Text style={styles.title}>환영합니다</Text>
+            <Text style={styles.title}>Let's Puzzling!</Text>
         </View>
-        <View>
-            <Text>함께 아이디어 퍼즐을 완성해봐요!</Text>
+        <View style={{alignItems:'center'}}>
+            <Text style={styles.sub}>퍼즐링 아이디어와 함께</Text>
+            <Text style={styles.sub}>아이디어 퍼즐을 완성해봐요!</Text>
         </View>
     </View>
   );
@@ -21,16 +39,21 @@ const welcome = ({route, navigation}) => {
 const styles = StyleSheet.create({
   welcome: {
     height:'100%',
-    //backgroundColor:'#E7D9FF',
+    backgroundColor:'#FDF8FF',
     flex: 1,
     justifyContent:'center',
     alignItems:'center'
   },
   title: {
-    fontSize: 50,
     marginBottom: 30,
-    color: '#E7D9ff',
-    fontWeight: 'bold',
+    color: '#CCA5FF',
+    fontFamily: 'SB_Aggro_M',
+    fontSize:32
   },
+  sub: {
+    fontFamily: 'SB_Aggro_M',
+    paddingVertical: 5,
+    fontSize:14
+  }
 });
 export default welcome;

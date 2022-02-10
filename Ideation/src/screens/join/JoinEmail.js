@@ -5,8 +5,10 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {KeyboardAvoidingView} from 'react-native';
 const JoinEmail = ({navigation}) => {
@@ -34,6 +36,7 @@ const JoinEmail = ({navigation}) => {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{marginTop: 110}}>
           <Controller
             control={control}
@@ -49,6 +52,10 @@ const JoinEmail = ({navigation}) => {
               <TextInput
                 {...props}
                 underlineColorAndroid={'black'}
+                style={{
+                  fontSize:18,
+                  fontFamily:'SB_Aggro_L',
+                }}
                 placeholder="이메일 주소를 알려주세요."
                 onChange={e => {
                   setEmailValue(e.nativeEvent.text);
@@ -63,20 +70,23 @@ const JoinEmail = ({navigation}) => {
             name="emailForm"
           />
           {errors.emailForm ? (
-            <Text>{errors.emailForm.message}</Text>
+            <Text style={styles.textStyle}>{errors.emailForm.message}</Text>
           ) : getValues('emailForm') === '' ? (
-            <Text>비밀번호를 재설정할 때 필요해요.</Text>
+            <Text style={styles.textStyle}>비밀번호를 재설정할 때 필요해요.</Text>
           ) : (
-            <Text>다음 단계로 이동해주세요</Text>
+            <Text style={styles.textStyle}>다음 단계로 이동해주세요</Text>
           )}
         </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
       <TouchableOpacity
         title="Submit"
         style={styles.bottomButton}
         onPress={onPressNavigation}
         activeOpacity={0.8}>
-        <Text>다음단계</Text>
+        <Text style={{fontSize:16, fontFamily:'SB_Aggro_M'}}>
+          다음단계
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -89,6 +99,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     justifyContent: 'space-between',
+    backgroundColor: '#FDF8FF'
   },
   bottomButton: {
     justifyContent: 'center',
@@ -96,10 +107,16 @@ const styles = StyleSheet.create({
     width: '100%',
     minWidth: 125, //최소 너비
     minHeight: 56, //최소 높이
-    borderWidth: 2, //테두리 굵기
+    borderWidth: 1, //테두리 굵기
     borderColor: 'black', //테두리
     backgroundColor: '#E7D9FF', //배경
   },
+  textStyle:{
+    fontSize:14,
+    fontFamily:'SB_Aggro_M',
+    marginLeft:5,
+    marginTop:10
+  }
 });
 
 export default JoinEmail;

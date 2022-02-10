@@ -5,9 +5,11 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  Keyboard
 } from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const JoinPwd = ({route, navigation}) => {
   const {emailValue} = route.params;
@@ -26,7 +28,8 @@ const JoinPwd = ({route, navigation}) => {
     },
   });
   const onPressNavigation = () => {
-    errors.pwdForm === undefined && pwdValue !== undefined
+    console.log("pwdValue",pwdValue)
+    errors.pwdForm === undefined && pwdValue !== undefined && pwdValue !== ''
       ? navigation.navigate('JoinPwdChecking', {
           emailValue: emailValue,
           pwdValue: pwdValue,
@@ -36,6 +39,7 @@ const JoinPwd = ({route, navigation}) => {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding">
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{marginTop: 110}}>
           <Controller
             control={control}
@@ -58,6 +62,10 @@ const JoinPwd = ({route, navigation}) => {
               <TextInput
                 {...props}
                 underlineColorAndroid={'black'}
+                style={{
+                  fontSize:18,
+                  fontFamily:'SB_Aggro_L',
+                }}
                 placeholder="비밀번호를 입력해주세요."
                 secureTextEntry={true}
                 onChange={e => {
@@ -73,19 +81,22 @@ const JoinPwd = ({route, navigation}) => {
             name="pwdForm"
           />
           {errors.pwdForm ? (
-            <Text>{errors.pwdForm.message}</Text>
+            <Text style={styles.textStyle}>{errors.pwdForm.message}</Text>
           ) : getValues('pwdForm') === '' ? (
-            <Text>든든한 보안을 위해 알파벳 + 숫자를 조합해주세요.</Text>
+            <Text style={styles.textStyle}>든든한 보안을 위해 알파벳 + 숫자를 조합해주세요.</Text>
           ) : (
-            <Text>안전한 비밀번호입니다. 다음 단계로 이동해주세요.</Text>
+            <Text style={styles.textStyle}>안전한 비밀번호입니다. 다음 단계로 이동해주세요.</Text>
           )}
         </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
       <TouchableOpacity
         style={styles.bottomButton}
         onPress={onPressNavigation}
         activeOpacity={0.8}>
-        <Text>다음단계</Text>
+        <Text style={{fontSize:16, fontFamily:'SB_Aggro_M'}}>
+          다음단계
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -98,6 +109,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     justifyContent: 'space-between',
+    backgroundColor: '#FDF8FF'
   },
   bottomButton: {
     justifyContent: 'center',
@@ -105,10 +117,16 @@ const styles = StyleSheet.create({
     width: '100%',
     minWidth: 125, //최소 너비
     minHeight: 56, //최소 높이
-    borderWidth: 2, //테두리 굵기
+    borderWidth: 1, //테두리 굵기
     borderColor: 'black', //테두리
     backgroundColor: '#E7D9FF', //배경
   },
+  textStyle:{
+    fontSize:14,
+    fontFamily:'SB_Aggro_M',
+    marginLeft:5,
+    marginTop:10
+  }
 });
 
 export default JoinPwd;

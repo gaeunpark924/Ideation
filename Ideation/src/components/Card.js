@@ -29,6 +29,7 @@ const SC = ({
     };
     // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
+    const cd = useRef({text: data.text, image: data.image});
     const togglecheck = () => {
       setChecked(!checked);
       confirmCheck(idx);
@@ -62,7 +63,7 @@ const SC = ({
               onChangeText={newtext => setText(newtext)}
               // onSubmitEditing={newtext=>setText(newtext)}
               value={text}
-              style={{textAlign: 'center', fontFamily: 'SB 어그로 L'}}
+              style={{textAlign: 'center', fontFamily: 'SB_Aggro_L'}}
               numberOfLines={2}
               //editable
               maxLength={30}
@@ -71,7 +72,7 @@ const SC = ({
         );
       } else {
         if (data.image === undefined || data.image === '') {
-          return <Text style={{fontFamily: 'SB 어그로 L'}}>{data.text}</Text>;
+          return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>;
         } else {
           return (
             <Image style={styles.cardthumbnail} source={{uri: data.image}} />
@@ -402,7 +403,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 18,
-    fontFamily: 'SB 어그로 L',
+    fontFamily: 'SB_Aggro_L',
   },
   cardthumbnail: {
     zIndex: -1,

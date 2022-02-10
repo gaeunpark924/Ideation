@@ -50,8 +50,8 @@ const IdeaComponent = ({item,onDelete}) => {
               style={styles.menu}>
               <MenuItem style={{height:32}} textStyle={{fontFamily:'SB_Aggro_L',fontSize: 13}} pressColor='#fff'>생성일 : {item.createDate}</MenuItem>
               <MenuDivider/>
-              <MenuItem style={{height:32}} textStyle={{fontFamily:'SB_Aggro_L',fontSize: 13}} children={<Dot/>}>알림창 고정하기     {<Pin name='pin-outline' size={15}/>}</MenuItem>
-              <MenuDivider/>
+              {/* <MenuItem style={{height:32}} textStyle={{fontFamily:'SB_Aggro_L',fontSize: 13}} children={<Dot/>}>알림창 고정하기     {<Pin name='pin-outline' size={15}/>}</MenuItem>
+              <MenuDivider/> */}
               <MenuItem style={{height:32}} textStyle={{color:'red',fontFamily:'SB_Aggro_L',fontSize: 13}} onPress={()=>{onDelete(item.postId)}}>삭제하기</MenuItem>   
             </Menu>
           </TouchableOpacity>

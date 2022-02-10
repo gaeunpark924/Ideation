@@ -14,7 +14,7 @@ const Login = ({navigation}) => {
     const onPressJoin = () =>{
       navigation.navigate("JoinEmail")
     }
-    navigation.add
+    //navigation.add
 
     useEffect(() => {
       GoogleSignin.configure({
@@ -40,62 +40,57 @@ const Login = ({navigation}) => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={{marginTop:110}}>
+        <View style={styles.ncontainer}>
+            <View style={{marginTop:0,width:'90%'}}>
               <TouchableOpacity
-                style={{flexDirection: 'row',
-                        alignItems: "center",
-                        width: '100%',
-                        minWidth : 125,          //최소 너비
-                        minHeight : 56,
-                        borderWidth : 2,
-                        borderColor : 'black'
-                      }}
-                onPress={()=>console.log("페이스북으로 로그인")}
-                activeOpacity={0.8}>
-                <Image style={{width: 30, height: 30, margin : 10}} source={require('../../assets/facebook.png')}/>  
-                <Text style={{margin : 10}}>
-                  페이스북으로 로그인
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{flexDirection: 'row',
-                        alignItems: "center",
-                        width: '100%',
-                        minWidth : 125,          //최소 너비
-                        minHeight : 56,
-                        marginTop : 10, 
-                        borderWidth : 2,
-                        borderColor : 'black'
-                      }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: "center",
+                  width: '100%',
+                  marginTop : 10, 
+                  borderWidth : 1,
+                  borderColor : 'black'
+                }}
                 onPress={()=>{
-                  console.log("구글로 로그인");
                   onGoogleButtonPress();
                 }}
                 activeOpacity={0.8}>
-                <Image style={{width: 30, height: 30, margin : 10}} source={require('../../assets/google.png')} resizeMode='cover'/>   
-                <Text style={{margin : 10}}>
+                <Image
+                  style={{
+                    width: 30,
+                    height: 30,
+                    marginVertical: 20,
+                    marginHorizontal : 20}}
+                  source={require('../../assets/google_email.png')}
+                  resizeMode='cover'/>   
+                <Text style={{margin : 10, fontFamily:'SB_Aggro_M', fontSize:14}}>
                   구글로 로그인
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{flexDirection: 'row',
-                        alignItems: 'center',
-                        width: '100%',
-                        minWidth : 125,          //최소 너비
-                        minHeight : 56,
-                        marginTop : 10,
-                        borderWidth : 2,
-                        borderColor : 'black',
-                      }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  width: '100%',
+                  marginTop : 10,
+                  borderWidth : 1,
+                  borderColor : 'black',
+                }}
                 onPress={onPressEmailLogin}
                 activeOpacity={0.8}>
-                <Icon style={{margin : 10}} name='mail' size={25} type='ant-design' />  
-                <Text style={{margin : 10}}>
+                <Image
+                  style={{
+                    width:30,
+                    height:22.5,
+                    marginVertical: 23.75,
+                    marginHorizontal:20}}
+                  source={require('../../assets/email1.png')}
+                  resizeMode='cover'/>  
+                <Text style={{margin : 10, fontFamily:'SB_Aggro_M', fontSize:14}}>
                   이메일로 로그인
                 </Text>
               </TouchableOpacity>
-              <View style={{alignItems:'center',marginTop:60}}>
+              <View style={{alignItems:'center',marginTop:90}}>
                 <Text
                   style={styles.textUseCondition}
                   onPress={onPressJoin}>
@@ -113,11 +108,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 20,
     justifyContent: 'space-between',
+    backgroundColor: '#FDF8FF'
+  },
+  ncontainer:{
+      height:'100%',
+      backgroundColor:'#fdf8ff',
+      justifyContent:'center',
+      alignItems:'center'
   },
   textUseCondition: {
     color: '#000000',
     paddingBottom: 6,
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
+    fontFamily:'SB_Aggro_M',
+    fontSize:14
   },
 });
 export default Login;
