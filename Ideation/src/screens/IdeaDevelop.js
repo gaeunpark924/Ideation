@@ -37,6 +37,7 @@ import Animated, {
   withTiming,
   Value
 } from "react-native-reanimated";
+import { DrawerContentScrollView } from "@react-navigation/drawer";
 
 const { width, height } = Dimensions.get("window"); //안드로이드는 상태바를 포함하지 않고 영역 추출함
 const screenHeight = Dimensions.get("screen").height;
@@ -73,6 +74,7 @@ const App = ({ navigation, route }) => {
   const bottomSheet = useRef();
   const sheetRef = useRef();
   const bottomSheetPhoto = useRef();
+  const [bottomSheetMemoOpen, setBottomSheetMemoOpen] = useState(false);
   //console.log('렌더링.onoff:',onOff, blankMatrix.current)
   useEffect(()=>{
     blankMatrix.current = [
@@ -325,10 +327,8 @@ const App = ({ navigation, route }) => {
             height: 18*10,    //TextInput 높이
             textAlignVertical: 'top'
           }}
+          editable={bottomSheetMemoOpen ? true : false}
           onChangeText={(e) => setMemo(e)} //메모 상태 업뎃
-          // onChange={e => {
-          //   setMemo(e.nativeEvent.text);
-          // }}
           >
         </TextInput>
       </KeyboardAvoidingView>
@@ -376,6 +376,11 @@ const App = ({ navigation, route }) => {
         initialSnap={1}
         borderRadius={40}
         renderHeader={renderContent}
+        enabledBottomClamp={true}
+        onOpenStart={()=>{setBottomSheetMemoOpen(true)}}
+        onOpenEnd={()=>{setBottomSheetMemoOpen(true)}}
+        onCloseStart={()=>{setBottomSheetMemoOpen(false)}}
+        onCloseEnd={()=>{setBottomSheetMemoOpen(false)}}
         //enabledInnerScrolling={true}
       />
       <BottomSheetPhoto radius={1} ref={bottomSheetPhoto} height={200}>
@@ -417,7 +422,7 @@ export default App;
 const styles = StyleSheet.create({
   bottomSheetStyle:{
     backgroundColor: '#FDF8FF',
-    padding: 16,
+    padding: 10,
     height: itemSizeC*8-itemSizeC*3+150,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,

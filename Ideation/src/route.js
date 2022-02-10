@@ -138,7 +138,7 @@ const StackHomeNavigator = ({route,navigation}) => {
             fontFamily: 'SB_Aggro_B',
             fontSize: 20
           }
-        }}/> 
+        }}/>
     </StackHome.Navigator>
   );
 };
