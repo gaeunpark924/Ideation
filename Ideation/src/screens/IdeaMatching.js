@@ -266,7 +266,7 @@ const IdeaMatching = ({route, navigation}) => {
   // useEffect(() => {
   //   addPosts('userUid', userUid);
   // }, [togglesaveiconTrue]);
-  // 체크 여부 판단
+  // 체크 여부 판단  //여기가 먼저
   const confirmCheck = index => {
     if (confirmCheckState.current[index]) {
       //체크된 상태면
@@ -278,7 +278,6 @@ const IdeaMatching = ({route, navigation}) => {
     }
   };
   const [cardData, setCarddata] = useState();
-
   const [isVisible, setIsVisible] = useState(false);
   // pen toggleButton
   const [pen, setPen] = useState(false);
@@ -411,22 +410,6 @@ const IdeaMatching = ({route, navigation}) => {
   //   console.log('퍼즐 조합 저장',confirmCheckState.current)
   //   setSaveicon(!saveicon);
   // };
-  //체크 확인 
-  const confirmCheck = (index) => {
-    if (confirmCheckState.current[index]){ //체크된 상태면
-      confirmCheckState.current[index] = false
-    }else{ //체크가 안된 상태면
-      confirmCheckState.current[index] = true
-      console.log('출력')
-    }
-    console.log(confirmCheckState.current)
-  };
-  const [cardData, setCarddata] = useState();
-  const getData = (cd) => {
-    console.log("getData",cd)
-    setCarddata(cd);
-  };
-  
   return (
     <View style={styles.container}>
       <View style={styles.projectname}>

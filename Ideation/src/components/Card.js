@@ -36,7 +36,6 @@ const SC = ({
       // getData({text: data.text, image: data.image});
       getcd();
     };
-    const cd = useRef({text: data.text, image: data.image});
     const getcd = () => {
       // console.log(cd.current);
       // console.log('자식');

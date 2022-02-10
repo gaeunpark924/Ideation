@@ -14,7 +14,6 @@ import {
 import { PanGestureHandler, Swipeable } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
 import BottomSheet from 'reanimated-bottom-sheet';
-import ActionBottomSheet from "../components/ActionBottomSheet";
 import Feather from "react-native-vector-icons/Feather";
 import { Col, Row, Grid } from "react-native-easy-grid";
 import {KeyboardAvoidingView} from 'react-native';
