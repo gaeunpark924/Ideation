@@ -32,7 +32,7 @@ const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
     console.log('사용자id', uid);
-  }, [uid]);  //
+  }, [uid]);
 
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -45,7 +45,7 @@ const IdeaMatching = ({route, navigation}) => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
-  
+
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -184,22 +184,7 @@ const IdeaMatching = ({route, navigation}) => {
   const togglepinicon = () => {
     setPinicon(!pinicon);
   };
-  // useEffect(()=>{
-  //   async userUid()=>{
-  //     await firestore()
-  //     .collection('userIdeaData')
-  //     .doc(userUid)
-  //     .collection('item')
-  //     .add({
-  //       title: '앱아이디어',
-  //       data: temp.current,
-  //       keyword: selectedkeyword,
-  //       createDate: createDate(),
-  //       updateDate: createDate(),
-  //       createTime: createTime(),
-  //       updateTime: createTime(),
-  //     });
-  // },[togglesaveiconFalse]);
+  const next = useRef(false);
   const addPosts = () => {
     let Carddata = [];
     for (let i = 0; i < 4; i++) {
@@ -209,26 +194,35 @@ const IdeaMatching = ({route, navigation}) => {
         } else {
           Carddata.push(temp.current[i].image);
         }
+      } else if (confirmCheckState.current[i]) {
+        continue;
       }
     }
     let selectedkeyword = keyword.filter(k => k.select == true);
     console.log(Carddata);
-    firestore()
-      .collection('userIdeaData')
-      .doc(uid)
-      .collection('item')
-      .add({
-        keyword: selectedkeyword,
-        carddata: Carddata,
-        title: '앱 아이디어',
-        createTime: firestore.FieldValue.serverTimestamp(),
-        updateTime: firestore.FieldValue.serverTimestamp(),
-        createDate: createDate(),
-        updateDate: createDate(),
-      })
-      .then(() => {
-        console.log('User added!');
-      });
+    if (Carddata.length === 0) {
+      next.current = false;
+      alert('저장할 카드를 체크해주세요!');
+      console.log('저장할 카드를 체크해주세요!');
+    } else {
+      next.current = true;
+      firestore()
+        .collection('userIdeaData')
+        .doc(uid)
+        .collection('item')
+        .add({
+          keyword: selectedkeyword,
+          carddata: Carddata,
+          title: '앱 아이디어',
+          createTime: firestore.FieldValue.serverTimestamp(),
+          updateTime: firestore.FieldValue.serverTimestamp(),
+          createDate: createDate(),
+          updateDate: createDate(),
+        })
+        .then(() => {
+          console.log('User added!');
+        });
+    }
   };
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
@@ -238,34 +232,19 @@ const IdeaMatching = ({route, navigation}) => {
     setSaveicon(!saveicon);
     // alert('저장할 카드를 눌러주세요');
   };
-  // const fs = useRef(false);
-  // console.log(fs.current);
 
   // saveIcon에서 check된 상태에서 누를때 -> 배열로 받아온 부분 firestore에 저장
   const togglesaveiconTrue = () => {
-    // console.log(temp);
-    // console.log(confirmCheckState);
-    // 여기에 firebase에 넣는 함수 들어가면 됨.
     setSaveicon(!saveicon);
     console.log(temp.current);
     addPosts();
-    // fs.current = true;
-    // addPosts(userUid);
     temp.current = [{}, {}, {}, {}];
     confirmCheckState.current = [false, false, false, false];
-    // console.log(temp);
-    // console.log(confirmCheckState);
+    console.log(next);
+    if (next.current) {
+      navigation.navigate('ideadevelop', {uid: uid});
+    }
   };
-  // useEffect(async (userUid) => {
-  //   const data = await fetchUser(userId);
-  //   setUser(data);
-  //   }, [userId]);
-  // useEffect(() => {
-  //   addPosts(userUid);
-  // }, [userUid]);
-  // useEffect(() => {
-  //   addPosts('userUid', userUid);
-  // }, [togglesaveiconTrue]);
   // 체크 여부 판단  //여기가 먼저
   const confirmCheck = index => {
     if (confirmCheckState.current[index]) {
@@ -274,7 +253,6 @@ const IdeaMatching = ({route, navigation}) => {
     } else {
       //체크가 안된 상태면
       confirmCheckState.current[index] = true;
-      //console.log('출력');
     }
   };
   const [cardData, setCarddata] = useState();
@@ -287,22 +265,18 @@ const IdeaMatching = ({route, navigation}) => {
   const bottomModalShow1 = () => {
     bottomSheet.current.show();
     setWhichCard([true, false, false, false]);
-    //setIdx(1);
   };
   const bottomModalShow2 = () => {
     bottomSheet.current.show();
     setWhichCard([false, true, false, false]);
-    //setIdx(2);
   };
   const bottomModalShow3 = () => {
     bottomSheet.current.show();
     setWhichCard([false, false, true, false]);
-    //setIdx(3);
   };
   const bottomModalShow4 = () => {
     bottomSheet.current.show();
     setWhichCard([false, false, false, true]);
-    //setIdx(4);
   };
   const bottomSheet = useRef();
   const eachCard = useRef();
@@ -326,7 +300,6 @@ const IdeaMatching = ({route, navigation}) => {
   const textModal = () => {
     isClickTextModal(!clicktextModal);
     bottomSheet.current.close();
-    //console.log(eachCard);
   };
   //console.log(isfix);
   const takeImagefromphone = () =>
@@ -401,20 +374,16 @@ const IdeaMatching = ({route, navigation}) => {
   const [ischeck, setIscheck] = useState();
   const [allrandom, setAllRandom] = useState(false);
   const allrandommatching = () => {
-    alert('전체카드 랜덤 매칭합니다!');
+    // alert('전체카드 랜덤 매칭합니다!');
     setAllRandom(!allrandom);
   };
-  //IdeaMatching.js
-  //const confirmCheckState = useRef([false, false, false, false])
-  // const togglesaveiocn = () => {
-  //   console.log('퍼즐 조합 저장',confirmCheckState.current)
-  //   setSaveicon(!saveicon);
-  // };
   return (
     <View style={styles.container}>
-      <View style={styles.projectname}>
-        <Text style={styles.projecttitle}>Let's Puzzling</Text>
-      </View>
+      {saveicon ? null : (
+        <View style={styles.projectname}>
+          <Text style={styles.projecttitle}>Puzzling</Text>
+        </View>
+      )}
       <View style={styles.sv}>
         <ScrollView
           horizontal={true}
@@ -699,7 +668,7 @@ const IdeaMatching = ({route, navigation}) => {
       </View>
       {saveicon ? (
         <View style={styles.saveinfo}>
-          <Text style={styles.saveinfotext}>저장할 퍼즐을 선택해주세요</Text>
+          <Text style={styles.saveinfotext}>저장할 퍼즐을 선택해주세요.</Text>
         </View>
       ) : null}
       <View style={styles.bottomBar}>
@@ -711,7 +680,7 @@ const IdeaMatching = ({route, navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: 'black',
-                borderWidth: 0.8,
+                borderWidth: 0.7,
                 margin: 5,
                 backgroundColor: 'gray',
               }}>
@@ -726,7 +695,7 @@ const IdeaMatching = ({route, navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: 'black',
-                borderWidth: 0.8,
+                borderWidth: 0.7,
                 margin: 5,
               }}>
               <TouchableOpacity onPress={togglepinicon}>
@@ -741,7 +710,7 @@ const IdeaMatching = ({route, navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: 'black',
-                borderWidth: 0.8,
+                borderWidth: 0.7,
                 margin: 5,
                 backgroundColor: 'gray',
               }}>
@@ -756,7 +725,7 @@ const IdeaMatching = ({route, navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: 'black',
-                borderWidth: 0.8,
+                borderWidth: 0.7,
                 margin: 5,
               }}>
               <TouchableOpacity onPress={togglepen}>
@@ -771,7 +740,7 @@ const IdeaMatching = ({route, navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: 'black',
-                borderWidth: 0.8,
+                borderWidth: 0.7,
                 margin: 5,
                 width: '100%',
                 backgroundColor: 'grey',
@@ -797,7 +766,7 @@ const IdeaMatching = ({route, navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 borderColor: 'black',
-                borderWidth: 0.8,
+                borderWidth: 0.7,
                 margin: 5,
                 width: '100%',
               }}>
@@ -821,10 +790,10 @@ const IdeaMatching = ({route, navigation}) => {
           style={{
             flex: 1,
             alignItems: 'center',
-            backgroundColor: '#DABDFF',
+            backgroundColor: '#CCA5FF',
             justifyContent: 'center',
             borderColor: 'black',
-            borderWidth: 1,
+            borderWidth: 0.7,
             margin: 5,
           }}>
           <TouchableOpacity
@@ -922,7 +891,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   saveinfo: {justifyContent: 'center', alignItems: 'center', paddingBottom: 10},
-  saveinfotext: {opacity: 0.33},
+  saveinfotext: {opacity: 0.33, fontFamily: 'SB_Aggro_L'},
   cardsave: {
     flex: 1,
     borderColor: 'black',

@@ -94,6 +94,7 @@ const SC = ({
                     name="checkbox-active"
                     size={24}
                     onPress={togglecheck}
+                    style={{backgroundColor: 'white'}}
                   />
                 </TouchableOpacity>
               ) : (
@@ -102,7 +103,7 @@ const SC = ({
                     name="checkbox-passive"
                     size={24}
                     onPress={togglecheck}
-                    backgroundColor="white"
+                    style={{backgroundColor: 'white'}}
                   />
                 </TouchableOpacity>
               )
