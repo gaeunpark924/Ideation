@@ -111,12 +111,12 @@ const StackAuthNavigator = () => {
 
 function LogoTitle() {
   return (
-    <View>
+    <View style={{flexDirection:'row',alignItems:'center'}}>
       <TextInput
        style={{
          fontFamily: 'SB_Aggro_B',
          fontSize: 20,
-         width:200,
+         width:170,
         //  backgroundColor:'blue'
         //  
         }}
@@ -126,6 +126,10 @@ function LogoTitle() {
        //maxLength={15}
       //  onChangeText={(e)=>{setText(e)}}
        />
+      <Image
+          //style={styles.plus}
+          style={{height:17, width:18}}
+          source={require('./assets/pencil.png')}/>
     </View>
   );
 }
@@ -137,7 +141,7 @@ function BackArrow({props}) {
        activeOpacity={0.8}>
       <Image
           //style={styles.plus}
-          style={{height:29, width:24,}}
+          style={{height:29, width:24}}
           source={require('./assets/back.png')}/>
       </TouchableOpacity>
     </View>
@@ -157,15 +161,14 @@ const StackHomeNavigator = ({route,navigation}) => {
             borderBottomWidth: 2,
             borderBottomColor: '#1D1D1D',
           },
-          headerTitle: (props) => <LogoTitle {...props}/>, //headet Title
+          // headerTitle: (props) => <LogoTitle {...props}/>, //headet Title
+          //headerTitle: 'Puzzle name',
           // headerLeft: (props) => <BackArrow {...props}/>,
           headerBackImage : ()=>(<BackArrow/>),  //header Back
           headerTitleContainerStyle: {
             //borderWidth: 1,
             left: -20,  //header title과 header left 사이 공백 줄임
           },
-          // headerTitle: (props) => <LogoTitle {...props} />,
-          //headerTitle: 'Puzzle name',
           headerTitleStyle: {
             fontFamily: 'SB_Aggro_B',
             fontSize: 20

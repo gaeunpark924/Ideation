@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import {
   View,
   Text,
@@ -34,6 +34,7 @@ import exampleImageFrame1 from '../assets/frame1.png'
 import BottomSheetPhoto from 'react-native-gesture-bottom-sheet';
 import PuzzleModal from "../components/PuzzleModal";
 import ImageModal from "../components/ImageModal";
+import { mainTheme } from "../theme/theme";
 //import {getHeaderHeight, getHeaderSafeAreaHeight,getOrientation} from '../HeaderSize'; 동작 안함
 import Animated, { 
   useAnimatedGestureHandler,
@@ -60,6 +61,25 @@ const bottomHeight = screenHeight-itemSizeC*6
 const pad = (width - (COL*(width/COL - 6)))/2;
 const itemSizeC = width/COL - 6; //박스 크기
 // let fall = new Animated.Value(1);
+
+const PuzzleTitle = () =>{
+  return (
+    <View style={{flexDirection:'row',alignItems:'center'}}>
+      <TextInput
+       style={{
+         fontFamily: 'SB_Aggro_B',
+         fontSize: 20,
+         width:170,
+        }}
+       placeholder='Puzzle Name'
+       placeholderTextColor={mainTheme.colors.black}
+       />
+      <Image
+          style={{height:17, width:18}}
+          source={require('../assets/pencil.png')}/>
+    </View>
+  );
+}
 
 const App = ({ navigation, route }) => {
   const [movingDraggable, setMovingDraggable] = useState(null);
@@ -134,8 +154,15 @@ const App = ({ navigation, route }) => {
     //bottomSheet.current.snapTo(0)
     //bottomSheet.current.translateY = bottomHeight
     //console.log("마운트")
-
   },[])
+  //헤더
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <PuzzleTitle></PuzzleTitle>
+      )
+    });
+  }, [navigation]);
   
   // const animatedShadowOpacity = Animated.interpolate(fall,{
   //   inputRange:[0,1],
