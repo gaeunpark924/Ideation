@@ -142,6 +142,7 @@ const App = ({ navigation, route }) => {
   //   outputRange:[0.5, 0],
   // });
   const takeImagefromphone = () => {
+    
     const options = {
       title: "Select Avatar",
       storageOptions: {
@@ -170,7 +171,7 @@ const App = ({ navigation, route }) => {
               : tmp.uri.replace("file://", ""),
           fileName: response.fileName,
         };
-        console.log('행, 열',clickedEmptyIndex.current[0],clickedEmptyIndex.current[1])
+        //console.log('행, 열',clickedEmptyIndex.current[0],clickedEmptyIndex.current[1])
         //boxMatrix.map((row, i)=>console.log(content))
         // console.log("testMatrix",testMatrix)
         // setTestMatrix(testMatrix.map((row, i)=>
@@ -180,6 +181,7 @@ const App = ({ navigation, route }) => {
         //         : column
         //       )
         // ))
+        
         setBoxMatrix(boxMatrix.map((row, i)=>
             row.map((column, j)=>
               i === clickedEmptyIndex.current[0] && j === clickedEmptyIndex.current[1]
@@ -187,6 +189,7 @@ const App = ({ navigation, route }) => {
               : column
             )
         ))
+        
         //console.log("boxMatrix",boxMatrix)
         // setBoxMatrix(boxMatrix.map(content => content
 
@@ -304,8 +307,8 @@ const App = ({ navigation, route }) => {
           // blankMatrix.current[to.y][to.x] = temp
           var fromBoxContent = boxMatrix[from.y][from.x]
           var toBoxContent = boxMatrix[to.y][to.x]
-          console.log('fromBoxContent',fromBoxContent)
-          console.log('toBoxContent',toBoxContent)
+          //console.log('fromBoxContent',fromBoxContent)
+          //console.log('toBoxContent',toBoxContent)
           setBoxMatrix(boxMatrix.map((row, i)=>
             row.map((column, j)=>
               i === from.y && j === from.x
@@ -467,10 +470,19 @@ const App = ({ navigation, route }) => {
       </KeyboardAvoidingView>
     </View>
   );
+  const pressBottomImage = () => {
+    bottomSheetPhoto.current.close()
+    takeImagefromphone()
+  }
   const [clicktextModal, isClickTextModal] = useState(false);
   //바텀 시트에서 텍스트 선택
   const textModal = () => {
     isClickTextModal(!clicktextModal);
+    clickedInfo.current.row = clickedEmptyIndex.current[0]
+    clickedInfo.current.column = clickedEmptyIndex.current[1]
+    clickedInfo.current.text = ''
+    clickedInfo.current.image = ''
+
     bottomSheetPhoto.current.close();
     puzzleType.current = 'text'  //type 변경
     setOpenPuzzleModal(true) //모달 열기
@@ -677,7 +689,7 @@ const App = ({ navigation, route }) => {
                 <Text style={{fontFamily: 'SB_Aggro_L'}}>텍스트 입력하기</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={takeImagefromphone}
+                onPress={pressBottomImage}
                 style={styles.bottomModal}>
                 <PictureIcon
                   name="picture-o"
@@ -687,7 +699,7 @@ const App = ({ navigation, route }) => {
                 <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={takeVideofromphone}
+                onPress={()=>{takeVideofromphone}}
                 style={styles.bottomModal}>
                 <VideoIcon
                   name="videocamera"
