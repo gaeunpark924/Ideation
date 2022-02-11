@@ -149,6 +149,10 @@ const idealist = ({route,navigation}) => {
     var day = ('0' + date.getDate()).slice(-2);
     return year + '.' + month + '.' + day;
   };
+  useEffect(()=>{
+    console.log('마운트')
+  },[])
+  console.log('렌더링 idealist')
   const searchTitle = text => {
     if (text) {
       const tmpPost = post.filter(item => item.title.includes(text));

@@ -54,11 +54,11 @@ const circleSize = width - 36;
 //const itemSize = width / 4; //네모칸의 가로 세로 크기
 const radius = circleSize / 2 - (width / 4) / 2;
 const center = radius;
-const pad = 0;
-const itemSizeC = width/COL; //박스 크기
+//const pad = 6;
+//const itemSizeC = width/COL; //박스 크기
 const bottomHeight = screenHeight-itemSizeC*6
-// const pad = (width - (COL*(width/COL - 6)))/2;
-// const itemSizeC = width/COL - 6; //박스 크기
+const pad = (width - (COL*(width/COL - 6)))/2;
+const itemSizeC = width/COL - 6; //박스 크기
 // let fall = new Animated.Value(1);
 
 const App = ({ navigation, route }) => {
@@ -238,6 +238,7 @@ const App = ({ navigation, route }) => {
         style={{
           flex: 1,
           backgroundColor,//padding: 4,
+          //backgroundColor: 'blue',
           justifyContent: "space-between",
           borderColor : "#D8D8D8", //색깔 확인
           borderWidth : 0.5,
@@ -632,7 +633,7 @@ const App = ({ navigation, route }) => {
       <BottomSheet
         ref={sheetRef}
         callbackNode={fall}
-        snapPoints={[itemSizeC*8+itemSizeC/2, itemSizeC*3]} //메모 바텀 시트 snap Point
+        snapPoints={[itemSizeC*9, itemSizeC*3]} //메모 바텀 시트 snap Point
         initialSnap={1}
         borderRadius={40}
         renderHeader={renderContent}
@@ -802,7 +803,7 @@ const styles = StyleSheet.create({
   },
   safeAreaView: {
     // flex: 1,
-    backgroundColor: 'blue'//'#fdf8ff'//"#20232A",
+    backgroundColor: '#fdf8ff'//'#fdf8ff'//"#20232A",
   },
   viewContainer: {
     flex: 1,

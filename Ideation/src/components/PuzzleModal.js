@@ -68,7 +68,12 @@ const PuzzleModal = ({
           };
           //console.log('행, 열',clickedEmptyIndex.current[0],clickedEmptyIndex.current[1])
           //console.log(source.uri)
-          setImage(source.uri)
+          if (source.uri !== ''){
+            setImage(source.uri)
+          }
+          type === 'text'
+          ? setType('image')
+          : null
           //여기서 다시 type을 image로 바꿔야 하나?
 
         }
@@ -76,25 +81,20 @@ const PuzzleModal = ({
     };
     const changeType = () => {
       console.log('changeType',type)
-      if (image===''){
+      if (image==='' && type ==='text'){
         //처음 텍스트에서 빈 이미지 퍼즐로 전환할 때
-        console.log('xxxxxxxxxx')
+        takeImagefromphone()
+        //console.log('xxxxxxxxxx')
+      }else{
+        setType(type === 'text'
+        ? 'image'
+        : 'text'
+        )
       }
-      console.log('image',image)
-      console.log('text',text)
-      //setText('')
-      //setImage(null)
-      // type === 'text'
-      // ? setType('image')
-      // : setType('text')
-      setType(type === 'text'
-      ? 'image'
-      : 'text'
-      )
     }
     return (
         <Modal
-            animationType={'slide'}
+            animationType={'fade'}
             transparent={true}
             onRequestClose={()=>{
               type==='text' ? closePuzzleModal(row,column,text,type) : closePuzzleModal(row,column,image,type)}
