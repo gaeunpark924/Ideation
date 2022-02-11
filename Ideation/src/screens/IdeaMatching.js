@@ -26,8 +26,9 @@ import BottomSheet from 'react-native-gesture-bottom-sheet';
 import {ListItem} from 'react-native-elements/dist/list/ListItem';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-
+import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
+import Addkeyword from '../components/AddKeyword';
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
@@ -38,14 +39,24 @@ const IdeaMatching = ({route, navigation}) => {
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
     {key: index++, label: '랜덤', select: false},
-    {key: index++, label: '노래', select: true},
-    {key: index++, label: '유튜브', select: true},
-    {key: index++, label: '영화', select: true},
-    {key: index++, label: '드라마', select: true},
+    {key: index++, label: '자연', select: true},
+    {key: index++, label: '건축', select: true},
+    {key: index++, label: '예술', select: true},
+    {key: index++, label: '뷰티', select: true},
+    {key: index++, label: '디자인', select: false},
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
+    {key: index++, label: '음악', select: false},
+    {key: index++, label: '금융', select: false},
+    // {key: index++, label: '경영', select: false},
+    // {key: index++, label: '음식 및 음료', select: false},
+    // {key: index++, label: '인테리어', select: false},
+    // {key: index++, label: '패션', select: false},
+    // {key: index++, label: '여행', select: false},
+    // {key: index++, label: '운송수단', select: false},
+    // {key: index++, label: '이벤트', select: false},
+    // {key: index++, label: '기타', select: false},
   ]);
-
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -57,7 +68,9 @@ const IdeaMatching = ({route, navigation}) => {
       />
     ) : null,
   );
-
+  useEffect(() => {
+    Addkeyword('노래');
+  }, []);
   const modalkeywordtoggle = e => {
     let newKeywords = keyword.map(k => {
       if (k.label === e.label) {

@@ -6,22 +6,55 @@ import storage from '@react-native-firebase/storage';
 
 // searchItem에는 검색할 키워드가 들어감
 
-const Addkeyword = tempkey => {
-  /* firebase userIdeaData 읽어오기 */
+const Addkeyword = keyword => {
+  const [params, setParams] = useState({
+    key: 'AIzaSyBuG4NGZUXTEkePD63t9uoqprOU_LSKs30',
+    part: 'snippet',
+    // q: {search},
+    q: keyword,
+    maxResults: 10,
+    type: 'video',
+    order: 'viewCount',
+  });
+  const [imageList, setImageList] = useState([]);
   useEffect(() => {
-    const db = firestore()
-      .collection('categoryData')
-      .doc(tempkey.tempkey)
-      .onSnapshot(documentSnapshot => {
-        console.log(documentSnapshot.data());
+    axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
+    axios
+      .get('./search', {params})
+      .then(response => {
+        if (!response) {
+          return;
+        } else {
+          let i = 0;
+          for (i = 0; i < params.maxResults; i++) {
+            image = response.data.items[i].snippet.thumbnails;
+            setImageList([...imageList, image]);
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error);
       });
-  }, [tempkey.tempkey]);
+  }, []);
+
+  useEffect(() => {
+    console.log(titleList);
+    firestore()
+      .collection('categoryData')
+      .doc('item')
+      .collection(keyword)
+      .doc()
+      .set({
+        keyword: keyword,
+        data: imageList,
+      });
+  }, []);
+  /* firebase userIdeaData 읽어오기 */
   // firestore에 키워드 추가하기
   // useEffect(() => {
   //   let idx = 0;
   //   YoutubeApi(tempkey.tempkey); //youtube api로부터 받아서 titlelist에 저장
   // });
-  const [keyworddata, setKeyworddata] = useState();
   // const YoutubeApi = searchItem => {
   /* 유튜브 api 받아오기 */
   // const [titleList, setTitleList] = useState({title: ''});
@@ -33,7 +66,6 @@ const Addkeyword = tempkey => {
   //   maxResults: 5,
   //   type: 'video',
   // });
-
   //   useEffect(() => {
   //     axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
   //     axios
@@ -70,7 +102,6 @@ const Addkeyword = tempkey => {
   //   return titleList;
   // };
   // //categoryData -> doc(keyword) -> keyworddata
-
   // const obj = Object.assign({}, YoutubeApi(tempkey.tempkey));
   // const res = firestore()
   //   .collection('categoryData')
@@ -79,13 +110,11 @@ const Addkeyword = tempkey => {
   // useEffect(() => {
   //   // .set({ddd: '222', text: '예빛'});
   // }, [tempkey.tempkey]);
-
   // const dataText = keyworddata.map(k => (
   //   <View>
   //     <Text>{k.label}</Text>
   //   </View>
   // ));
-  return <View></View>;
 };
 
-export default Addkeyword;
+export {Addkeyword};

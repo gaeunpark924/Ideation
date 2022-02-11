@@ -5,6 +5,8 @@ import SwipeCards from 'react-native-swipe-cards-deck';
 import Pinoutline from 'react-native-vector-icons/MaterialCommunityIcons';
 import Checkbox from 'react-native-vector-icons/Fontisto';
 import firestore from '@react-native-firebase/firestore';
+import Youtube from './youtubeApi';
+import axios from 'axios';
 //pinicon,saveicon : icon누름 여부
 const SC = ({
   penicon,
@@ -79,6 +81,7 @@ const SC = ({
         }
       }
     };
+
     return (
       <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
         <View
@@ -175,15 +178,7 @@ const SC = ({
   const [cards, setCards] = useState();
   // Youtube api -> firestore -> setCards를 통해서 이미지나 텍스트 저장.
   let newCards = useRef();
-  // useEffect(() => {
-  //   const db = firestore()
-  //     .collection('categoryData')
-  //     .doc(keyword)
-  //     .onSnapshot(documentSnapshot => {
-  //       newCards.current = documentSnapshot.data();
-  //     });
-  // }, [keyword]);
-  // YoutubeAPI, FireStore 사용해서 이 부분 수정해주기
+
   let cards1 = [
     {
       text: keyword,
@@ -329,13 +324,13 @@ const SC = ({
           shuffle(cards4);
         }
       }
-      if (keyword === '노래') {
+      if (keyword === '자연') {
         setCards(cards1);
-      } else if (keyword === '유튜브') {
+      } else if (keyword === '건축') {
         setCards(cards2);
-      } else if (keyword === '영화') {
+      } else if (keyword === '예술') {
         setCards(cards3);
-      } else if (keyword === '드라마') {
+      } else if (keyword === '뷰티') {
         setCards(cards4);
       }
     }, 1000);
