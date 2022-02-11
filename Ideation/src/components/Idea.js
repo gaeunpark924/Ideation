@@ -24,7 +24,10 @@ const IdeaComponent = ({item,onDelete}) => {
       var todayDate = new Date(getToday());
       var updateDate = new Date(item.updateDate);
       const diff = updateDate.getTime() - todayDate.getTime();
-      setUpdate(String(Math.abs(diff / (1000*3600*24)))+'일 전 수정')
+      var tmp = String(Math.abs(diff / (1000*3600*24)))
+      tmp === '0'
+      ? setUpdate('오늘 수정')
+      : setUpdate(tmp+'일 전 수정')
     },[])
     return (
       <TouchableOpacity

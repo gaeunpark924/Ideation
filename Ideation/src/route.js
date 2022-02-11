@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet,View, Text, Alert,DrawerButton, AsyncStorage} from 'react-native';
+import {StyleSheet,View, TextInput, Image, Text, Alert,DrawerButton, AsyncStorage} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 import { createDrawerNavigator,
   DrawerItem,
@@ -21,15 +21,16 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { userInfo } from './User';
 import auth from '@react-native-firebase/auth';
 import Close from 'react-native-vector-icons/AntDesign';
+import Back from 'react-native-vector-icons/Ionicons';
+import { mainTheme } from './theme/theme';
 
 // 앱이 각 화면이 전환될 수 있는 기본 틀을 제공한다.
 const StackAuth = createStackNavigator();
 const StackHome = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-
 const StackAuthNavigator = () => {
-  console.log("route StackAuthNavigator")
+  //console.log("route StackAuthNavigator")
   return (
     <StackAuth.Navigator
       initialRouteName='Login'
@@ -108,6 +109,40 @@ const StackAuthNavigator = () => {
   );
 };
 
+function LogoTitle() {
+  return (
+    <View>
+      <TextInput
+       style={{
+         fontFamily: 'SB_Aggro_B',
+         fontSize: 20,
+         width:200,
+        //  backgroundColor:'blue'
+        //  
+        }}
+       placeholder='Puzzle Name'
+       placeholderTextColor={mainTheme.colors.black}
+      //  value={}
+       //maxLength={15}
+      //  onChangeText={(e)=>{setText(e)}}
+       />
+    </View>
+  );
+}
+
+function BackArrow({props}) {
+  return (
+    <View>
+      <TouchableOpacity
+       activeOpacity={0.8}>
+      <Image
+          //style={styles.plus}
+          style={{height:29, width:24,}}
+          source={require('./assets/back.png')}/>
+      </TouchableOpacity>
+    </View>
+  );
+}
 const StackHomeNavigator = ({route,navigation}) => {
   return (
     <StackHome.Navigator initialRouteName='idealist' options={{headerStyle:{backgroundColor:'#fdf8ff'},}}>
@@ -122,7 +157,15 @@ const StackHomeNavigator = ({route,navigation}) => {
             borderBottomWidth: 2,
             borderBottomColor: '#1D1D1D',
           },
-          headerTitle: 'Puzzle name',
+          headerTitle: (props) => <LogoTitle {...props}/>, //headet Title
+          // headerLeft: (props) => <BackArrow {...props}/>,
+          headerBackImage : ()=>(<BackArrow/>),  //header Back
+          headerTitleContainerStyle: {
+            //borderWidth: 1,
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
+          // headerTitle: (props) => <LogoTitle {...props} />,
+          //headerTitle: 'Puzzle name',
           headerTitleStyle: {
             fontFamily: 'SB_Aggro_B',
             fontSize: 20

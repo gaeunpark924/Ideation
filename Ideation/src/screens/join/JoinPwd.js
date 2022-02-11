@@ -37,7 +37,11 @@ const JoinPwd = ({route, navigation}) => {
       : null;
   };
   return (
-    <View style={styles.container}>
+      
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 110}>
       <KeyboardAvoidingView behavior="padding">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{marginTop: 110}}>
@@ -98,7 +102,7 @@ const JoinPwd = ({route, navigation}) => {
           다음단계
         </Text>
       </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

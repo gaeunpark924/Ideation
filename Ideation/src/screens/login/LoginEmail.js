@@ -48,8 +48,12 @@ const LoginEmail = ({navigation}) => {
     }
   }
     return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView behavior="padding" enabled>
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 110}>
+        {/* <View style={styles.container}> */}
+            {/* <KeyboardAvoidingView behavior="padding" enabled> */}
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{marginTop:110}}>
                   <TextInput
@@ -80,7 +84,7 @@ const LoginEmail = ({navigation}) => {
                 />
               </View>
               </TouchableWithoutFeedback> 
-            </KeyboardAvoidingView>
+            {/* </KeyboardAvoidingView> */}
             <View>
                 <View style={{alignItems:'center',marginBottom:20}}>
                     <Text
@@ -101,7 +105,7 @@ const LoginEmail = ({navigation}) => {
                 </Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
       
     );
 };
