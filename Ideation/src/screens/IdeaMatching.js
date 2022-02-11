@@ -68,9 +68,9 @@ const IdeaMatching = ({route, navigation}) => {
       />
     ) : null,
   );
-  useEffect(() => {
-    Addkeyword('노래');
-  }, []);
+  // useEffect(() => {
+  //   Addkeyword('노래');
+  // }, []);
   const modalkeywordtoggle = e => {
     let newKeywords = keyword.map(k => {
       if (k.label === e.label) {
