@@ -69,7 +69,7 @@ const PuzzleTitle = () =>{
        style={{
          fontFamily: 'SB_Aggro_B',
          fontSize: 20,
-         width:170,
+         width: 20*10,
         }}
        placeholder='Puzzle Name'
        placeholderTextColor={mainTheme.colors.black}
@@ -118,7 +118,7 @@ const App = ({ navigation, route }) => {
   const bottomSheetPhoto = useRef();
   const [bottomSheetMemoOpen, setBottomSheetMemoOpen] = useState(false);
   const clickedEmptyIndex = useRef([])
-  console.log('렌더링.onoff:')
+  //console.log('렌더링.onoff:')
   const [boxMatrix,setBoxMatrix] = useState([])
   const [testMatrix,setTestMatrix] = useState([])
   let tmpMatrix = [];
@@ -160,7 +160,11 @@ const App = ({ navigation, route }) => {
     navigation.setOptions({
       headerTitle: () => (
         <PuzzleTitle></PuzzleTitle>
-      )
+      ),
+      headerTitleContainerStyle: {
+        //borderWidth: 1,
+        left: -20,  //header title과 header left 사이 공백 줄임
+      },
     });
   }, [navigation]);
   
@@ -275,7 +279,7 @@ const App = ({ navigation, route }) => {
           height: itemSizeC,
           width: itemSizeC,
         }}
-        activeOpacity={0.8}
+        //activeOpacity={0.8}
         // onPress={()=>{bottomSheetPhoto.current.show()}}
         onPress={()=>{pressEmpty(row, col)}}
         >
@@ -672,7 +676,7 @@ const App = ({ navigation, route }) => {
       <BottomSheet
         ref={sheetRef}
         callbackNode={fall}
-        snapPoints={[itemSizeC*9, itemSizeC*3]} //메모 바텀 시트 snap Point
+        snapPoints={[itemSizeC*9+pad*2, itemSizeC*3]} //메모 바텀 시트 snap Point
         initialSnap={1}
         borderRadius={40}
         renderHeader={renderContent}

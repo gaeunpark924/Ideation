@@ -35,7 +35,7 @@ const LoginEmail = ({navigation}) => {
           //   })]
           // })
           // navigation.dispatch(resetAction)
-
+          console.log('출력')
           //navigation.navigate("idealist",{"userUid":user.user.uid})
           navigation.navigate("StackHomeNavigator")//,{"userUid":user.uid})
           //navigation.navigate("welcome")

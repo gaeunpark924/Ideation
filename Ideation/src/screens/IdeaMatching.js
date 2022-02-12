@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {
   StyleSheet,
   Text,
@@ -30,9 +30,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import firestore from '@react-native-firebase/firestore';
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
-  useEffect(() => {
-    console.log('사용자id', uid);
-  }, [uid]);  //
+  // useEffect(() => {
+  //   console.log('사용자id', uid);
+  // }, [uid]);  //
 
   let index = 0;
   const [keyword, setKeyword] = useState([
@@ -45,7 +45,33 @@ const IdeaMatching = ({route, navigation}) => {
     {key: index++, label: '교육', select: false},
     {key: index++, label: '테크', select: false},
   ]);
-  
+  const saveTempData = useRef([
+    {
+      idx: 1,
+      text: '',
+      image: '',
+    },
+    {
+      idx: 2,
+      text: '',
+      image: '',
+    },
+    {
+      idx: 3,
+      text: '',
+      image: '',
+    },{
+      idx: 4,
+      text: '',
+      image: '',
+    }
+  ]);
+  //console.log('렌더링.onoff:',saveTempData)
+  // const countActiveUsers = () => {
+    
+  // }
+ // const count = useMemo(() => countActiveUsers(saveInfo), [saveInfo]);
+
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -136,7 +162,7 @@ const IdeaMatching = ({route, navigation}) => {
     setChange(change);
   };
   // 어떤 card 선택되었는지
-  const [whichcard, setWhichCard] = useState([false, false, false, false]);
+  const [whichcard, setWhichCard] = useState([false, false, false, false]);  //이게 변해서 다사 렌더링 됨
   /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
@@ -144,8 +170,8 @@ const IdeaMatching = ({route, navigation}) => {
   };
   const temp = useRef([{}, {}, {}, {}]);
   const getData = (idx, cd) => {
-    // console.log('getData 실행');
-    // console.log(cd);
+    console.log('getData 실행');
+    console.log(cd);
     // console.log(confirmCheckState.current[idx]);
     if (confirmCheckState.current[idx]) {
       temp.current[idx] = cd;
@@ -153,6 +179,9 @@ const IdeaMatching = ({route, navigation}) => {
       temp.current[idx] = {};
     }
   };
+  const saveData = (idx,cd) => {
+
+  }
 
   // 현재 선택된 키워드
   const selectedkeyword = keyword.filter(k => k.select == true);
@@ -182,6 +211,7 @@ const IdeaMatching = ({route, navigation}) => {
   };
   const [pinicon, setPinicon] = useState(false);
   const togglepinicon = () => {
+    console.log(pinicon)
     setPinicon(!pinicon);
   };
   // useEffect(()=>{
@@ -220,7 +250,7 @@ const IdeaMatching = ({route, navigation}) => {
       .add({
         keyword: selectedkeyword,
         carddata: Carddata,
-        title: '앱 아이디어',
+        title: 'Puzzle Name',//'앱 아이디어',
         createTime: firestore.FieldValue.serverTimestamp(),
         updateTime: firestore.FieldValue.serverTimestamp(),
         createDate: createDate(),
@@ -230,6 +260,8 @@ const IdeaMatching = ({route, navigation}) => {
         console.log('User added!');
       });
   };
+  //
+  const swipeCardIndex = useRef([0, 0, 0, 0]);   //현재 화면에 있는 스와이프 카드의 index ///
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
 
@@ -248,6 +280,7 @@ const IdeaMatching = ({route, navigation}) => {
     // 여기에 firebase에 넣는 함수 들어가면 됨.
     setSaveicon(!saveicon);
     console.log(temp.current);
+    console.log('swipeCardIndex',swipeCardIndex)
     addPosts();
     // fs.current = true;
     // addPosts(userUid);
@@ -282,7 +315,8 @@ const IdeaMatching = ({route, navigation}) => {
   // pen toggleButton
   const [pen, setPen] = useState(false);
   const togglepen = () => {
-    setPen(!pen);
+    console.log(pen)
+    setPen(!pen);  //여기서만 penicon을 수정함  //근데 여기서도 수정이 되는데
   };
   const bottomModalShow1 = () => {
     bottomSheet.current.show();
@@ -300,6 +334,7 @@ const IdeaMatching = ({route, navigation}) => {
     //setIdx(3);
   };
   const bottomModalShow4 = () => {
+    console.log('44')
     bottomSheet.current.show();
     setWhichCard([false, false, false, true]);
     //setIdx(4);
@@ -511,7 +546,7 @@ const IdeaMatching = ({route, navigation}) => {
                 <Text style={{fontFamily: 'SB_Aggro_L'}}>영상 가져오기</Text>
               </TouchableOpacity>
             </BottomSheet>
-            {pen && !isfix[0] ? (
+            {pen && !isfix[0] ? (  //pen 클릭 상태에서 카드 누르면 바텀이 뜬다 //pen이 비활성화 일때도 바텀이 뜨네
               <TouchableOpacity
                 onPress={bottomModalShow1}
                 style={{marginHorizontal: 5}}>
@@ -532,7 +567,9 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
+                  saveTempData={saveTempData}///
+                  swipeCardIndex={swipeCardIndex}///
+                  //getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -553,7 +590,9 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
+                saveDate={saveData}
+                saveTempData={saveTempData}///
+                swipeCardIndex={swipeCardIndex}///
               />
             )}
 
@@ -578,7 +617,9 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
+                  saveDate={saveData}
+                  saveTempData={saveTempData}///
+                  swipeCardIndex={swipeCardIndex}///
                 />
               </TouchableOpacity>
             ) : (
@@ -599,7 +640,9 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
+                saveDate={saveData}
+                saveTempData={saveTempData}///
+                swipeCardIndex={swipeCardIndex}///
               />
             )}
           </View>
@@ -625,7 +668,9 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
+                  saveDate={saveData}
+                  saveTempData={saveTempData}///
+                  swipeCardIndex={swipeCardIndex}///
                 />
               </TouchableOpacity>
             ) : (
@@ -646,7 +691,9 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
+                saveDate={saveData}
+                saveTempData={saveTempData}///
+                swipeCardIndex={swipeCardIndex}///
               />
             )}
             {pen && !isfix[3] ? (
@@ -670,7 +717,9 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
+                  saveDate={saveData}
+                  saveTempData={saveTempData}///
+                  swipeCardIndex={swipeCardIndex}///
                 />
               </TouchableOpacity>
             ) : (
@@ -691,7 +740,9 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
+                saveDate={saveData}
+                saveTempData={saveTempData}
+                swipeCardIndex={swipeCardIndex}///
               />
             )}
           </View>

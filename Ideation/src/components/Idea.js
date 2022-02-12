@@ -11,13 +11,14 @@ import Dot from 'react-native-vector-icons/Entypo';
 import Pin from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
 
-const IdeaComponent = ({item,onDelete}) => {
+const IdeaComponent = ({item,onDelete,pressIdea}) => {
     const [visible, setVisible] = useState(false);
     const hideMenu = () => setVisible(false);
     const showMenu = () => setVisible(true);
     const [update, setUpdate] = useState('')
     const getToday = () => {
       var date = new Date();
+      console.log('item',item)
       return date.getFullYear()+"-"+("0"+(1+date.getMonth())).slice(-2)+"-"+("0"+date.getDate()).slice(-2)
     }
     useEffect(()=>{
@@ -33,15 +34,16 @@ const IdeaComponent = ({item,onDelete}) => {
       <TouchableOpacity
         key={item.postId}
         style={styles.ideaComponent}
-        activeOpacity={0.8}>
-        <TouchableOpacity activeOpacity={0.8} style={{flex:2}}>
+        activeOpacity={0.8}
+        onPress={pressIdea(item)}>
+        <View style={{flex:2}}>
           <Card containerStyle={{height: 100}}>
             <Card.Image
               style={{width: '100%', height: '100%'}}
               source={require('../assets/pet2.jpg')}>  
             </Card.Image>
           </Card>
-        </TouchableOpacity>
+        </View>
         <View style={{flex:3, justifyContent: 'center'}}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.update}>{update}</Text>

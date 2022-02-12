@@ -165,10 +165,10 @@ const StackHomeNavigator = ({route,navigation}) => {
           //headerTitle: 'Puzzle name',
           // headerLeft: (props) => <BackArrow {...props}/>,
           headerBackImage : ()=>(<BackArrow/>),  //header Back
-          headerTitleContainerStyle: {
-            //borderWidth: 1,
-            left: -20,  //header title과 header left 사이 공백 줄임
-          },
+          // headerTitleContainerStyle: {
+          //   //borderWidth: 1,
+          //   left: -20,  //header title과 header left 사이 공백 줄임
+          // },
           headerTitleStyle: {
             fontFamily: 'SB_Aggro_B',
             fontSize: 20
@@ -179,7 +179,7 @@ const StackHomeNavigator = ({route,navigation}) => {
         component={ideamatching}
         options={{
           headerStyle:{backgroundColor:'#fdf8ff',borderBottomWidth:2,borderBottomColor:'#1D1D1D',},
-          headerTitle: "ideamatching",
+          headerTitle: "",
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_B',
             fontSize: 20
