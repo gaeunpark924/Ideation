@@ -10,45 +10,54 @@ const Addkeyword = keyword => {
   const [params, setParams] = useState({
     key: 'AIzaSyBuG4NGZUXTEkePD63t9uoqprOU_LSKs30',
     part: 'snippet',
-    // q: {search},
     q: keyword,
     maxResults: 10,
     type: 'video',
     order: 'viewCount',
   });
   const [imageList, setImageList] = useState([]);
-  useEffect(() => {
-    axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
-    axios
-      .get('./search', {params})
-      .then(response => {
-        if (!response) {
-          return;
-        } else {
-          let i = 0;
-          for (i = 0; i < params.maxResults; i++) {
-            image = response.data.items[i].snippet.thumbnails;
-            setImageList([...imageList, image]);
-          }
+  axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
+  axios
+    .get('./search', {params})
+    .then(response => {
+      if (!response) {
+        return;
+      } else {
+        let i = 0;
+        for (i = 0; i < params.maxResults; i++) {
+          image = response.data.items[i].snippet.thumbnails;
+          setImageList([...imageList, image]);
         }
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []);
+      }
+    })
+    .then(response => {
+      console.log('YoutubeAPI success');
+      firestore()
+        .collection('categoryData')
+        .doc('item')
+        .collection(keyword)
+        .doc()
+        .set({
+          keyword: keyword,
+          data: imageList,
+        });
+    })
+    .catch(error => {
+      console.log(error);
+    });
 
-  useEffect(() => {
-    console.log(titleList);
-    firestore()
-      .collection('categoryData')
-      .doc('item')
-      .collection(keyword)
-      .doc()
-      .set({
-        keyword: keyword,
-        data: imageList,
-      });
-  }, []);
+  // useEffect(() => {
+  //   console.log(imageList);
+  //   firestore()
+  //     .collection('categoryData')
+  //     .doc('item')
+  //     .collection(keyword)
+  //     .doc()
+  //     .set({
+  //       keyword: keyword,
+  //       data: imageList,
+  //     });
+  // }, []);
   /* firebase userIdeaData 읽어오기 */
   // firestore에 키워드 추가하기
   // useEffect(() => {

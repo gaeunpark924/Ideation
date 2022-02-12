@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
-import AddKey from '../components/AddKeyword';
 import Modal from 'react-native-modal';
 import Save from 'react-native-vector-icons/MaterialIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
@@ -28,7 +27,7 @@ import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
-import Addkeyword from '../components/AddKeyword';
+import * as Addkeyword from '../components/AddKeyword';
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
@@ -68,9 +67,13 @@ const IdeaMatching = ({route, navigation}) => {
       />
     ) : null,
   );
-  useEffect(() => {
-    Addkeyword('노래');
-  }, []);
+
+  const getYoutubeApi = async () => {
+    await Addkeyword.Addkeyword('노래');
+  };
+  console.log('시작');
+  getYoutubeApi();
+
   const modalkeywordtoggle = e => {
     let newKeywords = keyword.map(k => {
       if (k.label === e.label) {
