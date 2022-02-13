@@ -18,7 +18,6 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
     const [update, setUpdate] = useState('')
     const getToday = () => {
       var date = new Date();
-      console.log('item',item)
       return date.getFullYear()+"-"+("0"+(1+date.getMonth())).slice(-2)+"-"+("0"+date.getDate()).slice(-2)
     }
     useEffect(()=>{
@@ -35,7 +34,7 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
         key={item.postId}
         style={styles.ideaComponent}
         activeOpacity={0.8}
-        onPress={pressIdea(item)}>
+        onPress={()=>{pressIdea(item)}}>
         <View style={{flex:2}}>
           <Card containerStyle={{height: 100}}>
             <Card.Image

@@ -27,7 +27,7 @@ import { userInfo } from '../User';
 //import { fetchPost } from '../actions';
 import { transform } from '@babel/core';
 import { set } from 'react-hook-form';
-//import { Icon } from 'react-native-elements';
+
 const { width, height } = Dimensions.get("window");
 const idealist = ({route,navigation}) => {
   const ideas = [];
@@ -79,7 +79,7 @@ const idealist = ({route,navigation}) => {
     return splitedData[0][2]+splitedData[0][3]+"."+splitedData[1]+"."+splitedData[2]
   }
   const deletePost = (postId) => {
-    console.log('Current Post Id: ', postId);
+    //console.log('Current Post Id: ', postId);
     firestore()
       .collection('userIdeaData')
       .doc(userUid)
@@ -88,7 +88,6 @@ const idealist = ({route,navigation}) => {
       .get()
       .then(documentSnapshot => {
         if (documentSnapshot.exists) {
-          console.log('exist');
           firestore()
             .collection('userIdeaData')
             .doc(userUid)
@@ -110,7 +109,6 @@ const idealist = ({route,navigation}) => {
   //   setUserUid(userInfo.uid)
   //   getPosts(userInfo.uid);
   // },[])
-  //console.log('렌더링', userInfo.uid)
   useEffect(()=>{
     //console.log("useEffect",userInfo.uid)
     setUserUid(userInfo.uid)
@@ -142,6 +140,14 @@ const idealist = ({route,navigation}) => {
       return () => backHandler.remove();
     }, []),
   );
+  useEffect(() => {
+    //getPosts();
+    //console.log('1')
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getPosts(userInfo.uid);
+    });
+  return willFocusSubscription;
+  }, []);
   const getToday = () => {
     var date = new Date();
     var year = date.getFullYear();
@@ -149,10 +155,6 @@ const idealist = ({route,navigation}) => {
     var day = ('0' + date.getDate()).slice(-2);
     return year + '.' + month + '.' + day;
   };
-  useEffect(()=>{
-    console.log('마운트')
-  },[])
-  console.log('렌더링 idealist')
   const searchTitle = text => {
     if (text) {
       const tmpPost = post.filter(item => item.title.includes(text));
@@ -184,7 +186,7 @@ const idealist = ({route,navigation}) => {
       case 1: //생성
         tmpPost.sort((a, b) => a.createTime - b.createTime);
         setPostFilter(tmpPost);
-        console.log('xxx', postSearch);
+        //console.log('xxx', postSearch);
         break;
       case 2: //이름
         tmpPost.sort((a, b) => a.updateTime - b.updateTime);
@@ -202,6 +204,9 @@ const idealist = ({route,navigation}) => {
   }
   const menu = () => {
     navigation.openDrawer();
+  }
+  const pressIdea = (items) => {
+    navigation.navigate('ideadevelop', {puzzle: items, userUid:userUid})
   }
   return (
     <View style={styles.container}>
@@ -258,7 +263,8 @@ const idealist = ({route,navigation}) => {
           renderItem={({item})=>(
             <IdeaComponent
               item={item}
-              onDelete={deletePost}/>
+              onDelete={deletePost}
+              pressIdea={pressIdea}/>
           )}
           keyExtractor={(item)=>item.postId}
           style={{paddingHorizontal: 15}}>

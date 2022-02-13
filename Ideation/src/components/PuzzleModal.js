@@ -129,10 +129,10 @@ const PuzzleModal = ({
                     value={text}
                     maxLength={30}
                     multiline={true}
-                    onChangeText={(e) => { setText(e)
+                    onChangeText={(e) => { setText(e)}}
                     //setInit(!init ? true : true) //false -> true, true -> true
                     //textRef.current = e
-                  }}
+                  
                       />
                 </View>
               : <View

@@ -16,12 +16,17 @@ import welcome from './screens/welcome';
 import ideamatching from './screens/IdeaMatching';
 import idealist from './screens/IdeaList';
 import ideadevelop from './screens/IdeaDevelop';
+import QnA from './screens/QnA'
+import AppInfo from './screens/AppInfo'
+import MySetting from './screens/MySetting'
+import Clause from './screens/Clause'
+import PersonalPolicy from './screens/PersonalPolicy'
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { userInfo } from './User';
 import auth from '@react-native-firebase/auth';
 import Close from 'react-native-vector-icons/AntDesign';
-import Back from 'react-native-vector-icons/Ionicons';
+import Back from 'react-native-vector-icons/MaterialIcons';
 import { mainTheme } from './theme/theme';
 
 // 앱이 각 화면이 전환될 수 있는 기본 틀을 제공한다.
@@ -46,7 +51,7 @@ const StackAuthNavigator = () => {
           headerTitleStyle: {
             fontFamily: 'SB_Aggro_M',
             fontSize: 28
-          }
+          },
         }}/>
       <StackAuth.Screen
         name="LoginEmail"
@@ -57,7 +62,11 @@ const StackAuthNavigator = () => {
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_M',
             fontSize: 24
-          }
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
         }}
       />
       <StackAuth.Screen
@@ -69,7 +78,11 @@ const StackAuthNavigator = () => {
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_M',
             fontSize: 24
-          }
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
         }}/>
       <StackAuth.Screen
         name="JoinPwd"
@@ -80,7 +93,11 @@ const StackAuthNavigator = () => {
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_M',
             fontSize: 24
-          }
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
         }}/>
       <StackAuth.Screen
         name="JoinPwdChecking"
@@ -91,7 +108,11 @@ const StackAuthNavigator = () => {
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_M',
             fontSize: 24
-          }
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
         }}/>
       <StackAuth.Screen
         name="SearchPwd"
@@ -102,54 +123,40 @@ const StackAuthNavigator = () => {
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_M',
             fontSize: 24
-          }
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
         }}/>
       <StackAuth.Screen name="welcome" component={welcome} options={{headerShown:false}}/>
     </StackAuth.Navigator>
   );
 };
 
-function LogoTitle() {
-  return (
-    <View style={{flexDirection:'row',alignItems:'center'}}>
-      <TextInput
-       style={{
-         fontFamily: 'SB_Aggro_B',
-         fontSize: 20,
-         width:170,
-        //  backgroundColor:'blue'
-        //  
-        }}
-       placeholder='Puzzle Name'
-       placeholderTextColor={mainTheme.colors.black}
-      //  value={}
-       //maxLength={15}
-      //  onChangeText={(e)=>{setText(e)}}
-       />
-      <Image
-          //style={styles.plus}
-          style={{height:17, width:18}}
-          source={require('./assets/pencil.png')}/>
-    </View>
-  );
-}
-
-function BackArrow({props}) {
+const BackArrow = () => {
   return (
     <View>
       <TouchableOpacity
        activeOpacity={0.8}>
-      <Image
-          //style={styles.plus}
-          style={{height:29, width:24}}
-          source={require('./assets/back.png')}/>
+      <Back
+          style={{marginStart:8}}
+          name='arrow-back-ios'
+          color="#000"
+          size={24}/>
       </TouchableOpacity>
     </View>
   );
 }
 const StackHomeNavigator = ({route,navigation}) => {
   return (
-    <StackHome.Navigator initialRouteName='idealist' options={{headerStyle:{backgroundColor:'#fdf8ff'},}}>
+    <StackHome.Navigator
+      initialRouteName='idealist'
+      options={{
+        headerStyle:{
+          backgroundColor:'#fdf8ff',
+        },
+      }}>
         {/* // screenOptions={{headerShown:false,headerBackTitleVisible: true, headerStyle: {backgroundColor: '#E7D9FF'},}}> */}
       <StackHome.Screen name="idealist" component={idealist} options={{headerShown:false}} />
       <StackHome.Screen
@@ -165,10 +172,9 @@ const StackHomeNavigator = ({route,navigation}) => {
           //headerTitle: 'Puzzle name',
           // headerLeft: (props) => <BackArrow {...props}/>,
           headerBackImage : ()=>(<BackArrow/>),  //header Back
-          // headerTitleContainerStyle: {
-          //   //borderWidth: 1,
-          //   left: -20,  //header title과 header left 사이 공백 줄임
-          // },
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
           headerTitleStyle: {
             fontFamily: 'SB_Aggro_B',
             fontSize: 20
@@ -183,9 +189,107 @@ const StackHomeNavigator = ({route,navigation}) => {
           headerTitleStyle:{
             fontFamily: 'SB_Aggro_B',
             fontSize: 20
-          }
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -25,  //header title과 header left 사이 공백 줄임
+          },
         }}/>
     </StackHome.Navigator>
+  );
+};
+
+const StackSetting = createStackNavigator();
+const StackSettingNavigator = () => {
+  //console.log("route StackAuthNavigator")
+  return (
+    <StackSetting.Navigator
+      initialRouteName='Login'
+      options={{headerStyle:{backgroundColor:'#fdf8ff'},}}>
+      <StackAuth.Screen
+        name="SearchPwd"
+        component={SearchPwd}
+        options={{
+          title: '이메일 변경',
+          headerStyle:{backgroundColor:'#fdf8ff',shadowOpacity:0,elevation:0,height:70},
+          headerTitleStyle:{
+            fontFamily: 'SB_Aggro_M',
+            fontSize: 24
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
+        }}/>
+      <StackAuth.Screen
+        name="SearchPwd"
+        component={SearchPwd}
+        options={{
+          title: '비밀번호 재설정',
+          headerStyle:{backgroundColor:'#fdf8ff',shadowOpacity:0,elevation:0,height:70},
+          headerTitleStyle:{
+            fontFamily: 'SB_Aggro_M',
+            fontSize: 24
+          },
+          headerBackImage:()=>(<BackArrow/>),
+          headerTitleContainerStyle: {
+            left: -20,  //header title과 header left 사이 공백 줄임
+          },
+        }}/>
+      {/* <StackSetting.Screen name="welcome" component={welcome} options={{headerShown:false}}/> */}
+    </StackSetting.Navigator>
+  );
+};
+
+const StackAppInfo = createStackNavigator();
+const StackAppInfoNavigator = () => {
+  return (
+    <StackAppInfo.Navigator
+      initialRouteName='AppInfo'
+      options={{headerStyle:{backgroundColor:'#fdf8ff'},}}>
+      <StackAppInfo.Screen
+        name="AppInfo"
+        component={AppInfo}
+        options={{
+          title: '앱 정보',
+          headerStyle:{backgroundColor:'#fdf8ff',shadowOpacity:0,elevation:0,height:70},
+          headerTitleStyle:{
+            fontFamily: 'SB_Aggro_M',
+            fontSize: 24
+          },
+          headerTitleContainerStyle: {
+            left: -10,  //header title과 header left 사이 공백 줄임
+          },
+        }}/>
+      <StackAppInfo.Screen
+        name="Clause"
+        component={Clause}
+        options={{
+          title: '이용 약관',
+          headerStyle:{backgroundColor:'#fdf8ff',shadowOpacity:0,elevation:0,height:70},
+          headerTitleStyle:{
+            fontFamily: 'SB_Aggro_M',
+            fontSize: 24
+          },
+          headerTitleContainerStyle: {
+            left: -10,
+          },
+        }}/>
+      <StackAppInfo.Screen
+        name="PersonalPolicy"
+        component={PersonalPolicy}
+        options={{
+          title: '개인정보 이용정책',
+          headerStyle:{backgroundColor:'#fdf8ff',shadowOpacity:0,elevation:0,height:70},
+          headerTitleStyle:{
+            fontFamily: 'SB_Aggro_M',
+            fontSize: 24
+          },
+          headerTitleContainerStyle: {
+            left: -10,
+          },
+        }}/>
+    </StackAppInfo.Navigator>
   );
 };
 
@@ -218,6 +322,42 @@ const CustomDrawerContent = (props) => {
               paddingHorizontal:10,
               paddingVertical:10
             }}
+            onPress={()=>{props.navigation.navigate('MySetting',{email:userInfo.email})}}>
+            <Text
+              style={{
+                fontSize:18,
+                fontFamily:'SB_Aggro_L',
+              }}>내 계정 설정</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingHorizontal:10,
+              paddingVertical:10
+            }}
+            onPress={()=>{props.navigation.navigate('StackAppInfoNavigator')}}>
+            <Text
+              style={{
+                fontSize:18,
+                fontFamily:'SB_Aggro_L',
+              }}>앱 정보</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingHorizontal:10,
+              paddingVertical:10
+            }}
+            onPress={()=>{props.navigation.navigate('QnA')}}>
+            <Text
+              style={{
+                fontSize:18,
+                fontFamily:'SB_Aggro_L',
+              }}>문의하기</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              paddingHorizontal:10,
+              paddingVertical:10
+            }}
             onPress={()=>{
               Alert.alert(
                 "경고","로그아웃 하시겠습니까?",
@@ -225,16 +365,11 @@ const CustomDrawerContent = (props) => {
                 {text:"네", onPress: ()=> {
                   auth().signOut();
                   //사용자 정보 초기화
-                  console.log("xxxxxxxx",userInfo)
                   userInfo.email = ''
                   userInfo.uid = ''
                   userInfo.emailVerified = false
-                  console.log("xxxxxxxx",userInfo)
                   props.navigation.navigate("StackAuthNavigator");
                 }}]);
-              // userInfo.email = user.user.email
-              // userInfo.uid = user.user.uid
-              // userInfo.emailVerified = user.user.emailVerified 
               // const resetAction = StackActions.reset({
               //   index: 0,
               //   actions: [NavigationActions.navigate({
@@ -253,56 +388,11 @@ const CustomDrawerContent = (props) => {
                 fontFamily:'SB_Aggro_L',
               }}>로그아웃</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal:10,
-              paddingVertical:10
-            }}>
-            <Text
-              style={{
-                fontSize:18,
-                fontFamily:'SB_Aggro_L',
-              }}>내 계정 설정</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingHorizontal:10,
-              paddingVertical:10
-            }}>
-            <Text
-              style={{
-                fontSize:18,
-                fontFamily:'SB_Aggro_L',
-              }}>앱 정보</Text>
-          </TouchableOpacity>
           </View>
         </View>
-          {/* <DrawerItem
-            label = "로그아웃"
-            labelStyle={{
-              fontSize:18,
-              fontFamily:'SB_Aggro_L',
-              paddingHorizontal:0,
-            }}
-            onPress = {doLogout}/>
-          <DrawerItem
-            label = "내 계정 설정"
-            labelStyle={{
-              fontSize:18,
-              fontFamily:'SB_Aggro_L',
-            }}
-            onPress = {doLogout}/>
-          <DrawerItem
-            label = "앱  정보"
-            labelStyle={{
-              fontSize:18,
-              fontFamily:'SB_Aggro_L',
-            }}
-            onPress = {doLogout}/> */}
       </DrawerContentScrollView>
   )
 }
-
 const DrawerNavigator = () =>{
   return (
       <Drawer.Navigator
@@ -322,6 +412,62 @@ const DrawerNavigator = () =>{
         <Drawer.Screen name= "Loading" component={Loading} options={{headerShown:false,unmountOnBlur:true,}}/>
         <Drawer.Screen name= "StackAuthNavigator" component={StackAuthNavigator} options={{headerShown:false,unmountOnBlur:true}}/>
         <Drawer.Screen name= "StackHomeNavigator" component={StackHomeNavigator} options={{headerShown:false,unmountOnBlur:true}}/>
+        <Drawer.Screen name= "StackSettingNavigator" component={StackSettingNavigator} options={{headerShown:false,unmountOnBlur:true}}/>
+        <Drawer.Screen name= "StackAppInfoNavigator" component={StackAppInfoNavigator} options={{headerShown:false,unmountOnBlur:true}}/>        
+        <Drawer.Screen
+          name= "QnA"
+          component={QnA}
+          options={{
+            title:'문의하기',
+            headerStyle: {
+              backgroundColor: '#fdf8ff',
+              shadowOpacity:0,elevation:0,height:70
+            },
+            unmountOnBlur:true,
+            headerTitleStyle: {
+              fontFamily: 'SB_Aggro_M',
+              fontSize: 24
+            },
+            headerTitleContainerStyle: {
+              left: -10,  //header title과 header left 사이 공백 줄임
+            },
+          }}/>
+        <Drawer.Screen
+          name= "MySetting"
+          component={MySetting}
+          options={{
+            title:'계정 설정',
+            headerStyle: {
+              backgroundColor: '#fdf8ff',
+              shadowOpacity:0,elevation:0,height:70
+            },
+            unmountOnBlur:true,
+            headerTitleStyle: {
+              fontFamily: 'SB_Aggro_M',
+              fontSize: 24
+            },
+            headerTitleContainerStyle: {
+              left: -10,  //header title과 header left 사이 공백 줄임
+            },
+          }}/>
+        <Drawer.Screen
+          name= "AppInfo"
+          component={AppInfo}
+          options={{
+            title:'앱 정보',
+            headerStyle: {
+              backgroundColor: '#fdf8ff',
+              shadowOpacity:0,elevation:0,height:70
+            },
+            unmountOnBlur:true,
+            headerTitleStyle: {
+              fontFamily: 'SB_Aggro_M',
+              fontSize: 24
+            },
+            headerTitleContainerStyle: {
+              left: -10,  //header title과 header left 사이 공백 줄임
+            },
+          }}/>
       </Drawer.Navigator>
   )
 }
@@ -341,4 +487,3 @@ const styles = StyleSheet.create({
 });
 
 export default DrawerNavigator ;
-

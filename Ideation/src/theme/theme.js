@@ -9,6 +9,12 @@ export const mainTheme = {
         fontGray : '#aeaeae',
         warning : '#ec4a34',
     },
+    puzzleColors:{
+        yellow : '#FFF4D9',
+        pupple : '#E7D9FF',
+        blue : '#D9E3FF',
+        pink : '#FFD9D9'
+    },
     text : {
         style : {
             fontStyle: 'SB_Aggro_L'

@@ -255,6 +255,7 @@ const IdeaMatching = ({route, navigation}) => {
         updateTime: firestore.FieldValue.serverTimestamp(),
         createDate: createDate(),
         updateDate: createDate(),
+        offset: true,
       })
       .then(() => {
         console.log('User added!');

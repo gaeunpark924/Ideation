@@ -35,6 +35,7 @@ import BottomSheetPhoto from 'react-native-gesture-bottom-sheet';
 import PuzzleModal from "../components/PuzzleModal";
 import ImageModal from "../components/ImageModal";
 import { mainTheme } from "../theme/theme";
+import firestore from '@react-native-firebase/firestore';
 //import {getHeaderHeight, getHeaderSafeAreaHeight,getOrientation} from '../HeaderSize'; 동작 안함
 import Animated, { 
   useAnimatedGestureHandler,
@@ -62,7 +63,8 @@ const pad = (width - (COL*(width/COL - 6)))/2;
 const itemSizeC = width/COL - 6; //박스 크기
 // let fall = new Animated.Value(1);
 
-const PuzzleTitle = () =>{
+const PuzzleTitle = ({title}) =>{
+  const [puzzleTitle, setPuzzleTitle] = useState(title)
   return (
     <View style={{flexDirection:'row',alignItems:'center'}}>
       <TextInput
@@ -73,6 +75,9 @@ const PuzzleTitle = () =>{
         }}
        placeholder='Puzzle Name'
        placeholderTextColor={mainTheme.colors.black}
+       value={puzzleTitle}
+       onChangeText={(e) => { setPuzzleTitle(e)}}
+       
        />
       <Image
           style={{height:17, width:18}}
@@ -80,10 +85,34 @@ const PuzzleTitle = () =>{
     </View>
   );
 }
+const initPositionFirst = (puzzle) => {
+  switch(puzzle.carddata.length) {
+    case 1:
+      return ([[0, 0, 0, 0],[0, 0, 0, 0],[0, puzzle.carddata[0], 0, 0],[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0]])
+    case 2:
+      return ([[0, 0, 0, 0],[0, 0, 0, 0],[0, puzzle.carddata[0], 0, 0],[0, 0, puzzle.carddata[1], 0],[0, 0, 0, 0],[0, 0, 0, 0]]);
+    case 3:
+      return ([[0, 0, 0, 0],[0, 0, 0, 0],[0, puzzle.carddata[0], puzzle.carddata[1], 0],[0, puzzle.carddata[2], 0, 0],[0, 0, 0, 0],[0, 0, 0, 0]]);;
+    case 4:
+      return ([[0, 0, 0, 0],[0, 0, 0, 0],[0, puzzle.carddata[0], puzzle.carddata[1], 0],[0, puzzle.carddata[2], puzzle.carddata[3], 0],[0, 0, 0, 0],[0, 0, 0, 0]]);;;
+    default:
+      return null;
+  }
+}
+const initPosition = (puzzle) => {
+  blankMatrix= [[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0],[0, 0, 0, 0]]
+  
+  puzzle.carddata.map((item,idx)=>{
+    blankMatrix[item.row][item.column] = item.data
+  })
+  console.log('x',blankMatrix)
+  return blankMatrix
+}
 
 const App = ({ navigation, route }) => {
   const [movingDraggable, setMovingDraggable] = useState(null);
   const [releaseDraggable, setReleaseDraggable] = useState(null);
+  const { puzzle, userUid } = route.params;
   const [init, setInit] = useState(false);
   //const [onOff, setOnOff] = useState(false)
   
@@ -97,8 +126,6 @@ const App = ({ navigation, route }) => {
   const [openModalImage, setOpenModalImage] = useState(false)
   const [openPuzzleModal, setOpenPuzzleModal] = useState(false) //퍼즐 클릭 유무
   const puzzleType = useRef() //퍼즐 타입
-  // const clickedImageUri = useRef()
-  // const clickedText = useRef('')
   //이미지나 텍스트 모두 포함
   const clickedInfo = useRef({
     'row': -1,
@@ -108,10 +135,10 @@ const App = ({ navigation, route }) => {
   })
   const MaxRows = 6;
   const MaxColumns = 4;
-
   //const blankMatrix = useRef([]);
-  const memoBottom = useRef('');
+  //const memoBottom = useRef('');  //아래에 입력하는 메모
   const memoBottomTextInput = useRef();
+  //const titleTop = useRef('Puzzle name');
   const textModalRef = useRef();   //////////////////////텍스트모달 ref
   const bottomSheet = useRef();
   const sheetRef = useRef();
@@ -121,59 +148,106 @@ const App = ({ navigation, route }) => {
   //console.log('렌더링.onoff:')
   const [boxMatrix,setBoxMatrix] = useState([])
   const [testMatrix,setTestMatrix] = useState([])
+  const [title, setTitle] = useState(puzzle.title)   //제목 
+  const [memoPuzzle, setMemoPuzzle] = useState() //메모
+  const hasUnsavedChanges = Boolean(memoPuzzle);
   let tmpMatrix = [];
   useEffect(()=>{
-    setBoxMatrix([
-      [uri1, 0, uri2, 0],
-      [0, uri3, "뷰티", 0],
-      ["건축", 0, uri4, 0],
-      [0, uri1, 0, 0],
-      [0, uri2, 0, 0],
-      [0, 0, 0, uri5]
-    ])
+    console.log('puzzle',puzzle.offset)
+    puzzle.offset === true 
+    ? setBoxMatrix(initPositionFirst(puzzle))
+    : setBoxMatrix(initPosition(puzzle))
     // setBoxMatrix([
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
-    //   [0, 0, 0, 0],
+    //   [uri1, 0, uri2, 0],
+    //   [0, uri3, "뷰티", 0],
+    //   ["건축", 0, uri4, 0],
+    //   [0, uri1, 0, 0],
+    //   [0, uri2, 0, 0],
+    //   [0, 0, 0, uri5]
     // ])
     setTestMatrix([
       [0,0,0],
       [0,0,0],
     ])
-    console.log('idea test')
     // console.log("출력", height, width)
     // console.log("",Dimensions.get("screen").height-itemSizeC*6)
     // console.log("",Dimensions.get("window").height-itemSizeC*6)
     // console.log("스크린",Dimensions.get("screen").height - Dimensions.get("window").height)
     setInit(true)
-    //sheetRef.current.snapTo(2)
-    //bottomSheet.current.toPosition = height/2//0//screenHeight-(itemSizeC*6)//height/2;
-    //bottomSheet.current.snapTo(0)
-    //bottomSheet.current.translateY = bottomHeight
-    //console.log("마운트")
   },[])
   //헤더
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <PuzzleTitle></PuzzleTitle>
+        <PuzzleTitle title={puzzle.title}></PuzzleTitle>
       ),
-      headerTitleContainerStyle: {
-        //borderWidth: 1,
-        left: -20,  //header title과 header left 사이 공백 줄임
-      },
+      
     });
   }, [navigation]);
-  
+  const createDate = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ('0' + (1 + date.getMonth())).slice(-2);
+    var day = ('0' + date.getDate()).slice(-2);
+    return year + '-' + month + '-' + day;
+  };
+  const updatePost = async (updateData) => {
+    await firestore()
+        .collection('userIdeaData')
+        .doc(userUid)
+        .collection('item')
+        .doc(updateData.postId)
+        .update(updateData)
+        .then(()=>{
+          console.log('User updated!');
+        })
+        .catch((error)=>{
+          console.log('error',error)
+        })
+  }
+  const closeIdeaDevelop = () => {
+      //업데이트 전 데이터 처리
+      const updateData = {...puzzle}
+      updateData.updateTime = firestore.FieldValue.serverTimestamp()
+      updateData.updateDate = createDate()
+      const tmplist = []
+      boxMatrix.map((row,i)=>{
+        row.map((column,j)=>{
+          column !== 0
+          ? tmplist.push({'data':column,'row':i,'column':j})
+          : null
+        })
+      })
+      console.log('',tmplist)
+      updateData.carddata = tmplist
+      updateData.offset = false
+      //updateData.title = title
+      //updateData.puzzleMemo = memoPuzzle
+      updatePost(updateData)
+  }
+  //상단 백버튼 누르면 자동 저장되게
+  useEffect(() => {
+    navigation.addListener('beforeRemove', e => {
+      if (!hasUnsavedChanges) {
+        // If we don't have unsaved changes, then we don't need to do anything
+        return;
+      }
+      console.log("출력")
+      //closeIdeaDevelop()
+      e.preventDefault(); // Prevent default action
+      
+      // Unsubscribe the event on first call to prevent infinite loop
+      //navigation.navigate('Home') // Navigate to your desired screen
+      //navigation.navigate('idealist'
+      //업데이트 전 데이터 처리
+    });
+ }, [navigation,hasUnsavedChanges])
   // const animatedShadowOpacity = Animated.interpolate(fall,{
   //   inputRange:[0,1],
   //   outputRange:[0.5, 0],
   // });
+
   const takeImagefromphone = () => {
-    
     const options = {
       title: "Select Avatar",
       storageOptions: {
@@ -212,7 +286,6 @@ const App = ({ navigation, route }) => {
         //         : column
         //       )
         // ))
-        
         setBoxMatrix(boxMatrix.map((row, i)=>
             row.map((column, j)=>
               i === clickedEmptyIndex.current[0] && j === clickedEmptyIndex.current[1]
@@ -220,17 +293,6 @@ const App = ({ navigation, route }) => {
               : column
             )
         ))
-        
-        //console.log("boxMatrix",boxMatrix)
-        // setBoxMatrix(boxMatrix.map(content => content
-
-        // ))
-        //blankMatrix.current[clickedEmptyIndex.current[0]][clickedEmptyIndex.current[1]] = source.uri
-        //console.log(blankMatrix)
-        // var arr = [...items];
-        // console.log("source.uri",source.uri)
-        // arr.push(source.uri);
-        // setItems(arr);  ////xxxxx
       }
     });
   };
@@ -428,7 +490,7 @@ const App = ({ navigation, route }) => {
       clickedInfo.current.row = row
       clickedInfo.current.column = column
       puzzleType.current = type
-      console.log(clickedInfo.current)
+      //console.log(clickedInfo.current)
       setOpenPuzzleModal(true)
     }
     return(
@@ -495,7 +557,7 @@ const App = ({ navigation, route }) => {
           editable = {bottomSheetMemoOpen ? true : false}
           //disableFullscreenUI = {true}
           //editable={bottomSheetMemoOpen ? true : false}
-          onChangeText={(e) => {memoBottom.current = e}} //메모 상태 업뎃 //placeholder와 연동
+          onChangeText={(e) => {setMemoPuzzle(e)}} //메모 상태 업뎃 //placeholder와 연동
           >
         </TextInput>
       </KeyboardAvoidingView>
