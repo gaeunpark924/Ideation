@@ -36,6 +36,7 @@ import PuzzleModal from "../components/PuzzleModal";
 import ImageModal from "../components/ImageModal";
 import { mainTheme } from "../theme/theme";
 import firestore from '@react-native-firebase/firestore';
+import ViewShot from "react-native-view-shot";
 //import {getHeaderHeight, getHeaderSafeAreaHeight,getOrientation} from '../HeaderSize'; 동작 안함
 import Animated, { 
   useAnimatedGestureHandler,
@@ -46,6 +47,7 @@ import Animated, {
   Value
 } from "react-native-reanimated";
 import { DrawerContentScrollView } from "@react-navigation/drawer";
+import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react/cjs/react.production.min";
 
 const { width, height } = Dimensions.get("window"); //안드로이드는 상태바를 포함하지 않고 영역 추출함
 const screenHeight = Dimensions.get("screen").height;
@@ -59,12 +61,16 @@ const center = radius;
 //const pad = 6;
 //const itemSizeC = width/COL; //박스 크기
 const bottomHeight = screenHeight-itemSizeC*6
-const pad = (width - (COL*(width/COL - 6)))/2;
-const itemSizeC = width/COL - 6; //박스 크기
+const pad = (width - (COL*(width/COL - 8)))/2;
+const itemSizeC = width/COL - 8; //박스 크기
 // let fall = new Animated.Value(1);
 
-const PuzzleTitle = ({title}) =>{
+const PuzzleTitle = ({title, getTitle}) =>{
   const [puzzleTitle, setPuzzleTitle] = useState(title)
+  const changeText = (e) => {
+    setPuzzleTitle(e)
+    getTitle(e)
+  }
   return (
     <View style={{flexDirection:'row',alignItems:'center'}}>
       <TextInput
@@ -73,11 +79,10 @@ const PuzzleTitle = ({title}) =>{
          fontSize: 20,
          width: 20*10,
         }}
-       placeholder='Puzzle Name'
+       //placeholder='Puzzle Name'
        placeholderTextColor={mainTheme.colors.black}
        value={puzzleTitle}
-       onChangeText={(e) => { setPuzzleTitle(e)}}
-       
+       onChangeText={(e) => {changeText(e)}}
        />
       <Image
           style={{height:17, width:18}}
@@ -125,7 +130,9 @@ const App = ({ navigation, route }) => {
   const [openModalText, setOpenModalText] = useState(false)
   const [openModalImage, setOpenModalImage] = useState(false)
   const [openPuzzleModal, setOpenPuzzleModal] = useState(false) //퍼즐 클릭 유무
+  const recorder = useRef()
   const puzzleType = useRef() //퍼즐 타입
+  const thumbnailImage = useRef()
   //이미지나 텍스트 모두 포함
   const clickedInfo = useRef({
     'row': -1,
@@ -147,39 +154,40 @@ const App = ({ navigation, route }) => {
   const clickedEmptyIndex = useRef([])
   //console.log('렌더링.onoff:')
   const [boxMatrix,setBoxMatrix] = useState([])
-  const [testMatrix,setTestMatrix] = useState([])
   const [title, setTitle] = useState(puzzle.title)   //제목 
   const [memoPuzzle, setMemoPuzzle] = useState() //메모
-  const hasUnsavedChanges = Boolean(memoPuzzle);
+  const [testUri, setTestUri] = useState()
+  const forSaveData = useRef({
+    'title':puzzle.title,
+    'memo':'',
+    'boxMatix': []
+  })
+  //const hasUnsavedChanges = Boolean(memoPuzzle);
   let tmpMatrix = [];
   useEffect(()=>{
-    console.log('puzzle',puzzle.offset)
+    puzzle.puzzleMemo === undefined
+    ? setMemoPuzzle('')
+    : setMemoPuzzle(puzzle.puzzleMemo)
     puzzle.offset === true 
     ? setBoxMatrix(initPositionFirst(puzzle))
     : setBoxMatrix(initPosition(puzzle))
-    // setBoxMatrix([
-    //   [uri1, 0, uri2, 0],
-    //   [0, uri3, "뷰티", 0],
-    //   ["건축", 0, uri4, 0],
-    //   [0, uri1, 0, 0],
-    //   [0, uri2, 0, 0],
-    //   [0, 0, 0, uri5]
-    // ])
-    setTestMatrix([
-      [0,0,0],
-      [0,0,0],
-    ])
     // console.log("출력", height, width)
     // console.log("",Dimensions.get("screen").height-itemSizeC*6)
     // console.log("",Dimensions.get("window").height-itemSizeC*6)
     // console.log("스크린",Dimensions.get("screen").height - Dimensions.get("window").height)
     setInit(true)
   },[])
+  const getTitle = (text) => {
+    //console.log('getTitle',text)
+    text === '' || text === undefined
+    ? forSaveData.current.title = 'Puzzle Name'
+    : forSaveData.current.title = text
+  }
   //헤더
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <PuzzleTitle title={puzzle.title}></PuzzleTitle>
+        <PuzzleTitle title={puzzle.title} getTitle={getTitle}></PuzzleTitle>
       ),
       
     });
@@ -206,42 +214,72 @@ const App = ({ navigation, route }) => {
         })
   }
   const closeIdeaDevelop = () => {
+      //console.log('업데이트',puzzle)
       //업데이트 전 데이터 처리
       const updateData = {...puzzle}
+      
       updateData.updateTime = firestore.FieldValue.serverTimestamp()
       updateData.updateDate = createDate()
       const tmplist = []
-      boxMatrix.map((row,i)=>{
+      const tmpBoxMatrix = forSaveData.current.boxMatix
+      tmpBoxMatrix.map((row,i)=>{
         row.map((column,j)=>{
           column !== 0
           ? tmplist.push({'data':column,'row':i,'column':j})
           : null
         })
       })
-      console.log('',tmplist)
+      //tmplist.push({'data':thumbnailImage,'row':0,'column':0})
       updateData.carddata = tmplist
       updateData.offset = false
-      //updateData.title = title
-      //updateData.puzzleMemo = memoPuzzle
+      
+      //퍼즐 타이틀
+      forSaveData.current.title !== undefined && forSaveData.current.title != ''
+      ? updateData.title = forSaveData.current.title //타이틀
+      : updateData.title = ''//'Puzzle Name'
+      //console.log('xxxx',memoPuzzle)
+      //퍼즐 메모
+      forSaveData.current.memo !== undefined && forSaveData.current.memo !== ''
+      ? updateData.puzzleMemo = forSaveData.current.memo
+      : null
+      //썸네일
+      updateData.thumbnail = thumbnailImage.current
       updatePost(updateData)
   }
+  useEffect(()=>{
+    //console.log(boxMatrix)
+    forSaveData.current.boxMatix = boxMatrix
+    recorder.current
+      .capture()
+      .then(uri=>{
+        console.log('do something with', uri)
+        thumbnailImage.current = uri
+      })
+      .catch((error)=>{
+        console.log(error)
+      })
+    
+  },[boxMatrix])
+  useEffect(()=>{
+    forSaveData.current.memo = memoPuzzle
+  },[memoPuzzle])
   //상단 백버튼 누르면 자동 저장되게
   useEffect(() => {
     navigation.addListener('beforeRemove', e => {
-      if (!hasUnsavedChanges) {
-        // If we don't have unsaved changes, then we don't need to do anything
-        return;
-      }
-      console.log("출력")
-      //closeIdeaDevelop()
-      e.preventDefault(); // Prevent default action
-      
+      // if (!hasUnsavedChanges) {
+      //   // If we don't have unsaved changes, then we don't need to do anything
+      //   return;
+      // }
+      //console.log("출력")
+      closeIdeaDevelop()
+      //e.preventDefault(); // Prevent default action
       // Unsubscribe the event on first call to prevent infinite loop
       //navigation.navigate('Home') // Navigate to your desired screen
-      //navigation.navigate('idealist'
+      //navigation.navigate.goBack()
+      // navigation.navigate.goBack()
       //업데이트 전 데이터 처리
     });
- }, [navigation,hasUnsavedChanges])
+ }, [navigation])
   // const animatedShadowOpacity = Animated.interpolate(fall,{
   //   inputRange:[0,1],
   //   outputRange:[0.5, 0],
@@ -254,6 +292,9 @@ const App = ({ navigation, route }) => {
         skipBackup: true,
         path: "images",
       },
+      // includeBase64: true,
+      // maxHeight: itemSizeC,
+      // maxWidth: itemSizeC
     };
     launchImageLibrary(options, (response) => {
       // console.log('Response = ', response);
@@ -266,8 +307,31 @@ const App = ({ navigation, route }) => {
       } else if (response.customButton) {
         // setProcessing(false)
         console.log("User tapped custom button: ", response.customButton);
-      } else {
-        //console.log('Response = ', response.assets[0].uri);
+      // } else if (response.fileSize > 5242880) {
+      //   Alert.alert(
+      //       "Nilamhut Say\'s",
+      //       "Oops! the photos are too big. Max photo size is 4MB per photo. Please reduce the resolution or file size and retry",
+      //       [
+      //           { text: "OK", onPress: () => console.log('ok Pressed') }
+      //       ],
+      //       { cancelable: false }
+      //   )
+      // }
+      } 
+      // else {
+      //   const tmp = response.assets[0];
+      //   setBoxMatrix(boxMatrix.map((row, i)=>
+      //       row.map((column, j)=>
+      //         i === clickedEmptyIndex.current[0] && j === clickedEmptyIndex.current[1]
+      //         ? tmp.base64
+      //         : column
+      //       )
+      //   ))
+      //   //console.log('base64',response.assets[0])
+      //   //this.setState({tradeLicenseImageData: response.base64}) //access like this
+      // }
+        else {
+        //console.log('Response = ', response.data);
         const tmp = response.assets[0];
         const source = {
           uri:
@@ -276,16 +340,6 @@ const App = ({ navigation, route }) => {
               : tmp.uri.replace("file://", ""),
           fileName: response.fileName,
         };
-        //console.log('행, 열',clickedEmptyIndex.current[0],clickedEmptyIndex.current[1])
-        //boxMatrix.map((row, i)=>console.log(content))
-        // console.log("testMatrix",testMatrix)
-        // setTestMatrix(testMatrix.map((row, i)=>
-        //     row.map((column, j)=>
-        //         j===1
-        //         ? column+1
-        //         : column
-        //       )
-        // ))
         setBoxMatrix(boxMatrix.map((row, i)=>
             row.map((column, j)=>
               i === clickedEmptyIndex.current[0] && j === clickedEmptyIndex.current[1]
@@ -499,13 +553,16 @@ const App = ({ navigation, route }) => {
         {uri.match(/.(jpeg|jpg|gif|png)/)
         ? (<Animated.View style={imageStyle}>
            <TouchableOpacity activeOpacity={0.8} onPress={()=>{pressPuzzle(uri,row,column,'image')}}>
+             {/* {console.log("xxxxxxxxxxxxxxxxxxx",uri)} */}
             <Image
               source={{uri:uri}}
               style={{
                 width: itemSizeC,  
                 height: itemSizeC,
                 borderWidth: 1,
-              }}/>
+                //resizeMode: 'contain'
+              }}
+              />
             </TouchableOpacity>  
             </Animated.View>)
         : (<Animated.View style={textStyle}>
@@ -557,6 +614,7 @@ const App = ({ navigation, route }) => {
           editable = {bottomSheetMemoOpen ? true : false}
           //disableFullscreenUI = {true}
           //editable={bottomSheetMemoOpen ? true : false}
+          value={memoPuzzle}
           onChangeText={(e) => {setMemoPuzzle(e)}} //메모 상태 업뎃 //placeholder와 연동
           >
         </TextInput>
@@ -702,11 +760,14 @@ const App = ({ navigation, route }) => {
   const animatedShadowOpacity = Animated.interpolateNode(fall, {
     inputRange: [0,1],
     outputRange: [0.5, 0]
+    //#fdf8ff
   })
   return (
       <SafeAreaView style={styles.safeAreaView}>
-        <View style={{margin:pad, width:width-pad*2, height:itemSizeC*6}}>
-          <Background/>
+        <View style={{margin:pad}}>
+          <ViewShot ref={recorder} options={{format: 'jpg', quality:0.9}}>    
+          <View style={{backgroundColor:'#fdf8ff',width:width-pad*2, height:itemSizeC*6}}>
+            <Background/>
           {init
            ? (boxMatrix.map((row, i)=>
             row.map((square, j)=>{
@@ -714,7 +775,8 @@ const App = ({ navigation, route }) => {
               if(square === 0){
                 return null;
               }else {
-                return(  
+                return(
+                  // console.log('여기여기',square)  
                   <Photo
                     key={`${j}-${i}`}
                     row={i}
@@ -728,13 +790,32 @@ const App = ({ navigation, route }) => {
             })))
             : null
           }
+          </View>
+        </ViewShot>  
       </View>
+      
+      {/* <View style={{flexDirection:'row'}}>
+      <TouchableOpacity
+        onPress={()=>{
+          recorder.current.capture().then(uri=>{
+              console.log('do something with', uri)
+              setTestUri(uri)
+            }).catch((error)=>{console.log(error)})}}>
+            <Text>캡처</Text>
+          </TouchableOpacity>
+      <Image
+        style={{
+          width:200,
+          height:200,
+        }}
+        source={{uri:testUri}}>
+      </Image>
+      </View> */}
       <View
         style={{
-          backgroundColor:'#fdf8ff',
+          backgroundColor:'#fdf8ff',//'#fdf8ff',
           height:itemSizeC*3//itemSizeC*8//itemSizeC*3
-        }}/>
-      {/* {bottomSheetMemoOpen && renderBackDrop()}   */}
+        }}/>  
       <BottomSheet
         ref={sheetRef}
         callbackNode={fall}
@@ -847,7 +928,7 @@ const styles = StyleSheet.create({
   bottomSheetStyle:{
     backgroundColor: '#FDF8FF',
     padding: 10,
-    height: itemSizeC*8+itemSizeC/2-itemSizeC*3+150,  //바텀 시트 내용물 높이
+    height: height, //itemSizeC*8+itemSizeC/2-itemSizeC*3+150,  //바텀 시트 내용물 높이
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     elevation: 100,

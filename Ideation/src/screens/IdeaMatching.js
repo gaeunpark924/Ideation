@@ -250,7 +250,7 @@ const IdeaMatching = ({route, navigation}) => {
       .add({
         keyword: selectedkeyword,
         carddata: Carddata,
-        title: 'Puzzle Name',//'앱 아이디어',
+        title: '앱 아이디어',//'Puzzle Name',//'앱 아이디어',
         createTime: firestore.FieldValue.serverTimestamp(),
         updateTime: firestore.FieldValue.serverTimestamp(),
         createDate: createDate(),

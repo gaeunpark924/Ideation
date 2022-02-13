@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image
 } from 'react-native';
 import {Card} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
@@ -21,6 +22,7 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
       return date.getFullYear()+"-"+("0"+(1+date.getMonth())).slice(-2)+"-"+("0"+date.getDate()).slice(-2)
     }
     useEffect(()=>{
+      console.log(item.thumbnail)
       var todayDate = new Date(getToday());
       var updateDate = new Date(item.updateDate);
       const diff = updateDate.getTime() - todayDate.getTime();
@@ -36,12 +38,19 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
         activeOpacity={0.8}
         onPress={()=>{pressIdea(item)}}>
         <View style={{flex:2}}>
-          <Card containerStyle={{height: 100}}>
+          <View style={{height:130,width:130,borderRightWidth:1,borderRightColor:'#1D1D1D'}}>
+          <Image
+            style={{width: '100%',height: '100%'}}
+            // resizeMode="contain"
+            source={{uri:item.thumbnail}}//{require('../assets/pet2.jpg')}//{{uri:item.thumbnail}}
+            />
+          </View>  
+          {/* <Card containerStyle={{height: 100,width:100}}>
             <Card.Image
               style={{width: '100%', height: '100%'}}
               source={require('../assets/pet2.jpg')}>  
             </Card.Image>
-          </Card>
+          </Card> */}
         </View>
         <View style={{flex:3, justifyContent: 'center'}}>
           <Text style={styles.title}>{item.title}</Text>
@@ -70,7 +79,8 @@ const styles = StyleSheet.create({
       borderStyle:'solid',
       marginBottom: 15,
       flexDirection: 'row',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      height: 132,
     },
     title:{
       fontSize: 20,

@@ -48,7 +48,7 @@ const idealist = ({route,navigation}) => {
   const [countIdea, setCountIdea] = useState(0); 
 
   const getPosts = async (userUid) => {
-    console.log("getPost")
+    //console.log("getPost")
     const list = []
     await firestore()
         .collection('userIdeaData')
@@ -65,6 +65,7 @@ const idealist = ({route,navigation}) => {
               postData.postId = doc.id; //문서 id
               postData.createDate = parse(postData.createDate)
               list.push(postData);
+              console.log('postData',postData)
             })
           }
           setIndex(0)
