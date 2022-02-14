@@ -27,7 +27,6 @@ import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
-import * as Addkeyword from '../components/AddKeyword';
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
@@ -47,14 +46,6 @@ const IdeaMatching = ({route, navigation}) => {
     {key: index++, label: '테크', select: false},
     {key: index++, label: '음악', select: false},
     {key: index++, label: '금융', select: false},
-    // {key: index++, label: '경영', select: false},
-    // {key: index++, label: '음식 및 음료', select: false},
-    // {key: index++, label: '인테리어', select: false},
-    // {key: index++, label: '패션', select: false},
-    // {key: index++, label: '여행', select: false},
-    // {key: index++, label: '운송수단', select: false},
-    // {key: index++, label: '이벤트', select: false},
-    // {key: index++, label: '기타', select: false},
   ]);
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
@@ -67,13 +58,79 @@ const IdeaMatching = ({route, navigation}) => {
       />
     ) : null,
   );
-
-  const getYoutubeApi = async () => {
-    await Addkeyword.Addkeyword('노래');
+  // 키워드 별로 데이터를 firestore에 저장해둠
+  // const getYoutubeApi = () => {
+  //   keyword.map(k => Addkeyword.Addkeyword(k.label));
+  // };
+  const setparams = keyword => {
+    let params = {
+      key: 'AIzaSyCVOSF3gbCiROT2E5x9vuhVrhKq5ueB8Do',
+      part: 'snippet',
+      q: keyword,
+      maxResults: 6,
+      type: 'video',
+      order: 'viewCount',
+    };
+    return params;
   };
-  console.log('시작');
-  getYoutubeApi();
 
+  // Youtube API를 이용해서 imagelist를 반환한다.
+  const Addkeyword = keyword => {
+    let params = setparams(keyword);
+    const imagelist = [];
+    axios.defaults.baseURL = 'https://www.googleapis.com/youtube/v3';
+    return axios
+      .get('./search', {params})
+      .then(response => {
+        if (!response) {
+          console.log('response 실패');
+          return;
+        } else {
+          let i = 0;
+          for (i = 0; i < params.maxResults; i++) {
+            let image = response.data.items[i].snippet.thumbnails.high.url;
+            imagelist.push(image);
+            // console.log('image : ' + image);
+          }
+          console.log('이미지 url들 ' + imagelist);
+          return imagelist;
+        }
+      })
+      .catch(error => {
+        console.log('에러');
+        console.log(error);
+      });
+  };
+  // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
+  const putfirebase = async () => {
+    const keywordlist = keyword.map(k => k.label);
+    let imagelist = [];
+    for (let i = 0; i < keywordlist.length; i++) {
+      try {
+        imagelist = await Addkeyword(keywordlist[i]);
+      } catch (error) {
+        console.log('첫번째' + error);
+      }
+      try {
+        console.log('dd' + imagelist);
+        if (imagelist.length != 0) {
+          firestore()
+            .collection('categoryData')
+            .doc('item')
+            .update({
+              [keywordlist[i]]: {image: imagelist},
+            });
+        }
+      } catch (error) {
+        console.log('두번째 오류' + error);
+      }
+    }
+  };
+  useEffect(() => {
+    putfirebase();
+  }, []);
+
+  // 키워드 추가 모달창
   const modalkeywordtoggle = e => {
     let newKeywords = keyword.map(k => {
       if (k.label === e.label) {
@@ -146,23 +203,31 @@ const IdeaMatching = ({route, navigation}) => {
       </View>
     ),
   );
+
   // textInput에 사용하기 위함
   const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
-  // 어떤 card 선택되었는지
+
+  // 고정 아이콘 toggleicon
+  const [pinicon, setPinicon] = useState(false);
+  const togglepinicon = () => {
+    setPinicon(!pinicon);
+  };
+
+  // penicon 누르고 나서 어떤 card 선택되었는지
   const [whichcard, setWhichCard] = useState([false, false, false, false]);
+
   /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  // 체크된 카드의 내용 저장
   const temp = useRef([{}, {}, {}, {}]);
   const getData = (idx, cd) => {
-    // console.log('getData 실행');
-    // console.log(cd);
-    // console.log(confirmCheckState.current[idx]);
     if (confirmCheckState.current[idx]) {
       temp.current[idx] = cd;
     } else if (!confirmCheckState.current[index]) {
@@ -170,17 +235,7 @@ const IdeaMatching = ({route, navigation}) => {
     }
   };
 
-  // 현재 선택된 키워드
-  const selectedkeyword = keyword.filter(k => k.select == true);
-  // console.log(selectedkeyword);
-  // firestore에 추가하는 함수
-  const appnumber = useRef(1);
-
-  // useEffect(() => {
-  //   addPosts();
-  // }, []);
-
-  // 등록 날짜 불러오기
+  // firestore에 체크된 카드 내용 저장하기 위해 등록 날짜 불러오기
   const createDate = () => {
     var date = new Date();
     var year = date.getFullYear();
@@ -195,10 +250,6 @@ const IdeaMatching = ({route, navigation}) => {
     var day = ('0' + date.getDate()).slice(-2);
     var time = date.toLocaleTimeString();
     return year + '년 ' + month + '월 ' + day + '일 ' + time;
-  };
-  const [pinicon, setPinicon] = useState(false);
-  const togglepinicon = () => {
-    setPinicon(!pinicon);
   };
   const next = useRef(false);
   const addPosts = () => {
@@ -271,13 +322,13 @@ const IdeaMatching = ({route, navigation}) => {
       confirmCheckState.current[index] = true;
     }
   };
-  const [cardData, setCarddata] = useState();
-  const [isVisible, setIsVisible] = useState(false);
+
   // pen toggleButton
   const [pen, setPen] = useState(false);
   const togglepen = () => {
     setPen(!pen);
   };
+  // 1,2,3,4 각각을 선택했을때 나타나는 bottomModal
   const bottomModalShow1 = () => {
     bottomSheet.current.show();
     setWhichCard([true, false, false, false]);
@@ -294,8 +345,9 @@ const IdeaMatching = ({route, navigation}) => {
     bottomSheet.current.show();
     setWhichCard([false, false, false, true]);
   };
-  const bottomSheet = useRef();
-  const eachCard = useRef();
+  const bottomSheet = useRef(); // bottomModal 변수
+
+  // 이미지 저장을 위함
   const optionsImage = {
     mediaType: 'photo',
     maxWidth: 180,
@@ -304,20 +356,7 @@ const IdeaMatching = ({route, navigation}) => {
       path: 'images',
     },
   };
-  const optionsVideo = {
-    mediaType: 'video',
-    maxWidth: 180,
-    storageOptions: {
-      skipBackup: true,
-      path: 'video',
-    },
-  };
-  const [clicktextModal, isClickTextModal] = useState(false);
-  const textModal = () => {
-    isClickTextModal(!clicktextModal);
-    bottomSheet.current.close();
-  };
-  //console.log(isfix);
+  // 이미지를 갤러리에서 들고옴 -> 수정 필요..!
   const takeImagefromphone = () =>
     launchImageLibrary(optionsImage, response => {
       // console.log('Response = ', response);
@@ -344,32 +383,15 @@ const IdeaMatching = ({route, navigation}) => {
         // setItems(arr); ////xxxxx
       }
     });
-  const takeVideofromphone = () =>
-    launchImageLibrary(optionsVideo, response => {
-      // console.log('Response = ', response);
-      if (response.didCancel) {
-        // setProcessing(false)
-        console.log('User cancelled video picker');
-      } else if (response.error) {
-        // setProcessing(false)
-        console.log('VideoPicker Error: ', response.error);
-      } else if (response.customButton) {
-        // setProcessing(false)
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        console.log('Response = ', response.assets[0].uri);
-        const tmp = response.assets[0];
-        // const source = {
-        //   uri:
-        //     Platform.OS === 'android' ? tmp.uri : tmp.uri.replace('file://', ''),
-        //   fileName: response.fileName,
-        // };
-        // var arr = [...items];
-        // console.log('source.uri', source.uri);
-        // arr.push(source.uri);
-        // setItems(arr); ////xxxxx
-      }
-    });
+
+  // 기록할때 textmodal 누른지 여부
+  const [clicktextModal, isClickTextModal] = useState(false);
+  const textModal = () => {
+    isClickTextModal(!clicktextModal);
+    bottomSheet.current.close();
+  };
+
+  // 고정 여부
   const [isfix, setIsfix] = useState([false, false, false, false]);
   const isfix1 = idx => {
     let newfix = [!isfix[0], isfix[1], isfix[2], isfix[3]];
@@ -390,9 +412,24 @@ const IdeaMatching = ({route, navigation}) => {
   const [ischeck, setIscheck] = useState();
   const [allrandom, setAllRandom] = useState(false);
   const allrandommatching = () => {
-    // alert('전체카드 랜덤 매칭합니다!');
+    alert('전체카드 랜덤 매칭합니다!');
     setAllRandom(!allrandom);
   };
+
+  // 현재 선택된 키워드
+  const selectedkeyword = () => {
+    let kl = [];
+    for (let i = 0; i < keyword.length; i++) {
+      if (keyword[i].select === true) {
+        kl.push(keyword[i].label);
+      }
+    }
+    return kl;
+  };
+  useEffect(() => {
+    console.log('현재 키워드' + selectedkeyword());
+    selectedkeyword;
+  }, [keyword]);
   return (
     <View style={styles.container}>
       {saveicon ? null : (
@@ -485,16 +522,6 @@ const IdeaMatching = ({route, navigation}) => {
                 />
                 <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={takeVideofromphone}
-                style={styles.bottomModal}>
-                <VideoIcon
-                  name="videocamera"
-                  size={24}
-                  style={{marginRight: 7}}
-                />
-                <Text style={{fontFamily: 'SB_Aggro_L'}}>영상 가져오기</Text>
-              </TouchableOpacity>
             </BottomSheet>
             {pen && !isfix[0] ? (
               <TouchableOpacity
@@ -506,7 +533,7 @@ const IdeaMatching = ({route, navigation}) => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={0}
-                  keyword={keyword[1].label}
+                  keywordlist={selectedkeyword()}
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
@@ -517,7 +544,6 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -527,7 +553,7 @@ const IdeaMatching = ({route, navigation}) => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={0}
-                keyword={keyword[1].label}
+                keywordlist={selectedkeyword()}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -538,7 +564,6 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
               />
             )}
 
@@ -552,7 +577,7 @@ const IdeaMatching = ({route, navigation}) => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={1}
-                  keyword={keyword[2].label}
+                  keywordlist={selectedkeyword()}
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
@@ -563,7 +588,6 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -573,7 +597,7 @@ const IdeaMatching = ({route, navigation}) => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={1}
-                keyword={keyword[2].label}
+                keywordlist={selectedkeyword()}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -584,7 +608,6 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
               />
             )}
           </View>
@@ -600,7 +623,7 @@ const IdeaMatching = ({route, navigation}) => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={2}
-                  keyword={keyword[3].label}
+                  keywordlist={selectedkeyword()}
                   isfix={isfix}
                   ischeck={ischeck}
                   setIsfix={isfix3}
@@ -610,7 +633,6 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -620,7 +642,7 @@ const IdeaMatching = ({route, navigation}) => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={2}
-                keyword={keyword[3].label}
+                keywordlist={selectedkeyword()}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -631,7 +653,6 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
               />
             )}
             {pen && !isfix[3] ? (
@@ -644,7 +665,7 @@ const IdeaMatching = ({route, navigation}) => {
                   saveicon={saveicon}
                   whichcard={whichcard}
                   idx={3}
-                  keyword={keyword[4].label}
+                  keywordlist={selectedkeyword()}
                   isfix={isfix}
                   ischeck={ischeck}
                   penicon={pen}
@@ -655,7 +676,6 @@ const IdeaMatching = ({route, navigation}) => {
                   getData={getData}
                   allrandom={allrandom}
                   confirmCheck={confirmCheck}
-                  getData={getData}
                 />
               </TouchableOpacity>
             ) : (
@@ -665,7 +685,7 @@ const IdeaMatching = ({route, navigation}) => {
                 saveicon={saveicon}
                 whichcard={whichcard}
                 idx={3}
-                keyword={keyword[4].label}
+                keywordlist={selectedkeyword()}
                 isfix={isfix}
                 ischeck={ischeck}
                 penicon={pen}
@@ -676,7 +696,6 @@ const IdeaMatching = ({route, navigation}) => {
                 getData={getData}
                 allrandom={allrandom}
                 confirmCheck={confirmCheck}
-                getData={getData}
               />
             )}
           </View>

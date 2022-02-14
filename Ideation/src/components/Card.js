@@ -16,7 +16,7 @@ const SC = ({
   idx,
   isfix,
   ischeck,
-  keyword,
+  keywordlist,
   setIsfix,
   clicktextModal,
   allrandom,
@@ -29,8 +29,10 @@ const SC = ({
     const togglefix = () => {
       setIsfix(idx);
     };
+    // console.log(keywordlist);
     // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
+    // 카드의 text와 image 데이터
     const cd = useRef({text: data.text, image: data.image});
     const togglecheck = () => {
       setChecked(!checked);
@@ -60,13 +62,10 @@ const SC = ({
           <View style={{marginTop: -20}}>
             <TextInput
               placeholder="생각나는 아이디어를 입력해주세요!(30자)"
-              // onChange={onChangeTextinput}
               onChangeText={newtext => setText(newtext)}
-              // onSubmitEditing={newtext=>setText(newtext)}
               value={text}
               style={{textAlign: 'center', fontFamily: 'SB_Aggro_L'}}
               numberOfLines={2}
-              //editable
               maxLength={30}
             />
           </View>
@@ -83,15 +82,15 @@ const SC = ({
     };
 
     return (
-      <View style={[styles.card, {backgroundColor: data.backgroundColor}]}>
+      <View style={[styles.card, {backgroundColor: '#FFF6DF'}]}>
         <View
           style={{
             flexDirection: 'row',
             flex: 1,
           }}>
           <View style={{flex: 1, paddingTop: 2}}>
-            {saveicon ? (
-              checked ? (
+            {saveicon ? ( // 저장버튼 누른경우
+              checked ? ( // 체크된 경우
                 <TouchableOpacity>
                   <Checkbox
                     name="checkbox-active"
@@ -102,7 +101,7 @@ const SC = ({
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity>
-                  <Checkbox
+                  <Checkbox //체크 안된 경우
                     name="checkbox-passive"
                     size={24}
                     onPress={togglecheck}
@@ -110,8 +109,8 @@ const SC = ({
                   />
                 </TouchableOpacity>
               )
-            ) : pinicon ? (
-              isfix[idx] ? (
+            ) : pinicon ? ( // 고정 버튼 누른 경우
+              isfix[idx] ? ( //해당 index 카드 고정된 경우
                 <TouchableOpacity
                   style={{
                     borderColor: 'black',
@@ -129,6 +128,7 @@ const SC = ({
                   />
                 </TouchableOpacity>
               ) : (
+                // 고정 안된 경우
                 <TouchableOpacity
                   style={{borderColor: 'black', borderWidth: 1}}>
                   <Pinoutline
@@ -175,129 +175,133 @@ const SC = ({
       </View>
     );
   }
-  const [cards, setCards] = useState();
-  // Youtube api -> firestore -> setCards를 통해서 이미지나 텍스트 저장.
-  let newCards = useRef();
 
+  const [cards, setCards] = useState();
+  // firestore에서 해당 키워드 데이터 불러오기 -> 배열로 return해서 선택된 키워드 전체의 값을 받아온다.
+  const [cd, setCd] = useState([]);
+  const getCardData = async keywordlist => {
+    // console.log('getCardData');
+    const newcd = [];
+    for (let i = 0; i < keywordlist.length; i++) {
+      await firestore()
+        .collection('categoryData')
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            // console.log('doc.data ' + doc.data()['건축'].image.length);
+            for (let j = 0; j < doc.data()[keywordlist[i]].image.length; j++) {
+              let temp = doc.data()[keywordlist[i]].image[j];
+              if (temp === undefined) {
+                newcd.push(keywordlist[i]);
+              } else {
+                newcd.push(temp);
+              }
+            }
+          });
+        });
+    }
+    setCd(newcd);
+  };
+  // 키워드에 해당하는 데이터를 cd에 저장함.
+  useEffect(() => {
+    getCardData(keywordlist);
+    // console.log('card data : ' + cd[0]);
+  }, []);
   let cards1 = [
     {
-      text: keyword,
-      backgroundColor: '#FFF6DF',
+      text: keywordlist[0],
     },
     {
-      text: '예빛',
-      backgroundColor: '#FFF6DF',
+      image: cd[0],
     },
     {
-      text: '검정치마',
-      backgroundColor: '#FFF6DF',
-      // image: newCards.current.thumbnail[0],
+      image: cd[1],
     },
     {
-      text: '점심 먹기',
-      backgroundColor: '#FFF6DF',
-      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+      image: cd[2],
     },
-    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-    {text: '음...', backgroundColor: '#FFF6DF'},
-    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+    {
+      image: cd[2],
+    },
+    {
+      image: cd[3],
+    },
+    {
+      image: cd[4],
+    },
+    {
+      image: cd[5],
+    },
+    {
+      image: cd[6],
+    },
+    {
+      image: cd[7],
+    },
   ];
   let cards2 = [
     {
-      text: keyword,
-      backgroundColor: '#FFF6DF',
+      text: keywordlist[1],
     },
     {
-      text: '유튜브 관련!',
-      backgroundColor: '#FFF6DF',
+      image: cd[8],
     },
     {
-      text: '으아',
-      backgroundColor: '#FFF6DF',
-      // image: newCards.current.thumbnail[1],
+      image: cd[9],
     },
     {
-      text: '점심 먹기',
-      backgroundColor: '#FFF6DF',
-      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+      image: cd[10],
     },
-    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-    {text: '음...', backgroundColor: '#FFF6DF'},
-    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+    {
+      image: cd[11],
+    },
+    {
+      image: cd[12],
+    },
   ];
   let cards3 = [
     {
-      text: keyword,
-      backgroundColor: '#FFF6DF',
+      text: keywordlist[2],
     },
     {
-      text: '유튜브 관련!',
-      backgroundColor: '#FFF6DF',
-      image: 'https://i.ytimg.com/vi/I1V7LE9NBAM/hq720.jpg',
+      image: cd[13],
     },
     {
-      text: '호롤룰루',
-      backgroundColor: '#FFF6DF',
-      image:
-        'https://i.ytimg.com/vi/9yOnlf_FMsI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLARAhxek4qEAj-B4d7G1MyH6Fc2oA',
+      image: cd[14],
     },
     {
-      text: '점심 먹기',
-      backgroundColor: '#FFF6DF',
-      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+      image: cd[15],
     },
     {
-      text: '냉장고 청소하기',
-      backgroundColor: '#FFF6DF',
-      image:
-        'https://i.ytimg.com/vi/9yOnlf_FMsI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLARAhxek4qEAj-B4d7G1MyH6Fc2oA',
+      image: cd[16],
     },
     {
-      text: '대충 씻기',
-      backgroundColor: '#FFF6DF',
-      image:
-        'https:i.ytimg.com/vi/9yOnlf_FMsI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLARAhxek4qEAj-B4d7G1MyH6Fc2oA',
+      image: cd[17],
     },
-    {text: '음...', backgroundColor: '#FFF6DF'},
-    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
   ];
   let cards4 = [
     {
-      text: keyword,
-      backgroundColor: '#FFF6DF',
+      text: keywordlist[1],
     },
     {
-      text: '유튜브 관련!',
-      backgroundColor: '#FFF6DF',
-      image:
-        'https://i.ytimg.com/vi/vORDkdgLzEs/hq720.jpg?sqp=-oaymwEcCOgCEMoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfx5vbQqtKCvnbHsh0JSvQrCCrug',
+      image: cd[18],
     },
     {
-      text: '괴물쥐',
-      backgroundColor: '#FFF6DF',
-      image:
-        'https://i.ytimg.com/an_webp/eYp6P-9ayUY/mqdefault_6s.webp?du=3000&sqp=CO6y_o8G&rs=AOn4CLBxbVxq_e-B-aFVRUpionQP0Mgf2Q',
+      image: cd[19],
     },
     {
-      text: '점심 먹기',
-      backgroundColor: '#FFF6DF',
-      image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif',
+      image: cd[20],
     },
-    {text: '냉장고 청소하기', backgroundColor: '#FFF6DF'},
-    {text: '대충 씻기', backgroundColor: '#FFF6DF'},
-    {text: '음...', backgroundColor: '#FFF6DF'},
-    {text: '파카 유튜브 시청', backgroundColor: '#FFF6DF'},
+    {
+      image: cd[21],
+    },
+    {
+      image: cd[22],
+    },
+    {
+      image: cd[23],
+    },
   ];
-  // useEffect(()=>{
-  //   let newcards1=[];
-  //   for(let i=0;i=cards1.length;i++){
-  //     newcards1.push(cards1[i]);
-  //   }
-  //   console.log(newcards1);
-  // })
-
   // 전체 카드 랜덤 매칭 -> 랜덤으로 섞어주는 함수
   function shuffle(sourceArray) {
     for (var i = 0; i < sourceArray.length - 1; i++) {
@@ -324,26 +328,30 @@ const SC = ({
           shuffle(cards4);
         }
       }
-      if (keyword === '자연') {
+      // setCards(cards1);
+      if (idx === 0) {
         setCards(cards1);
-      } else if (keyword === '건축') {
+      } else if (idx === 1) {
         setCards(cards2);
-      } else if (keyword === '예술') {
+      } else if (idx === 2) {
         setCards(cards3);
-      } else if (keyword === '뷰티') {
+      } else if (idx === 3) {
         setCards(cards4);
       }
     }, 1000);
   }, [allrandom]);
-  // console.log(cards);
-  // console.log(keyword);
+
+  // 카드 오른쪽으로 옮겼을때
   function handleYup(card) {
     console.log(`Yup for ${card.text} ${card.image}`);
+    let temp = {image: card.image};
+    cards1.push(temp);
     return true; // return false if you wish to cancel the action
   }
+
+  // 카드 왼쪽으로 옮겼을때
   function handleNope(card) {
     console.log(`Nope for ${card.text} ${card.image}`);
-    cardremo;
     return true;
   }
   return (
@@ -359,13 +367,13 @@ const SC = ({
               onAction: handleNope,
               text: '그냥 패스',
               containerStyle: {width: 120},
-              textStyle: {/*fontFamily:'SB 어그로 B'*/ alignItems: 'center'},
+              textStyle: {alignItems: 'center'},
             },
             yup: {
               onAction: handleYup,
               text: '다시 보기',
               containerStyle: {width: 120},
-              textStyle: {/*fontFamily:'SB 어그로 B'*/ alignItems: 'center'},
+              textStyle: {alignItems: 'center'},
             },
           }}
           hasMaybeAction={false}
@@ -376,7 +384,7 @@ const SC = ({
     </View>
   );
 };
-export default React.memo(SC);
+export default SC;
 
 const styles = StyleSheet.create({
   container: {
@@ -402,8 +410,8 @@ const styles = StyleSheet.create({
   },
   cardthumbnail: {
     zIndex: -1,
-    marginTop: -110,
+    marginTop: -100,
     width: 180,
-    height: 220,
+    height: 200,
   },
 });
