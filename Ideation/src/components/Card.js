@@ -284,22 +284,22 @@ const SC = ({
       text: keywordlist[1],
     },
     {
-      image: cd[18],
+      image: cd[cd.length - 6],
     },
     {
-      image: cd[19],
+      image: cd[cd.length - 5],
     },
     {
-      image: cd[20],
+      image: cd[cd.length - 4],
     },
     {
-      image: cd[21],
+      image: cd[cd.length - 3],
     },
     {
-      image: cd[22],
+      image: cd[cd.length - 2],
     },
     {
-      image: cd[23],
+      image: cd[cd.length - 1],
     },
   ];
   // 전체 카드 랜덤 매칭 -> 랜덤으로 섞어주는 함수

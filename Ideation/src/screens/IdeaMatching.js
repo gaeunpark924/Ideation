@@ -126,9 +126,9 @@ const IdeaMatching = ({route, navigation}) => {
       }
     }
   };
-  useEffect(() => {
-    putfirebase();
-  }, []);
+  // useEffect(() => {
+  //   putfirebase();
+  // }, []);
 
   // 키워드 추가 모달창
   const modalkeywordtoggle = e => {
@@ -273,22 +273,26 @@ const IdeaMatching = ({route, navigation}) => {
       console.log('저장할 카드를 체크해주세요!');
     } else {
       next.current = true;
-      firestore()
-        .collection('userIdeaData')
-        .doc(uid)
-        .collection('item')
-        .add({
-          keyword: selectedkeyword,
-          carddata: Carddata,
-          title: '앱 아이디어',
-          createTime: firestore.FieldValue.serverTimestamp(),
-          updateTime: firestore.FieldValue.serverTimestamp(),
-          createDate: createDate(),
-          updateDate: createDate(),
-        })
-        .then(() => {
-          console.log('User added!');
-        });
+      try {
+        firestore()
+          .collection('userIdeaData')
+          .doc(uid)
+          .collection('item')
+          .add({
+            keyword: selectedkeyword,
+            carddata: Carddata,
+            title: '앱 아이디어',
+            createTime: firestore.FieldValue.serverTimestamp(),
+            updateTime: firestore.FieldValue.serverTimestamp(),
+            createDate: createDate(),
+            updateDate: createDate(),
+          })
+          .then(() => {
+            console.log('User added!');
+          });
+      } catch (error) {
+        console.log('error' + error);
+      }
     }
   };
   // save toggleButton
