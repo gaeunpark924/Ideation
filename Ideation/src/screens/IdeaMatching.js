@@ -64,7 +64,7 @@ const IdeaMatching = ({route, navigation}) => {
   // };
   const setparams = keyword => {
     let params = {
-      key: 'AIzaSyCVOSF3gbCiROT2E5x9vuhVrhKq5ueB8Do',
+      key: 'AIzaSyDPF1fcVa8EAn0jyvcydfOIffcN2gn_Qzg',
       part: 'snippet',
       q: keyword,
       maxResults: 6,
