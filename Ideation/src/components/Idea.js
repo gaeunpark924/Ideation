@@ -22,7 +22,7 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
       return date.getFullYear()+"-"+("0"+(1+date.getMonth())).slice(-2)+"-"+("0"+date.getDate()).slice(-2)
     }
     useEffect(()=>{
-      console.log(item.thumbnail)
+      console.log('item')
       var todayDate = new Date(getToday());
       var updateDate = new Date(item.updateDate);
       const diff = updateDate.getTime() - todayDate.getTime();
@@ -39,18 +39,17 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
         onPress={()=>{pressIdea(item)}}>
         <View style={{flex:2}}>
           <View style={{height:130,width:130,borderRightWidth:1,borderRightColor:'#1D1D1D'}}>
-          <Image
-            style={{width: '100%',height: '100%'}}
-            // resizeMode="contain"
-            source={{uri:item.thumbnail}}//{require('../assets/pet2.jpg')}//{{uri:item.thumbnail}}
-            />
+          {item.thumbnail === '' || item.thumbnail === undefined
+          ? (<Image
+              style={{width: '100%',height: '100%'}}
+              source={require('../assets/frame.png')}//{require('../assets/pet2.jpg')}//{{uri:item.thumbnail}}
+            />)
+          : (<Image
+              style={{width: '100%',height: '100%'}}
+              source={{uri:item.thumbnail}}//{require('../assets/pet2.jpg')}//{{uri:item.thumbnail}}
+            />)
+          }  
           </View>  
-          {/* <Card containerStyle={{height: 100,width:100}}>
-            <Card.Image
-              style={{width: '100%', height: '100%'}}
-              source={require('../assets/pet2.jpg')}>  
-            </Card.Image>
-          </Card> */}
         </View>
         <View style={{flex:3, justifyContent: 'center'}}>
           <Text style={styles.title}>{item.title}</Text>

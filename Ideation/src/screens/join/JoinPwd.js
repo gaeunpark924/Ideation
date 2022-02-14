@@ -28,7 +28,7 @@ const JoinPwd = ({route, navigation}) => {
     },
   });
   const onPressNavigation = () => {
-    console.log("pwdValue",pwdValue)
+    Keyboard.dismiss()
     errors.pwdForm === undefined && pwdValue !== undefined && pwdValue !== ''
       ? navigation.navigate('JoinPwdChecking', {
           emailValue: emailValue,

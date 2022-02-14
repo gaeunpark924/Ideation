@@ -27,6 +27,7 @@ const JoinPwdChecking = ({route, navigation}) => {
       },
     });
     const onPressNavigation = () =>{
+      Keyboard.dismiss()
       (errors.pwdCheckingForm === undefined && pwdCheckingValue !== undefined)
       ? createUser()//navigation.popToTop() //navigation.navigate("ideadevelop") // idea develop으로 변경
       : null

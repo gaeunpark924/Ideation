@@ -10,7 +10,8 @@ import {
   Pressable,
   Alert,
   ImageBackground,
-  Dimensions
+  Dimensions,
+  Keyboard
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { launchImageLibrary } from "react-native-image-picker";
@@ -38,6 +39,7 @@ const PuzzleModal = ({
         //setVisibleM(false)
     }
     const takeImagefromphone = () => {
+      Keyboard.dismiss()
       const options = {
         title: "Select Avatar",
         storageOptions: {
@@ -80,7 +82,7 @@ const PuzzleModal = ({
       });
     };
     const changeType = () => {
-      console.log('changeType',type)
+      Keyboard.dismiss()
       if (image==='' && type ==='text'){
         //처음 텍스트에서 빈 이미지 퍼즐로 전환할 때
         takeImagefromphone()
@@ -92,19 +94,39 @@ const PuzzleModal = ({
         )
       }
     }
+    const onPressBackGround = () => {
+      Keyboard.dismiss()
+      type==='text'
+      ? closePuzzleModal(row,column,text,type)
+      : closePuzzleModal(row,column,image,type)
+    }
+    useEffect(()=>{
+      // console.log('플랫폼',Platform.OS === "ios" ? "padding" : "height")
+      console.log('플랫폼',Dimensions.get("screen").height-height)
+    },[])
     return (
         <Modal
-            animationType={'fade'}
+            animationType={'slide'}
             transparent={true}
             onRequestClose={()=>{
               type==='text' ? closePuzzleModal(row,column,text,type) : closePuzzleModal(row,column,image,type)}
             }
             onBackdropPress={() => closeModal()}>
+          <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{flex:1}}
+              keyboardVerticalOffset={0}
+              enabled>
           <BlurView
-            blurType='light'
+            blurType='dark'
             style={{flex:1}}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={{flex:1}}
+              keyboardVerticalOffset={Dimensions.get("screen").height-height}//{Dimensions.get("screen").height-height}
+              enabled>
           <TouchableOpacity
-            onPress={()=>{type==='text' ? closePuzzleModal(row,column,text,type) : closePuzzleModal(row,column,image,type)}}
+            onPress={()=>{onPressBackGround()}}
             activeOpacity={1}
               style={{
                 flex:1,
@@ -132,8 +154,7 @@ const PuzzleModal = ({
                     onChangeText={(e) => { setText(e)}}
                     //setInit(!init ? true : true) //false -> true, true -> true
                     //textRef.current = e
-                  
-                      />
+                  />
                 </View>
               : <View
                   style={{
@@ -235,6 +256,11 @@ const PuzzleModal = ({
                   marginBottom:'10%',
                   justifyContent:'space-between'
                   }}>
+                  <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    style={{flex:1}}
+                    keyboardVerticalOffset={100}
+                    enabled>
                   <View
                     style={{
                       height:'100%', width:'100%',
@@ -264,10 +290,12 @@ const PuzzleModal = ({
                       source={require('../assets/modal_check.png')}/>
                     </TouchableOpacity>
                   </View>
+                  </KeyboardAvoidingView>  
                 </View>
             </TouchableOpacity>
+            </KeyboardAvoidingView>
           </BlurView>
-          {/* </Pressable>    */}
+          </KeyboardAvoidingView>   
         </Modal>
     );
   };

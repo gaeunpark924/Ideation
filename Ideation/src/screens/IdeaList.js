@@ -12,6 +12,7 @@ import {
   Image,
   BackHandler,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {Button, Header, Card, Icon} from 'react-native-elements';
 import auth from '@react-native-firebase/auth';
@@ -48,7 +49,7 @@ const idealist = ({route,navigation}) => {
   const [countIdea, setCountIdea] = useState(0); 
 
   const getPosts = async (userUid) => {
-    //console.log("getPost")
+    console.log("getPost", userUid)
     const list = []
     await firestore()
         .collection('userIdeaData')
@@ -69,9 +70,13 @@ const idealist = ({route,navigation}) => {
             })
           }
           setIndex(0)
+          setInit(true)
+        })
+        .catch((error)=>{
+          console.log('error',error)
         })
     setPost(list)
-    setPostSearch(list)
+    //setPostSearch(list)
     setPostFilter(list)
     //console.log("list",list)
   }
@@ -159,16 +164,16 @@ const idealist = ({route,navigation}) => {
   const searchTitle = text => {
     if (text) {
       const tmpPost = post.filter(item => item.title.includes(text));
-      setPostSearch(tmpPost);
+      //setPostSearch(tmpPost);
       setPostFilter(tmpPost);
     } else {
-      setPostSearch(post);
+      //setPostSearch(post);
       setPostFilter(post);
     }
   };
   const plusIndex = () => {
     var idx = index;
-    if (index < 3) {
+    if (index < 2) {
       idx = index + 1;
       setIndex(index + 1);
     } else {
@@ -181,24 +186,20 @@ const idealist = ({route,navigation}) => {
     const tmpPost = postSearch;
     // console.log("출력",idx, postSearch)
     switch (idx) {
-      case 0: //수정
-        setPostFilter(postSearch);
+      case 0: //수정 //수정시간 기준 내림차순
+        setPostFilter(post);
         break;
-      case 1: //생성
-        tmpPost.sort((a, b) => a.createTime - b.createTime);
-        setPostFilter(tmpPost);
+      case 1: //생성 //생성 시간 기준 오름차순
+        postFilter.sort((a, b) => a.createTime - b.createTime);
+        setPostFilter(postFilter);
         //console.log('xxx', postSearch);
         break;
       case 2: //이름
-        tmpPost.sort((a, b) => a.updateTime - b.updateTime);
-        setPostFilter(tmpPost);
-        break;
-      case 3: //이름
-        tmpPost.sort((a, b) => (a.title > b.title ? 1 : -1));
-        setPostFilter(tmpPost);
+        postFilter.sort((a, b) => (a.title > b.title ? 1 : -1));
+        setPostFilter(postFilter);
         break;
       default:
-        setPostFilter(postSearch);
+        setPostFilter(post);
         // console.log("출력")
         break;
     }
@@ -212,10 +213,9 @@ const idealist = ({route,navigation}) => {
   return (
     <View style={styles.container}>
       {/* <View style={styles.header}> */}
-        <TouchableOpacity onPress={()=>{navigation.navigate("ideadevelop")}}>
-        {/* <TouchableOpacity onPress={()=>{setTest(test+1)}}> */}
+        {/* <TouchableOpacity onPress={()=>{navigation.navigate("ideadevelop")}}>
           <Text> 아이디어 발전 </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <View style={{
           flexDirection:'row',
           backgroundColor: '#fdf8ff',//'//'blue',//'#fdf8ff',
@@ -258,6 +258,13 @@ const idealist = ({route,navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
+      {!init
+       ?<ActivityIndicator
+          style={{
+            justifyContent:'center',
+            alignItems:'center'}}
+          size="large" color="gray" />
+       : null}
       {!emptyList
       ? <FlatList
           data={postFilter}

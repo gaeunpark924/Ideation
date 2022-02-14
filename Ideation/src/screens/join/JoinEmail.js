@@ -32,6 +32,7 @@ const JoinEmail = ({navigation}) => {
     },
   });
   const onPressNavigation = () => {
+    Keyboard.dismiss()
     errors.emailForm === undefined && emailValue !== undefined
       ? navigation.navigate('JoinPwd', {emailValue: emailValue})
       : null;
