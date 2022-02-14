@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import {
   StyleSheet,
   Text,
@@ -29,6 +29,7 @@ import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
+
   useEffect(() => {
     console.log('사용자id', uid);
   }, [uid]);
@@ -203,28 +204,23 @@ const IdeaMatching = ({route, navigation}) => {
       </View>
     ),
   );
-
   // textInput에 사용하기 위함
   const [change, setChange] = useState(false);
   const isChange = change => {
     setChange(change);
   };
-
   // 고정 아이콘 toggleicon
   const [pinicon, setPinicon] = useState(false);
   const togglepinicon = () => {
     setPinicon(!pinicon);
   };
-
   // penicon 누르고 나서 어떤 card 선택되었는지
   const [whichcard, setWhichCard] = useState([false, false, false, false]);
-
   /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
   // 체크된 카드의 내용 저장
   const temp = useRef([{}, {}, {}, {}]);
   const getData = (idx, cd) => {
@@ -234,6 +230,9 @@ const IdeaMatching = ({route, navigation}) => {
       temp.current[idx] = {};
     }
   };
+  const saveData = (idx,cd) => {
+
+  }
 
   // firestore에 체크된 카드 내용 저장하기 위해 등록 날짜 불러오기
   const createDate = () => {
@@ -251,6 +250,7 @@ const IdeaMatching = ({route, navigation}) => {
     var time = date.toLocaleTimeString();
     return year + '년 ' + month + '월 ' + day + '일 ' + time;
   };
+
   const next = useRef(false);
   const addPosts = () => {
     let Carddata = [];
@@ -295,6 +295,8 @@ const IdeaMatching = ({route, navigation}) => {
       }
     }
   };
+  //
+  const swipeCardIndex = useRef([0, 0, 0, 0]);   //현재 화면에 있는 스와이프 카드의 index ///
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
 
@@ -308,6 +310,7 @@ const IdeaMatching = ({route, navigation}) => {
   const togglesaveiconTrue = () => {
     setSaveicon(!saveicon);
     console.log(temp.current);
+    console.log('swipeCardIndex',swipeCardIndex)
     addPosts();
     temp.current = [{}, {}, {}, {}];
     confirmCheckState.current = [false, false, false, false];
@@ -330,7 +333,8 @@ const IdeaMatching = ({route, navigation}) => {
   // pen toggleButton
   const [pen, setPen] = useState(false);
   const togglepen = () => {
-    setPen(!pen);
+    console.log(pen)
+    setPen(!pen);  //여기서만 penicon을 수정함  //근데 여기서도 수정이 되는데
   };
   // 1,2,3,4 각각을 선택했을때 나타나는 bottomModal
   const bottomModalShow1 = () => {
@@ -346,6 +350,7 @@ const IdeaMatching = ({route, navigation}) => {
     setWhichCard([false, false, true, false]);
   };
   const bottomModalShow4 = () => {
+    console.log('44')
     bottomSheet.current.show();
     setWhichCard([false, false, false, true]);
   };
@@ -527,7 +532,7 @@ const IdeaMatching = ({route, navigation}) => {
                 <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
               </TouchableOpacity>
             </BottomSheet>
-            {pen && !isfix[0] ? (
+            {pen && !isfix[0] ? (  //pen 클릭 상태에서 카드 누르면 바텀이 뜬다 //pen이 비활성화 일때도 바텀이 뜨네
               <TouchableOpacity
                 onPress={bottomModalShow1}
                 style={{marginHorizontal: 5}}>

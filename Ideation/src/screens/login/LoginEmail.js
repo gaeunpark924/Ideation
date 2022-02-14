@@ -7,7 +7,6 @@ import { color } from 'react-native-reanimated';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {userInfo} from '../../User'
 
-
 const LoginEmail = ({navigation}) => {
     const passwordInput = useRef();
     const onPressSearchPwd = ()=>{
@@ -17,8 +16,8 @@ const LoginEmail = ({navigation}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-  function onPressLogin() {
-    console.log(email, password);
+    function onPressLogin() {
+      console.log(email, password);
     if (email && password) {  //email, pass null, 공백 처리
       auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
@@ -26,7 +25,6 @@ const LoginEmail = ({navigation}) => {
           userInfo.email = user.user.email;
           userInfo.uid = user.user.uid;
           userInfo.emailVerified = user.user.emailVerified;
-
           //Stack 리셋하는 부분인데 작동 안함
           // const resetAction = StackActions.reset({
           //   index: 0,
@@ -35,7 +33,7 @@ const LoginEmail = ({navigation}) => {
           //   })]
           // })
           // navigation.dispatch(resetAction)
-
+          console.log('출력')
           //navigation.navigate("idealist",{"userUid":user.user.uid})
           navigation.navigate("StackHomeNavigator")//,{"userUid":user.uid})
           //navigation.navigate("welcome")
@@ -48,8 +46,12 @@ const LoginEmail = ({navigation}) => {
     }
   }
     return (
+      // <KeyboardAvoidingView
+      //     style={styles.container}
+      //     behavior={Platform.OS === "ios" ? "padding" : "height"}
+      //     keyboardVerticalOffset={100}>
         <View style={styles.container}>
-            <KeyboardAvoidingView behavior="padding" enabled>
+            {/* <KeyboardAvoidingView behavior="padding" enabled> */}
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={{marginTop:110}}>
                   <TextInput
@@ -80,7 +82,7 @@ const LoginEmail = ({navigation}) => {
                 />
               </View>
               </TouchableWithoutFeedback> 
-            </KeyboardAvoidingView>
+            {/* </KeyboardAvoidingView> */}
             <View>
                 <View style={{alignItems:'center',marginBottom:20}}>
                     <Text
@@ -101,8 +103,7 @@ const LoginEmail = ({navigation}) => {
                 </Text>
                 </TouchableOpacity>
             </View>
-        </View>
-      
+        </View>            
     );
 };
 // auth().onAuthStateChanged((user) => {   //firebase에서 제공하는 유저 접속 유무 알려주는 함수

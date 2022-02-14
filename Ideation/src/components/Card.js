@@ -11,7 +11,7 @@ import axios from 'axios';
 const SC = ({
   penicon,
   pinicon,
-  saveicon,
+  saveicon,   //퍼즐 조합 저장
   whichcard,
   idx,
   isfix,
@@ -23,6 +23,8 @@ const SC = ({
   confirmCheck,
   confirmCheckState,
   getData,
+  saveTempData,
+  swipeCardIndex
 }) => {
   function Card({data}) {
     // card 고정된건지 여부
@@ -34,24 +36,35 @@ const SC = ({
     const [checked, setChecked] = useState(false);
     // 카드의 text와 image 데이터
     const cd = useRef({text: data.text, image: data.image});
-    const togglecheck = () => {
+    const togglecheck = () => { //체크 박스 클릭될 때마다
+      saveTempData.current[idx].text = text
+      saveTempData.current[idx].image = data.image 
+      //console.log('xxx',cd)
       setChecked(!checked);
       confirmCheck(idx);
       // getData({text: data.text, image: data.image});
       getcd();
     };
-    const getcd = () => {
-      // console.log(cd.current);
-      // console.log('자식');
+    const getcd = () => {  //퍼즐 조합 누르면 나타나는 왼쪽 상단
       // console.log(cd.current);
       getData(idx, cd.current);
     };
+
     // useEffect(() => {
     //   getcd();
     // });
     // 텍스트인지 이미지인지 판단
-    const [text, setText] = useState('');
-    // console.log(text);
+    if (idx===3){
+      console.log('여기 출력',saveTempData.current[3].text)
+    }
+    const [text, setText] = useState(saveTempData.current[idx].text);  //////텍스트 초기값 수정
+    useEffect(()=>{
+      // console.log(saveTempData.current[idx])
+      saveTempData.current[idx].text = text
+      saveTempData.current[idx].image = data.image 
+    },[text])
+    //console.log(text);
+    // useEffect(()=>{console.log(idx)},[text])
     const contents = () => {
       const onChangeTextinput = e => {
         setText(e.target.value);
@@ -72,7 +85,7 @@ const SC = ({
         );
       } else {
         if (data.image === undefined || data.image === '') {
-          return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>;
+          return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>; //data.text -> text
         } else {
           return (
             <Image style={styles.cardthumbnail} source={{uri: data.image}} />
@@ -312,7 +325,7 @@ const SC = ({
     }
     return sourceArray;
   }
-  useEffect(() => {
+  useEffect(() => { //랜덤 매칭
     setTimeout(() => {
       if (allrandom) {
         if (!isfix[0]) {
@@ -343,6 +356,7 @@ const SC = ({
 
   // 카드 오른쪽으로 옮겼을때
   function handleYup(card) {
+    swipeCardIndex.current[idx] = swipeCardIndex.current[idx] + 1
     console.log(`Yup for ${card.text} ${card.image}`);
     let temp = {image: card.image};
     cards1.push(temp);
@@ -351,6 +365,7 @@ const SC = ({
 
   // 카드 왼쪽으로 옮겼을때
   function handleNope(card) {
+    swipeCardIndex.current[idx] = swipeCardIndex.current[idx] + 1
     console.log(`Nope for ${card.text} ${card.image}`);
     return true;
   }
@@ -377,6 +392,7 @@ const SC = ({
             },
           }}
           hasMaybeAction={false}
+          renderNoMoreCards={()=>{swipeCardIndex.current[idx] = 0}}
         />
       ) : (
         <StatusCard text="불러오는중..." />

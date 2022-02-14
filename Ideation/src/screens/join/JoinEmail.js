@@ -1,18 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  Keyboard
+  Keyboard,
+  Dimensions
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import {KeyboardAvoidingView} from 'react-native';
+const { width, height } = Dimensions.get("window");
+
 const JoinEmail = ({navigation}) => {
   const [emailValue, setEmailValue] = useState();
+  
+  const [ keyboardOffset, setKeyboardOffset] = useState()
   const {
     control,
     watch,
@@ -27,14 +32,36 @@ const JoinEmail = ({navigation}) => {
     },
   });
   const onPressNavigation = () => {
+    Keyboard.dismiss()
     errors.emailForm === undefined && emailValue !== undefined
       ? navigation.navigate('JoinPwd', {emailValue: emailValue})
       : null;
   };
+  const keyboardDidShow = (e) => {
+    //setKeyboardOffset(height - e.endCoordinates.height)
+    setKeyboardOffset(e.endCoordinates.height)
+    //console.log('height', height, e.endCoordinates.height, height - e.endCoordinates.height)
+  }
+  useEffect(()=>{
+    Keyboard.addListener('keyboardDidShow',keyboardDidShow)
+  })
+  // const keyboardEventListener = () => {
+  //   Keyboard.addListener('keyboardDidShow',keyboardDidShow)
+  // }
   //console.log(watch());
   //console.log('errors',errors.emailForm) //에러 확인
   return (
-    <View style={styles.container}>
+    // <KeyboardAvoidingView
+    //   keyboardVerticalOffset={-500}
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   style={styles.container}
+    // >
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 110}
+      // enabled={Platform.OS === "ios" ? true : false}
+      >
       <KeyboardAvoidingView behavior="padding">
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{marginTop: 110}}>
@@ -78,7 +105,7 @@ const JoinEmail = ({navigation}) => {
           )}
         </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
       <TouchableOpacity
         title="Submit"
         style={styles.bottomButton}
@@ -88,7 +115,8 @@ const JoinEmail = ({navigation}) => {
           다음단계
         </Text>
       </TouchableOpacity>
-    </View>
+      
+    </KeyboardAvoidingView>
   );
 };
 

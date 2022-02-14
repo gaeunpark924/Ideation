@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginRight: 8,
-    fontFamily: 'SB 어그로 B',
+    fontFamily: 'SB_Aggro_B',
   },
   keywordname: {
     fontSize: 16,
     paddingRight: 10,
-    fontFamily: 'SB 어그로 M',
+    fontFamily: 'SB_AggroM',
   },
 });
 export default Keyword;

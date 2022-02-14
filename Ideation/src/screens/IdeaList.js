@@ -12,6 +12,7 @@ import {
   Image,
   BackHandler,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {Button, Header, Card, Icon} from 'react-native-elements';
 import auth from '@react-native-firebase/auth';
@@ -25,11 +26,11 @@ import {createDrawerNavigator} from 'react-navigation-drawer';
 import {userInfo} from '../User';
 
 //import { fetchPost } from '../actions';
-import {transform} from '@babel/core';
-import {set} from 'react-hook-form';
-//import { Icon } from 'react-native-elements';
-const {width, height} = Dimensions.get('window');
-const idealist = ({route, navigation}) => {
+import { transform } from '@babel/core';
+import { set } from 'react-hook-form';
+
+const { width, height } = Dimensions.get("window");
+const idealist = ({route,navigation}) => {
   const ideas = [];
   //const {userUid} = route.params;
   const [userUid, setUserUid] = useState(); //useRef(userInfo.uid)
@@ -47,11 +48,10 @@ const idealist = ({route, navigation}) => {
   const [emptyList, setEmptyList] = useState(false);
   const [countIdea, setCountIdea] = useState(0);
 
-  const getPosts = async userUid => {
-    console.log('getPost');
-    const list = [];
-    try {
-      await firestore()
+  const getPosts = async (userUid) => {
+    console.log("getPost", userUid)
+    const list = []
+    await firestore()
         .collection('userIdeaData')
         .doc(userUid)
         .collection('item')
@@ -66,32 +66,26 @@ const idealist = ({route, navigation}) => {
               postData.postId = doc.id; //문서 id
               postData.createDate = parse(postData.createDate);
               list.push(postData);
-            });
+              console.log('postData',postData)
+            })
           }
-          setIndex(0);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-
-    setPost(list);
-    setPostSearch(list);
-    setPostFilter(list);
+          setIndex(0)
+          setInit(true)
+        })
+        .catch((error)=>{
+          console.log('error',error)
+        })
+    setPost(list)
+    //setPostSearch(list)
+    setPostFilter(list)
     //console.log("list",list)
-  };
-  const parse = date => {
-    const splitedData = date.split('-');
-    return (
-      splitedData[0][2] +
-      splitedData[0][3] +
-      '.' +
-      splitedData[1] +
-      '.' +
-      splitedData[2]
-    );
-  };
-  const deletePost = postId => {
-    console.log('Current Post Id: ', postId);
+  }
+  const parse= (date) =>{
+    const splitedData = date.split('-')
+    return splitedData[0][2]+splitedData[0][3]+"."+splitedData[1]+"."+splitedData[2]
+  }
+  const deletePost = (postId) => {
+    //console.log('Current Post Id: ', postId);
     firestore()
       .collection('userIdeaData')
       .doc(userUid)
@@ -100,7 +94,6 @@ const idealist = ({route, navigation}) => {
       .get()
       .then(documentSnapshot => {
         if (documentSnapshot.exists) {
-          console.log('exist');
           firestore()
             .collection('userIdeaData')
             .doc(userUid)
@@ -122,8 +115,7 @@ const idealist = ({route, navigation}) => {
   //   setUserUid(userInfo.uid)
   //   getPosts(userInfo.uid);
   // },[])
-  //console.log('렌더링', userInfo.uid)
-  useEffect(() => {
+  useEffect(()=>{
     //console.log("useEffect",userInfo.uid)
     setUserUid(userInfo.uid);
     getPosts(userInfo.uid);
@@ -154,6 +146,14 @@ const idealist = ({route, navigation}) => {
       return () => backHandler.remove();
     }, []),
   );
+  useEffect(() => {
+    //getPosts();
+    //console.log('1')
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getPosts(userInfo.uid);
+    });
+  return willFocusSubscription;
+  }, []);
   const getToday = () => {
     var date = new Date();
     var year = date.getFullYear();
@@ -164,16 +164,16 @@ const idealist = ({route, navigation}) => {
   const searchTitle = text => {
     if (text) {
       const tmpPost = post.filter(item => item.title.includes(text));
-      setPostSearch(tmpPost);
+      //setPostSearch(tmpPost);
       setPostFilter(tmpPost);
     } else {
-      setPostSearch(post);
+      //setPostSearch(post);
       setPostFilter(post);
     }
   };
   const plusIndex = () => {
     var idx = index;
-    if (index < 3) {
+    if (index < 2) {
       idx = index + 1;
       setIndex(index + 1);
     } else {
@@ -186,45 +186,39 @@ const idealist = ({route, navigation}) => {
     const tmpPost = postSearch;
     // console.log("출력",idx, postSearch)
     switch (idx) {
-      case 0: //수정
-        setPostFilter(postSearch);
+      case 0: //수정 //수정시간 기준 내림차순
+        setPostFilter(post);
         break;
-      case 1: //생성
-        tmpPost.sort((a, b) => a.createTime - b.createTime);
-        setPostFilter(tmpPost);
-        console.log('xxx', postSearch);
+      case 1: //생성 //생성 시간 기준 오름차순
+        postFilter.sort((a, b) => a.createTime - b.createTime);
+        setPostFilter(postFilter);
+        //console.log('xxx', postSearch);
         break;
       case 2: //이름
-        tmpPost.sort((a, b) => a.updateTime - b.updateTime);
-        setPostFilter(tmpPost);
-        break;
-      case 3: //이름
-        tmpPost.sort((a, b) => (a.title > b.title ? 1 : -1));
-        setPostFilter(tmpPost);
+        postFilter.sort((a, b) => (a.title > b.title ? 1 : -1));
+        setPostFilter(postFilter);
         break;
       default:
-        setPostFilter(postSearch);
+        setPostFilter(post);
         // console.log("출력")
         break;
     }
   };
   const menu = () => {
     navigation.openDrawer();
-  };
+  }
+  const pressIdea = (items) => {
+    navigation.navigate('ideadevelop', {puzzle: items, userUid:userUid})
+  }
   return (
     <View style={styles.container}>
       {/* <View style={styles.header}> */}
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('ideadevelop');
-        }}>
-        {/* <TouchableOpacity onPress={()=>{setTest(test+1)}}> */}
-        <Text> 아이디어 발전 </Text>
-      </TouchableOpacity>
-      <View
-        style={{
-          flexDirection: 'row',
-          backgroundColor: '#fdf8ff', //'//'blue',//'#fdf8ff',
+        {/* <TouchableOpacity onPress={()=>{navigation.navigate("ideadevelop")}}>
+          <Text> 아이디어 발전 </Text>
+        </TouchableOpacity> */}
+        <View style={{
+          flexDirection:'row',
+          backgroundColor: '#fdf8ff',//'//'blue',//'#fdf8ff',
           //justifyContent: 'center',
           alignItems: 'center',
           marginHorizontal: 15,
@@ -273,15 +267,25 @@ const idealist = ({route, navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      {!emptyList ? (
-        <FlatList
+      {!init
+       ?<ActivityIndicator
+          style={{
+            justifyContent:'center',
+            alignItems:'center'}}
+          size="large" color="gray" />
+       : null}
+      {!emptyList
+      ? <FlatList
           data={postFilter}
-          renderItem={({item}) => (
-            <IdeaComponent item={item} onDelete={deletePost} />
+          renderItem={({item})=>(
+            <IdeaComponent
+              item={item}
+              onDelete={deletePost}
+              pressIdea={pressIdea}/>
           )}
           keyExtractor={item => item.postId}
           style={{paddingHorizontal: 15}}></FlatList>
-      ) : (
+      :
         <View style={styles.emptyStyle}>
           <Text
             style={{
@@ -317,7 +321,7 @@ const idealist = ({route, navigation}) => {
             개의 아이디어가 탄생하고 있어요!
           </Text>
         </View>
-      )}
+      }
 
       <TouchableOpacity
         style={styles.touchableOpacity}
@@ -351,9 +355,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fdf8ff',
-    // marginHorizontal:15,
-    // marginTop: 25,
-    // marginBottom: 25
   },
   searchInput: {
     flex: 1,
@@ -380,16 +381,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'SB_Aggro_L',
   },
-  // header: {
-  //   flexDirection: 'row',
-  //   //borderBottomColor: 'black',
-  //   //borderBottomWidth: 1,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: '#fdf8ff',
-  //   borderStyle: 'solid',
-  //   margin: 15
-  // },
   card_button_row: {
     flex: 1,
     flexDirection: 'row',
@@ -409,17 +400,11 @@ const styles = StyleSheet.create({
     bottom: 30,
   },
   emptyStyle: {
-    //height:'100%',
     flex: 1,
     backgroundColor: '#fdf8ff', //'blue',//'#fdf8ff',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  // plus:{
-  //   resizeMode: 'contain',
-  //   width: 50,
-  //   height: 50
-  // },
 });
 
 export default idealist;

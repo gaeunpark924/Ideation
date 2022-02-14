@@ -4,6 +4,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image
 } from 'react-native';
 import {Card} from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
@@ -11,7 +12,7 @@ import Dot from 'react-native-vector-icons/Entypo';
 import Pin from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Menu, MenuItem, MenuDivider } from 'react-native-material-menu';
 
-const IdeaComponent = ({item,onDelete}) => {
+const IdeaComponent = ({item,onDelete,pressIdea}) => {
     const [visible, setVisible] = useState(false);
     const hideMenu = () => setVisible(false);
     const showMenu = () => setVisible(true);
@@ -21,24 +22,35 @@ const IdeaComponent = ({item,onDelete}) => {
       return date.getFullYear()+"-"+("0"+(1+date.getMonth())).slice(-2)+"-"+("0"+date.getDate()).slice(-2)
     }
     useEffect(()=>{
+      console.log('item')
       var todayDate = new Date(getToday());
       var updateDate = new Date(item.updateDate);
       const diff = updateDate.getTime() - todayDate.getTime();
-      setUpdate(String(Math.abs(diff / (1000*3600*24)))+'일 전 수정')
+      var tmp = String(Math.abs(diff / (1000*3600*24)))
+      tmp === '0'
+      ? setUpdate('오늘 수정')
+      : setUpdate(tmp+'일 전 수정')
     },[])
     return (
       <TouchableOpacity
         key={item.postId}
         style={styles.ideaComponent}
-        activeOpacity={0.8}>
-        <TouchableOpacity activeOpacity={0.8} style={{flex:2}}>
-          <Card containerStyle={{height: 100}}>
-            <Card.Image
-              style={{width: '100%', height: '100%'}}
-              source={require('../assets/pet2.jpg')}>  
-            </Card.Image>
-          </Card>
-        </TouchableOpacity>
+        activeOpacity={0.8}
+        onPress={()=>{pressIdea(item)}}>
+        <View style={{flex:2}}>
+          <View style={{height:130,width:130,borderRightWidth:1,borderRightColor:'#1D1D1D'}}>
+          {item.thumbnail === '' || item.thumbnail === undefined
+          ? (<Image
+              style={{width: '100%',height: '100%'}}
+              source={require('../assets/frame.png')}//{require('../assets/pet2.jpg')}//{{uri:item.thumbnail}}
+            />)
+          : (<Image
+              style={{width: '100%',height: '100%'}}
+              source={{uri:item.thumbnail}}//{require('../assets/pet2.jpg')}//{{uri:item.thumbnail}}
+            />)
+          }  
+          </View>  
+        </View>
         <View style={{flex:3, justifyContent: 'center'}}>
           <Text style={styles.title}>{item.title}</Text>
           <Text style={styles.update}>{update}</Text>
@@ -66,7 +78,8 @@ const styles = StyleSheet.create({
       borderStyle:'solid',
       marginBottom: 15,
       flexDirection: 'row',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      height: 132,
     },
     title:{
       fontSize: 20,

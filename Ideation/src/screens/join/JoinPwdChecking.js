@@ -27,6 +27,7 @@ const JoinPwdChecking = ({route, navigation}) => {
       },
     });
     const onPressNavigation = () =>{
+      Keyboard.dismiss()
       (errors.pwdCheckingForm === undefined && pwdCheckingValue !== undefined)
       ? createUser()//navigation.popToTop() //navigation.navigate("ideadevelop") // idea develop으로 변경
       : null
@@ -61,7 +62,10 @@ const JoinPwdChecking = ({route, navigation}) => {
       } 
     }
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 110}>
           <KeyboardAvoidingView behavior="padding">
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={{marginTop:110}}>
@@ -121,7 +125,7 @@ const JoinPwdChecking = ({route, navigation}) => {
             </TouchableOpacity>
             {/* { isLogged ? navigation.navigate("welcome"): <Text>초기화 중 입니다.</Text>} */}
           </View>
-        </View>
+          </KeyboardAvoidingView>
     );
 };
 

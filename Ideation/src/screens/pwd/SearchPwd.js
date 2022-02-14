@@ -43,7 +43,10 @@ const SearchPwd = ({navigation}) => {
       {label: 'naver.com', value: 'naver'}
     ]);
     return (
-        <View style={styles.container}>
+      <KeyboardAvoidingView
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 110}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView behavior="padding">
               <View style={{marginTop:110}}> 
@@ -81,7 +84,7 @@ const SearchPwd = ({navigation}) => {
                 재설정 링크 전송
               </Text>
             </TouchableOpacity>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
