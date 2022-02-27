@@ -51,6 +51,19 @@ const IdeaMatching = ({route, navigation}) => {
     {key: index++, label: '음악', select: false},
     {key: index++, label: '금융', select: false},
   ]);
+  const removeKeyword = name => {
+    let newKeywords = keyword.map(k => {
+      if (k.label === name) {
+        return {
+          ...k,
+          select: false,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
+  };
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -58,14 +71,12 @@ const IdeaMatching = ({route, navigation}) => {
         name={k.label}
         key={k.key}
         select={k.select}
-        style={styles.keyword}
+        label={k.label}
+        remove={removeKeyword}
       />
     ) : null,
   );
-  // 키워드 별로 데이터를 firestore에 저장해둠
-  // const getYoutubeApi = () => {
-  //   keyword.map(k => Addkeyword.Addkeyword(k.label));
-  // };
+
   const setparams = keyword => {
     let params = {
       key: 'AIzaSyCVOSF3gbCiROT2E5x9vuhVrhKq5ueB8Do',
@@ -83,15 +94,15 @@ const IdeaMatching = ({route, navigation}) => {
     fetch: nodeFetch,
   });
 
-  useEffect(() => {
-    unsplash.search.getPhotos({
-      query: 'cat',
-      page: 1,
-      perPage: 10,
-      color: 'green',
-      orientation: 'portrait',
-    });
-  }, []);
+  // useEffect(() => {
+  //   unsplash.search.getPhotos({
+  //     query: 'cat',
+  //     page: 1,
+  //     perPage: 10,
+  //     color: 'green',
+  //     orientation: 'portrait',
+  //   });
+  // }, []);
 
   // Youtube API를 이용해서 imagelist를 반환한다.
   const Addkeyword = keyword => {
@@ -574,181 +585,83 @@ const IdeaMatching = ({route, navigation}) => {
                 <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
               </TouchableOpacity>
             </BottomSheet>
-            {pen && !isfix[0] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow1}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={0}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  penicon={pen}
-                  setIsfix={isfix1}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={0}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix1}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
 
-            {pen && !isfix[1] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow2}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={1}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  penicon={pen}
-                  setIsfix={isfix2}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={1}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix2}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              whichcard={whichcard}
+              idx={0}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              penicon={pen}
+              setIsfix={isfix1}
+              clicktextModal={clicktextModal}
+              confirmCheckState={confirmCheckState}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
+
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              whichcard={whichcard}
+              idx={1}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              penicon={pen}
+              setIsfix={isfix2}
+              clicktextModal={clicktextModal}
+              confirmCheckState={confirmCheckState}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
           </View>
           <View style={styles.contents}>
-            {pen && !isfix[2] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow3}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  penicon={pen}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={2}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  setIsfix={isfix3}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={2}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix3}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
-            {pen && !isfix[3] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow4}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={3}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  penicon={pen}
-                  setIsfix={isfix4}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={3}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix4}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              whichcard={whichcard}
+              idx={2}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              penicon={pen}
+              setIsfix={isfix3}
+              clicktextModal={clicktextModal}
+              confirmCheckState={confirmCheckState}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
+
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              whichcard={whichcard}
+              idx={3}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              penicon={pen}
+              setIsfix={isfix4}
+              clicktextModal={clicktextModal}
+              confirmCheckState={confirmCheckState}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
           </View>
         </View>
       </View>
@@ -786,36 +699,6 @@ const IdeaMatching = ({route, navigation}) => {
               }}>
               <TouchableOpacity onPress={togglepinicon}>
                 <Pinoutline name="pin-outline" size={24} borderColor="black" />
-              </TouchableOpacity>
-            </View>
-          )}
-          {pen ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderColor: 'black',
-                borderWidth: 0.7,
-                margin: 5,
-                backgroundColor: 'gray',
-              }}>
-              <TouchableOpacity onPress={togglepen}>
-                <Icon2 name="pencil" size={22} />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderColor: 'black',
-                borderWidth: 0.7,
-                margin: 5,
-              }}>
-              <TouchableOpacity onPress={togglepen}>
-                <Icon2 name="pencil" size={22} />
               </TouchableOpacity>
             </View>
           )}

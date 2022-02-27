@@ -320,7 +320,7 @@ const SC = ({
   ];
   let cards4 = [
     {
-      text: keywordlist[1],
+      text: keywordlist[3],
     },
     {
       image: cd[cd.length - 6],
@@ -382,15 +382,11 @@ const SC = ({
 
   // 카드 오른쪽으로 옮겼을때
   function handleYup(card) {
-    console.log(`Yup for ${card.text} ${card.image}`);
-    let temp = {image: card.image};
-    cards1.push(temp);
     return true; // return false if you wish to cancel the action
   }
 
   // 카드 왼쪽으로 옮겼을때
   function handleNope(card) {
-    console.log(`Nope for ${card.text} ${card.image}`);
     return true;
   }
   return (
@@ -404,15 +400,13 @@ const SC = ({
           actions={{
             nope: {
               onAction: handleNope,
-              text: '그냥 패스',
-              containerStyle: {width: 110},
-              textStyle: {justifyContent: 'center'},
+              text: '',
+              containerStyle: {width: 0, borderColor: '#fdf8ff'},
             },
             yup: {
               onAction: handleYup,
-              text: '다시 보기',
-              containerStyle: {width: 110},
-              textStyle: {justifyContent: 'center'},
+              text: '',
+              containerStyle: {width: 0, borderColor: '#fdf8ff'},
             },
           }}
           hasMaybeAction={false}
