@@ -27,6 +27,10 @@ import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
+import {createApi} from 'unsplash-js';
+import nodeFetch from 'node-fetch';
+import {URL, URLSearchParams} from 'react-native-url-polyfill';
+
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
@@ -74,6 +78,21 @@ const IdeaMatching = ({route, navigation}) => {
     return params;
   };
 
+  const unsplash = createApi({
+    accessKey: '1-vZgjCJUeOQDzDZ6yd1XdTakyHko4N25qYY9N1ejVo',
+    fetch: nodeFetch,
+  });
+
+  useEffect(() => {
+    unsplash.search.getPhotos({
+      query: 'cat',
+      page: 1,
+      perPage: 10,
+      color: 'green',
+      orientation: 'portrait',
+    });
+  }, []);
+
   // Youtube API를 이용해서 imagelist를 반환한다.
   const Addkeyword = keyword => {
     let params = setparams(keyword);
@@ -92,7 +111,7 @@ const IdeaMatching = ({route, navigation}) => {
             imagelist.push(image);
             // console.log('image : ' + image);
           }
-          console.log('이미지 url들 ' + imagelist);
+          console.log('이미지 url : ' + imagelist);
           return imagelist;
         }
       })
@@ -102,51 +121,75 @@ const IdeaMatching = ({route, navigation}) => {
       });
   };
   // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
-  const putfirebase = async () => {
-    const keywordlist = keyword.map(k => k.label);
-    let imagelist = [];
-    for (let i = 0; i < keywordlist.length; i++) {
-      try {
-        imagelist = await Addkeyword(keywordlist[i]);
-      } catch (error) {
-        console.log('첫번째' + error);
-      }
-      try {
-        console.log('dd' + imagelist);
-        if (imagelist.length != 0) {
-          firestore()
-            .collection('categoryData')
-            .doc('item')
-            .update({
-              [keywordlist[i]]: {image: imagelist},
-            });
-        }
-      } catch (error) {
-        console.log('두번째 오류' + error);
-      }
-    }
-  };
+  // const putfirebase = async () => {
+  //   const keywordlist = keyword.map(k => k.label);
+  //   let imagelist = [];
+  //   for (let i = 0; i < keywordlist.length; i++) {
+  //     try {
+  //       imagelist = await Addkeyword(keywordlist[i]);
+  //     } catch (error) {
+  //       console.log('첫번째' + error);
+  //     }
+  //     try {
+  //       if (imagelist.length != 0) {
+  //         firestore()
+  //           .collection('categoryData')
+  //           .doc('item')
+  //           .update({
+  //             [keywordlist[i]]: {image: imagelist},
+  //           });
+  //       }
+  //     } catch (error) {
+  //       console.log('두번째 오류' + error);
+  //     }
+  //   }
+  // };
+
   // useEffect(() => {
+  //   async function putfirebase() {
+  //     const keywordlist = keyword.map(k => k.label);
+  //     let imagelist = [];
+  //     for (let i = 0; i < keywordlist.length; i++) {
+  //       try {
+  //         imagelist = await Addkeyword(keywordlist[i]);
+  //       } catch (error) {
+  //         console.log('첫번째' + error);
+  //       }
+  //       try {
+  //         if (imagelist.length != 0) {
+  //           firestore()
+  //             .collection('categoryData')
+  //             .doc('item')
+  //             .update({
+  //               [keywordlist[i]]: {image: imagelist},
+  //             });
+  //         }
+  //       } catch (error) {
+  //         console.log('두번째 오류' + error);
+  //       }
+  //     }
+  //   }
   //   putfirebase();
   // }, []);
 
   // 키워드 추가 모달창
-  const modalkeywordtoggle = e => {
-    let newKeywords = keyword.map(k => {
-      if (k.label === e.label) {
-        return {
-          ...k,
-          select: !k.select,
-        };
-      } else {
-        return k;
-      }
-    });
-    setKeyword(newKeywords);
-  };
+  // const modalkeywordtoggle = e => {
+  //   let newKeywords = keyword.map(k => {
+  //     if (k.label === e.label) {
+  //       return {
+  //         ...k,
+  //         select: !k.select,
+  //       };
+  //     } else {
+  //       return k;
+  //     }
+  //   });
+  //   setKeyword(newKeywords);
+  // };
+  /* 키워드 제거 */
   const remove = e => {
     let newKeywords = keyword.map(k => {
-      if (k === e) {
+      if (k.key === e.key) {
         return {
           ...k,
           select: false,
@@ -252,6 +295,7 @@ const IdeaMatching = ({route, navigation}) => {
     return year + '년 ' + month + '월 ' + day + '일 ' + time;
   };
   const next = useRef(false);
+
   const addPosts = () => {
     let Carddata = [];
     for (let i = 0; i < 4; i++) {
@@ -331,6 +375,9 @@ const IdeaMatching = ({route, navigation}) => {
   const [pen, setPen] = useState(false);
   const togglepen = () => {
     setPen(!pen);
+    if (!pen) {
+      setWhichCard([false, false, false, false]);
+    }
   };
   // 1,2,3,4 각각을 선택했을때 나타나는 bottomModal
   const bottomModalShow1 = () => {

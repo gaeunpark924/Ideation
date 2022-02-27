@@ -26,6 +26,7 @@ const SC = ({
 }) => {
   function Card({data}) {
     // card 고정된건지 여부
+    // console.log('카드 rendering');
     const togglefix = () => {
       setIsfix(idx);
     };
@@ -37,13 +38,9 @@ const SC = ({
     const togglecheck = () => {
       setChecked(!checked);
       confirmCheck(idx);
-      // getData({text: data.text, image: data.image});
       getcd();
     };
     const getcd = () => {
-      // console.log(cd.current);
-      // console.log('자식');
-      // console.log(cd.current);
       getData(idx, cd.current);
     };
     // useEffect(() => {
@@ -52,35 +49,44 @@ const SC = ({
     // 텍스트인지 이미지인지 판단
     const [text, setText] = useState('');
     // console.log(text);
-    const contents = () => {
-      const onChangeTextinput = e => {
-        setText(e.target.value);
-        // console.log(text);
-      };
-      if (whichcard[idx] && clicktextModal) {
-        return (
-          <View style={{marginTop: -20}}>
-            <TextInput
-              placeholder="생각나는 아이디어를 입력해주세요!(30자)"
-              onChangeText={newtext => setText(newtext)}
-              value={text}
-              style={{textAlign: 'center', fontFamily: 'SB_Aggro_L'}}
-              numberOfLines={2}
-              maxLength={30}
-            />
-          </View>
-        );
-      } else {
-        if (data.image === undefined || data.image === '') {
-          return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>;
-        } else {
-          return (
-            <Image style={styles.cardthumbnail} source={{uri: data.image}} />
-          );
-        }
-      }
+    const onChangeTextinput = e => {
+      console.log(e);
+      setText(e);
     };
-
+    const saveText = () => {
+      setCards(prev => [
+        ...prev.map(e => {
+          if (e.hasOwnProperty('text')) {
+            e.text = text;
+          } else {
+            return e;
+          }
+        }),
+      ]);
+      whichcard[idx] = false;
+    };
+    const Contents = ({isSelected, isTextModalClicked, isPenClicked}) => {
+      const [condition, setConditions] = useState([
+        isSelected,
+        isTextModalClicked,
+        isPenClicked,
+      ]);
+      return condition.every(e => e === true) ? (
+        <View style={{marginTop: -20}}>
+          <TextInput
+            placeholder="생각나는 아이디어를 입력해주세요!"
+            onChangeText={onChangeTextinput}
+            value={text}
+            style={{textAlign: 'center', fontFamily: 'SB_Aggro_L'}}
+            onEndEditing={saveText}
+          />
+        </View>
+      ) : data.image === undefined || data.image === '' ? (
+        <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>
+      ) : (
+        <Image style={styles.cardthumbnail} source={{uri: data.image}} />
+      );
+    };
     return (
       <View style={[styles.card, {backgroundColor: '#FFF6DF'}]}>
         <View
@@ -163,7 +169,13 @@ const SC = ({
           </View>
           <View style={{flex: 5}}></View>
         </View>
-        <View style={{flex: 1}}>{contents()}</View>
+        <View style={{flex: 1}}>
+          <Contents
+            isSelected={whichcard[idx]}
+            isTextModalClicked={clicktextModal}
+            isPenClicked={penicon}
+          />
+        </View>
       </View>
     );
   }
@@ -175,38 +187,65 @@ const SC = ({
       </View>
     );
   }
-
+  useEffect(() => {
+    console.log(whichcard[idx], clicktextModal, penicon);
+  }, [whichcard, clicktextModal]);
   const [cards, setCards] = useState();
   // firestore에서 해당 키워드 데이터 불러오기 -> 배열로 return해서 선택된 키워드 전체의 값을 받아온다.
   const [cd, setCd] = useState([]);
-  const getCardData = async keywordlist => {
-    // console.log('getCardData');
-    const newcd = [];
-    for (let i = 0; i < keywordlist.length; i++) {
-      await firestore()
-        .collection('categoryData')
-        .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            // console.log('doc.data ' + doc.data()['건축'].image.length);
-            for (let j = 0; j < doc.data()[keywordlist[i]].image.length; j++) {
-              let temp = doc.data()[keywordlist[i]].image[j];
-              if (temp === undefined) {
-                newcd.push(keywordlist[i]);
-              } else {
-                newcd.push(temp);
-              }
-            }
-          });
-        });
-    }
-    setCd(newcd);
-  };
+  // const getCardData = keywordlist => {
+  //   // console.log('getCardData');
+  //   const newcd = [];
+  //   for (let i = 0; i < keywordlist.length; i++) {
+  //     firestore()
+  //       .collection('categoryData')
+  //       .get()
+  //       .then(querySnapshot => {
+  //         querySnapshot.forEach(doc => {
+  //           // console.log('doc.data ' + doc.data()['건축'].image.length);
+  //           for (let j = 0; j < doc.data()[keywordlist[i]].image.length; j++) {
+  //             let temp = doc.data()[keywordlist[i]].image[j];
+  //             if (temp === undefined) {
+  //               newcd.push(keywordlist[i] + '키워드 정보');
+  //             } else {
+  //               newcd.push(temp);
+  //             }
+  //           }
+  //         });
+  //       });
+  //   }
+  //   setCd(newcd);
+  // };
   // 키워드에 해당하는 데이터를 cd에 저장함.
   useEffect(() => {
+    async function getCardData(keywordlist) {
+      const newcd = [];
+      for (let i = 0; i < keywordlist.length; i++) {
+        firestore()
+          .collection('categoryData')
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              // console.log('doc.data ' + doc.data()['건축'].image.length);
+              for (
+                let j = 0;
+                j < doc.data()[keywordlist[i]].image.length;
+                j++
+              ) {
+                let temp = doc.data()[keywordlist[i]].image[j];
+                if (temp === undefined) {
+                  newcd.push(keywordlist[i] + '키워드 정보');
+                } else {
+                  newcd.push(temp);
+                }
+              }
+            });
+          });
+      }
+      await setCd(newcd);
+    }
     getCardData(keywordlist);
-    // console.log('card data : ' + cd[0]);
-  }, []);
+  }, [keywordlist]);
   let cards1 = [
     {
       text: keywordlist[0],
@@ -366,14 +405,14 @@ const SC = ({
             nope: {
               onAction: handleNope,
               text: '그냥 패스',
-              containerStyle: {width: 120},
-              textStyle: {alignItems: 'center'},
+              containerStyle: {width: 110},
+              textStyle: {justifyContent: 'center'},
             },
             yup: {
               onAction: handleYup,
               text: '다시 보기',
-              containerStyle: {width: 120},
-              textStyle: {alignItems: 'center'},
+              containerStyle: {width: 110},
+              textStyle: {justifyContent: 'center'},
             },
           }}
           hasMaybeAction={false}
