@@ -9,10 +9,8 @@ import Youtube from './youtubeApi';
 import axios from 'axios';
 //pinicon,saveicon : icon누름 여부
 const SC = ({
-  penicon,
   pinicon,
   saveicon,
-  whichcard,
   idx,
   isfix,
   ischeck,
@@ -25,15 +23,10 @@ const SC = ({
   getData,
 }) => {
   function Card({data}) {
-    // card 고정된건지 여부
-    // console.log('카드 rendering');
     const togglefix = () => {
       setIsfix(idx);
     };
-    // console.log(keywordlist);
-    // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
-    // 카드의 text와 image 데이터
     const cd = useRef({text: data.text, image: data.image});
     const togglecheck = () => {
       setChecked(!checked);
@@ -43,49 +36,14 @@ const SC = ({
     const getcd = () => {
       getData(idx, cd.current);
     };
-    // useEffect(() => {
-    //   getcd();
-    // });
-    // 텍스트인지 이미지인지 판단
-    const [text, setText] = useState('');
-    // console.log(text);
-    const onChangeTextinput = e => {
-      console.log(e);
-      setText(e);
-    };
-    const saveText = () => {
-      setCards(prev => [
-        ...prev.map(e => {
-          if (e.hasOwnProperty('text')) {
-            e.text = text;
-          } else {
-            return e;
-          }
-        }),
-      ]);
-      whichcard[idx] = false;
-    };
-    const Contents = ({isSelected, isTextModalClicked, isPenClicked}) => {
-      const [condition, setConditions] = useState([
-        isSelected,
-        isTextModalClicked,
-        isPenClicked,
-      ]);
-      return condition.every(e => e === true) ? (
-        <View style={{marginTop: -20}}>
-          <TextInput
-            placeholder="생각나는 아이디어를 입력해주세요!"
-            onChangeText={onChangeTextinput}
-            value={text}
-            style={{textAlign: 'center', fontFamily: 'SB_Aggro_L'}}
-            onEndEditing={saveText}
-          />
-        </View>
-      ) : data.image === undefined || data.image === '' ? (
-        <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>
-      ) : (
-        <Image style={styles.cardthumbnail} source={{uri: data.image}} />
-      );
+    const Contents = () => {
+      if (data.image === undefined || data.image === '') {
+        return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>;
+      } else {
+        return (
+          <Image style={styles.cardthumbnail} source={{uri: data.image}} />
+        );
+      }
     };
     return (
       <View style={[styles.card, {backgroundColor: '#FFF6DF'}]}>
@@ -170,11 +128,7 @@ const SC = ({
           <View style={{flex: 5}}></View>
         </View>
         <View style={{flex: 1}}>
-          <Contents
-            isSelected={whichcard[idx]}
-            isTextModalClicked={clicktextModal}
-            isPenClicked={penicon}
-          />
+          <Contents />
         </View>
       </View>
     );
@@ -187,9 +141,6 @@ const SC = ({
       </View>
     );
   }
-  useEffect(() => {
-    console.log(whichcard[idx], clicktextModal, penicon);
-  }, [whichcard, clicktextModal]);
   const [cards, setCards] = useState();
   // firestore에서 해당 키워드 데이터 불러오기 -> 배열로 return해서 선택된 키워드 전체의 값을 받아온다.
   const [cd, setCd] = useState([]);
@@ -221,7 +172,7 @@ const SC = ({
     async function getCardData(keywordlist) {
       const newcd = [];
       for (let i = 0; i < keywordlist.length; i++) {
-        firestore()
+        await firestore()
           .collection('categoryData')
           .get()
           .then(querySnapshot => {
@@ -242,7 +193,7 @@ const SC = ({
             });
           });
       }
-      await setCd(newcd);
+      setCd(newcd);
     }
     getCardData(keywordlist);
   }, [keywordlist]);
@@ -352,34 +303,33 @@ const SC = ({
     return sourceArray;
   }
   useEffect(() => {
-    setTimeout(() => {
-      if (allrandom) {
-        if (!isfix[0]) {
-          shuffle(cards1);
-        }
-        if (!isfix[1]) {
-          shuffle(cards2);
-        }
-        if (!isfix[2]) {
-          shuffle(cards3);
-        }
-        if (!isfix[3]) {
-          shuffle(cards4);
-        }
+    if (allrandom) {
+      if (!isfix[0]) {
+        shuffle(cards1);
       }
-      // setCards(cards1);
-      if (idx === 0) {
-        setCards(cards1);
-      } else if (idx === 1) {
-        setCards(cards2);
-      } else if (idx === 2) {
-        setCards(cards3);
-      } else if (idx === 3) {
-        setCards(cards4);
+      if (!isfix[1]) {
+        shuffle(cards2);
       }
-    }, 1000);
-  }, [allrandom]);
-
+      if (!isfix[2]) {
+        shuffle(cards3);
+      }
+      if (!isfix[3]) {
+        shuffle(cards4);
+      }
+    }
+    if (idx === 0) {
+      setCards(cards1);
+    } else if (idx === 1) {
+      setCards(cards2);
+    } else if (idx === 2) {
+      setCards(cards3);
+    } else if (idx === 3) {
+      setCards(cards4);
+    }
+  }, [allrandom, cd]);
+  useEffect(() => {
+    console.log('cd정보 ' + cd);
+  }, [cd]);
   // 카드 오른쪽으로 옮겼을때
   function handleYup(card) {
     return true; // return false if you wish to cancel the action
@@ -391,7 +341,7 @@ const SC = ({
   }
   return (
     <View style={styles.container}>
-      {cards ? (
+      {cards && cd.length != 0 ? (
         <SwipeCards
           cards={cards}
           renderCard={cardData => <Card data={cardData} />}

@@ -8,6 +8,7 @@ import {
   TextInput,
   Button,
   ViewPagerAndroidBase,
+  Alert,
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
@@ -131,57 +132,6 @@ const IdeaMatching = ({route, navigation}) => {
         console.log(error);
       });
   };
-  // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
-  // const putfirebase = async () => {
-  //   const keywordlist = keyword.map(k => k.label);
-  //   let imagelist = [];
-  //   for (let i = 0; i < keywordlist.length; i++) {
-  //     try {
-  //       imagelist = await Addkeyword(keywordlist[i]);
-  //     } catch (error) {
-  //       console.log('첫번째' + error);
-  //     }
-  //     try {
-  //       if (imagelist.length != 0) {
-  //         firestore()
-  //           .collection('categoryData')
-  //           .doc('item')
-  //           .update({
-  //             [keywordlist[i]]: {image: imagelist},
-  //           });
-  //       }
-  //     } catch (error) {
-  //       console.log('두번째 오류' + error);
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   async function putfirebase() {
-  //     const keywordlist = keyword.map(k => k.label);
-  //     let imagelist = [];
-  //     for (let i = 0; i < keywordlist.length; i++) {
-  //       try {
-  //         imagelist = await Addkeyword(keywordlist[i]);
-  //       } catch (error) {
-  //         console.log('첫번째' + error);
-  //       }
-  //       try {
-  //         if (imagelist.length != 0) {
-  //           firestore()
-  //             .collection('categoryData')
-  //             .doc('item')
-  //             .update({
-  //               [keywordlist[i]]: {image: imagelist},
-  //             });
-  //         }
-  //       } catch (error) {
-  //         console.log('두번째 오류' + error);
-  //       }
-  //     }
-  //   }
-  //   putfirebase();
-  // }, []);
 
   // 키워드 추가 모달창
   // const modalkeywordtoggle = e => {
@@ -258,20 +208,11 @@ const IdeaMatching = ({route, navigation}) => {
     ),
   );
 
-  // textInput에 사용하기 위함
-  const [change, setChange] = useState(false);
-  const isChange = change => {
-    setChange(change);
-  };
-
   // 고정 아이콘 toggleicon
   const [pinicon, setPinicon] = useState(false);
   const togglepinicon = () => {
     setPinicon(!pinicon);
   };
-
-  // penicon 누르고 나서 어떤 card 선택되었는지
-  const [whichcard, setWhichCard] = useState([false, false, false, false]);
 
   /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
@@ -306,7 +247,6 @@ const IdeaMatching = ({route, navigation}) => {
     return year + '년 ' + month + '월 ' + day + '일 ' + time;
   };
   const next = useRef(false);
-
   const addPosts = () => {
     let Carddata = [];
     for (let i = 0; i < 4; i++) {
@@ -324,7 +264,7 @@ const IdeaMatching = ({route, navigation}) => {
     console.log(Carddata);
     if (Carddata.length === 0) {
       next.current = false;
-      alert('저장할 카드를 체크해주세요!');
+      Alert.alert('', '저장할 카드를 체크해주세요!');
       console.log('저장할 카드를 체크해주세요!');
     } else {
       next.current = true;
@@ -356,7 +296,6 @@ const IdeaMatching = ({route, navigation}) => {
   const confirmCheckState = useRef([false, false, false, false]);
   const togglesaveiconFalse = () => {
     setSaveicon(!saveicon);
-    // alert('저장할 카드를 눌러주세요');
   };
 
   // saveIcon에서 check된 상태에서 누를때 -> 배열로 받아온 부분 firestore에 저장
@@ -382,77 +321,6 @@ const IdeaMatching = ({route, navigation}) => {
     }
   };
 
-  // pen toggleButton
-  const [pen, setPen] = useState(false);
-  const togglepen = () => {
-    setPen(!pen);
-    if (!pen) {
-      setWhichCard([false, false, false, false]);
-    }
-  };
-  // 1,2,3,4 각각을 선택했을때 나타나는 bottomModal
-  const bottomModalShow1 = () => {
-    bottomSheet.current.show();
-    setWhichCard([true, false, false, false]);
-  };
-  const bottomModalShow2 = () => {
-    bottomSheet.current.show();
-    setWhichCard([false, true, false, false]);
-  };
-  const bottomModalShow3 = () => {
-    bottomSheet.current.show();
-    setWhichCard([false, false, true, false]);
-  };
-  const bottomModalShow4 = () => {
-    bottomSheet.current.show();
-    setWhichCard([false, false, false, true]);
-  };
-  const bottomSheet = useRef(); // bottomModal 변수
-
-  // 이미지 저장을 위함
-  const optionsImage = {
-    mediaType: 'photo',
-    maxWidth: 180,
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
-  };
-  // 이미지를 갤러리에서 들고옴 -> 수정 필요..!
-  const takeImagefromphone = () =>
-    launchImageLibrary(optionsImage, response => {
-      // console.log('Response = ', response);
-      if (response.didCancel) {
-        // setProcessing(false)
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        // setProcessing(false)
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        // setProcessing(false)
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        console.log('Response = ', response.assets[0].uri);
-        const tmp = response.assets[0];
-        // const source = {
-        //   uri:
-        //     Platform.OS === 'android' ? tmp.uri : tmp.uri.replace('file://', ''),
-        //   fileName: response.fileName,
-        // };
-        // var arr = [...items];
-        // console.log('source.uri', source.uri);
-        // arr.push(source.uri);
-        // setItems(arr); ////xxxxx
-      }
-    });
-
-  // 기록할때 textmodal 누른지 여부
-  const [clicktextModal, isClickTextModal] = useState(false);
-  const textModal = () => {
-    isClickTextModal(!clicktextModal);
-    bottomSheet.current.close();
-  };
-
   // 고정 여부
   const [isfix, setIsfix] = useState([false, false, false, false]);
   const isfix1 = idx => {
@@ -474,7 +342,7 @@ const IdeaMatching = ({route, navigation}) => {
   const [ischeck, setIscheck] = useState();
   const [allrandom, setAllRandom] = useState(false);
   const allrandommatching = () => {
-    alert('전체카드 랜덤 매칭합니다!');
+    Alert.alert('전체카드 랜덤 매칭합니다!');
     setAllRandom(!allrandom);
   };
 
@@ -489,9 +357,38 @@ const IdeaMatching = ({route, navigation}) => {
     return kl;
   };
   useEffect(() => {
-    console.log('현재 키워드' + selectedkeyword());
+    console.log('현재 키워드 ' + selectedkeyword());
     selectedkeyword;
   }, [keyword]);
+
+  // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
+  // useEffect(() => {
+  //   async function putfirebase() {
+  //     const keywordlist = keyword.map(k => k.label);
+  //     let imagelist = [];
+  //     for (let i = 0; i < keywordlist.length; i++) {
+  //       try {
+  //         imagelist = await Addkeyword(keywordlist[i]);
+  //       } catch (error) {
+  //         console.log('첫번째' + error);
+  //       }
+  //       try {
+  //         if (imagelist.length != 0) {
+  //           firestore()
+  //             .collection('categoryData')
+  //             .doc('item')
+  //             .update({
+  //               [keywordlist[i]]: {image: imagelist},
+  //             });
+  //         }
+  //       } catch (error) {
+  //         console.log('두번째 오류' + error);
+  //       }
+  //     }
+  //   }
+  //   putfirebase();
+  // }, []);
+
   return (
     <View style={styles.container}>
       {saveicon ? null : (
@@ -569,54 +466,30 @@ const IdeaMatching = ({route, navigation}) => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <BottomSheet radius={1} ref={bottomSheet} height={200}>
-              <TouchableOpacity onPress={textModal} style={styles.bottomModal}>
-                <TextIcon name="text" size={24} style={{marginRight: 7}} />
-                <Text style={{fontFamily: 'SB_Aggro_L'}}>텍스트 입력하기</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={takeImagefromphone}
-                style={styles.bottomModal}>
-                <PictureIcon
-                  name="picture-o"
-                  size={24}
-                  style={{marginRight: 7}}
-                />
-                <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
-              </TouchableOpacity>
-            </BottomSheet>
-
             <SC
               style={styles.card}
               pinicon={pinicon}
               saveicon={saveicon}
-              whichcard={whichcard}
               idx={0}
               keywordlist={selectedkeyword()}
               isfix={isfix}
               ischeck={ischeck}
-              penicon={pen}
               setIsfix={isfix1}
-              clicktextModal={clicktextModal}
               confirmCheckState={confirmCheckState}
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
               confirmCheck={confirmCheck}
             />
-
             <SC
               style={styles.card}
               pinicon={pinicon}
               saveicon={saveicon}
-              whichcard={whichcard}
               idx={1}
               keywordlist={selectedkeyword()}
               isfix={isfix}
               ischeck={ischeck}
-              penicon={pen}
               setIsfix={isfix2}
-              clicktextModal={clicktextModal}
               confirmCheckState={confirmCheckState}
               confirmCheck={confirmCheck}
               getData={getData}
@@ -629,33 +502,26 @@ const IdeaMatching = ({route, navigation}) => {
               style={styles.card}
               pinicon={pinicon}
               saveicon={saveicon}
-              whichcard={whichcard}
               idx={2}
               keywordlist={selectedkeyword()}
               isfix={isfix}
               ischeck={ischeck}
-              penicon={pen}
               setIsfix={isfix3}
-              clicktextModal={clicktextModal}
               confirmCheckState={confirmCheckState}
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
               confirmCheck={confirmCheck}
             />
-
             <SC
               style={styles.card}
               pinicon={pinicon}
               saveicon={saveicon}
-              whichcard={whichcard}
               idx={3}
               keywordlist={selectedkeyword()}
               isfix={isfix}
               ischeck={ischeck}
-              penicon={pen}
               setIsfix={isfix4}
-              clicktextModal={clicktextModal}
               confirmCheckState={confirmCheckState}
               confirmCheck={confirmCheck}
               getData={getData}
