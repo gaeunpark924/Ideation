@@ -8,6 +8,7 @@ import {
   TextInput,
   Button,
   ViewPagerAndroidBase,
+  Alert,
 } from 'react-native';
 import Keyword from '../components/keyword';
 import SC from '../components/Card';
@@ -27,6 +28,10 @@ import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
+import {createApi} from 'unsplash-js';
+import nodeFetch from 'node-fetch';
+import {URL, URLSearchParams} from 'react-native-url-polyfill';
+
 const IdeaMatching = ({route, navigation}) => {
   const {uid} = route.params;
   useEffect(() => {
@@ -47,6 +52,19 @@ const IdeaMatching = ({route, navigation}) => {
     {key: index++, label: '음악', select: false},
     {key: index++, label: '금융', select: false},
   ]);
+  const removeKeyword = name => {
+    let newKeywords = keyword.map(k => {
+      if (k.label === name) {
+        return {
+          ...k,
+          select: false,
+        };
+      } else {
+        return k;
+      }
+    });
+    setKeyword(newKeywords);
+  };
   /* 선택된 키워드 상단바에 표시 */
   const showselectedkeywords = keyword.map(k =>
     k.select ? (
@@ -54,14 +72,12 @@ const IdeaMatching = ({route, navigation}) => {
         name={k.label}
         key={k.key}
         select={k.select}
-        style={styles.keyword}
+        label={k.label}
+        remove={removeKeyword}
       />
     ) : null,
   );
-  // 키워드 별로 데이터를 firestore에 저장해둠
-  // const getYoutubeApi = () => {
-  //   keyword.map(k => Addkeyword.Addkeyword(k.label));
-  // };
+
   const setparams = keyword => {
     let params = {
       key: 'AIzaSyDPF1fcVa8EAn0jyvcydfOIffcN2gn_Qzg',
@@ -73,6 +89,17 @@ const IdeaMatching = ({route, navigation}) => {
     };
     return params;
   };
+
+  const unsplash = createApi({
+    accessKey: '1-vZgjCJUeOQDzDZ6yd1XdTakyHko4N25qYY9N1ejVo',
+    secretKey: 'C6x8Kwfa9QC4bCt6V7o6amRr42lVPU7H0xSypEpg2RI',
+  });
+
+  // useEffect(async () => {
+  //   await unsplash.search.getPhotos({
+  //     query: 'cat',
+  //   });
+  // }, []);
 
   // Youtube API를 이용해서 imagelist를 반환한다.
   const Addkeyword = keyword => {
@@ -92,7 +119,7 @@ const IdeaMatching = ({route, navigation}) => {
             imagelist.push(image);
             // console.log('image : ' + image);
           }
-          console.log('이미지 url들 ' + imagelist);
+          console.log('이미지 url : ' + imagelist);
           return imagelist;
         }
       })
@@ -101,52 +128,25 @@ const IdeaMatching = ({route, navigation}) => {
         console.log(error);
       });
   };
-  // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
-  const putfirebase = async () => {
-    const keywordlist = keyword.map(k => k.label);
-    let imagelist = [];
-    for (let i = 0; i < keywordlist.length; i++) {
-      try {
-        imagelist = await Addkeyword(keywordlist[i]);
-      } catch (error) {
-        console.log('첫번째' + error);
-      }
-      try {
-        console.log('dd' + imagelist);
-        if (imagelist.length != 0) {
-          firestore()
-            .collection('categoryData')
-            .doc('item')
-            .update({
-              [keywordlist[i]]: {image: imagelist},
-            });
-        }
-      } catch (error) {
-        console.log('두번째 오류' + error);
-      }
-    }
-  };
-  // useEffect(() => {
-  //   putfirebase();
-  // }, []);
 
   // 키워드 추가 모달창
-  const modalkeywordtoggle = e => {
-    let newKeywords = keyword.map(k => {
-      if (k.label === e.label) {
-        return {
-          ...k,
-          select: !k.select,
-        };
-      } else {
-        return k;
-      }
-    });
-    setKeyword(newKeywords);
-  };
+  // const modalkeywordtoggle = e => {
+  //   let newKeywords = keyword.map(k => {
+  //     if (k.label === e.label) {
+  //       return {
+  //         ...k,
+  //         select: !k.select,
+  //       };
+  //     } else {
+  //       return k;
+  //     }
+  //   });
+  //   setKeyword(newKeywords);
+  // };
+  /* 키워드 제거 */
   const remove = e => {
     let newKeywords = keyword.map(k => {
-      if (k === e) {
+      if (k.key === e.key) {
         return {
           ...k,
           select: false,
@@ -204,20 +204,11 @@ const IdeaMatching = ({route, navigation}) => {
     ),
   );
 
-  // textInput에 사용하기 위함
-  const [change, setChange] = useState(false);
-  const isChange = change => {
-    setChange(change);
-  };
-
   // 고정 아이콘 toggleicon
   const [pinicon, setPinicon] = useState(false);
   const togglepinicon = () => {
     setPinicon(!pinicon);
   };
-
-  // penicon 누르고 나서 어떤 card 선택되었는지
-  const [whichcard, setWhichCard] = useState([false, false, false, false]);
 
   /* 모달창 toggleButton */
   const [isModalVisible, setModalVisible] = useState(false);
@@ -269,7 +260,7 @@ const IdeaMatching = ({route, navigation}) => {
     console.log(Carddata);
     if (Carddata.length === 0) {
       next.current = false;
-      alert('저장할 카드를 체크해주세요!');
+      Alert.alert('', '저장할 카드를 체크해주세요!');
       console.log('저장할 카드를 체크해주세요!');
     } else {
       next.current = true;
@@ -301,7 +292,6 @@ const IdeaMatching = ({route, navigation}) => {
   const confirmCheckState = useRef([false, false, false, false]);
   const togglesaveiconFalse = () => {
     setSaveicon(!saveicon);
-    // alert('저장할 카드를 눌러주세요');
   };
 
   // saveIcon에서 check된 상태에서 누를때 -> 배열로 받아온 부분 firestore에 저장
@@ -327,74 +317,6 @@ const IdeaMatching = ({route, navigation}) => {
     }
   };
 
-  // pen toggleButton
-  const [pen, setPen] = useState(false);
-  const togglepen = () => {
-    setPen(!pen);
-  };
-  // 1,2,3,4 각각을 선택했을때 나타나는 bottomModal
-  const bottomModalShow1 = () => {
-    bottomSheet.current.show();
-    setWhichCard([true, false, false, false]);
-  };
-  const bottomModalShow2 = () => {
-    bottomSheet.current.show();
-    setWhichCard([false, true, false, false]);
-  };
-  const bottomModalShow3 = () => {
-    bottomSheet.current.show();
-    setWhichCard([false, false, true, false]);
-  };
-  const bottomModalShow4 = () => {
-    bottomSheet.current.show();
-    setWhichCard([false, false, false, true]);
-  };
-  const bottomSheet = useRef(); // bottomModal 변수
-
-  // 이미지 저장을 위함
-  const optionsImage = {
-    mediaType: 'photo',
-    maxWidth: 180,
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
-  };
-  // 이미지를 갤러리에서 들고옴 -> 수정 필요..!
-  const takeImagefromphone = () =>
-    launchImageLibrary(optionsImage, response => {
-      // console.log('Response = ', response);
-      if (response.didCancel) {
-        // setProcessing(false)
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        // setProcessing(false)
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        // setProcessing(false)
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        console.log('Response = ', response.assets[0].uri);
-        const tmp = response.assets[0];
-        // const source = {
-        //   uri:
-        //     Platform.OS === 'android' ? tmp.uri : tmp.uri.replace('file://', ''),
-        //   fileName: response.fileName,
-        // };
-        // var arr = [...items];
-        // console.log('source.uri', source.uri);
-        // arr.push(source.uri);
-        // setItems(arr); ////xxxxx
-      }
-    });
-
-  // 기록할때 textmodal 누른지 여부
-  const [clicktextModal, isClickTextModal] = useState(false);
-  const textModal = () => {
-    isClickTextModal(!clicktextModal);
-    bottomSheet.current.close();
-  };
-
   // 고정 여부
   const [isfix, setIsfix] = useState([false, false, false, false]);
   const isfix1 = idx => {
@@ -416,7 +338,7 @@ const IdeaMatching = ({route, navigation}) => {
   const [ischeck, setIscheck] = useState();
   const [allrandom, setAllRandom] = useState(false);
   const allrandommatching = () => {
-    alert('전체카드 랜덤 매칭합니다!');
+    Alert.alert('전체카드 랜덤 매칭합니다!');
     setAllRandom(!allrandom);
   };
 
@@ -431,9 +353,38 @@ const IdeaMatching = ({route, navigation}) => {
     return kl;
   };
   useEffect(() => {
-    console.log('현재 키워드' + selectedkeyword());
+    console.log('현재 키워드 ' + selectedkeyword());
     selectedkeyword;
   }, [keyword]);
+
+  // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
+  useEffect(() => {
+    async function putfirebase() {
+      const keywordlist = keyword.map(k => k.label);
+      let imagelist = [];
+      for (let i = 0; i < keywordlist.length; i++) {
+        try {
+          imagelist = await Addkeyword(keywordlist[i]);
+        } catch (error) {
+          console.log('첫번째' + error);
+        }
+        try {
+          if (imagelist.length != 0) {
+            firestore()
+              .collection('categoryData')
+              .doc('item')
+              .update({
+                [keywordlist[i]]: {image: imagelist},
+              });
+          }
+        } catch (error) {
+          console.log('두번째 오류' + error);
+        }
+      }
+    }
+    putfirebase();
+  }, []);
+
   return (
     <View style={styles.container}>
       {saveicon ? null : (
@@ -511,197 +462,68 @@ const IdeaMatching = ({route, navigation}) => {
       <View style={styles.body}>
         <View style={styles.contents_card}>
           <View style={styles.contents}>
-            <BottomSheet radius={1} ref={bottomSheet} height={200}>
-              <TouchableOpacity onPress={textModal} style={styles.bottomModal}>
-                <TextIcon name="text" size={24} style={{marginRight: 7}} />
-                <Text style={{fontFamily: 'SB_Aggro_L'}}>텍스트 입력하기</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={takeImagefromphone}
-                style={styles.bottomModal}>
-                <PictureIcon
-                  name="picture-o"
-                  size={24}
-                  style={{marginRight: 7}}
-                />
-                <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
-              </TouchableOpacity>
-            </BottomSheet>
-            {pen && !isfix[0] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow1}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={0}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  penicon={pen}
-                  setIsfix={isfix1}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={0}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix1}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
-
-            {pen && !isfix[1] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow2}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={1}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  penicon={pen}
-                  setIsfix={isfix2}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={1}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix2}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              idx={0}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              setIsfix={isfix1}
+              confirmCheckState={confirmCheckState.current}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              idx={1}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              setIsfix={isfix2}
+              confirmCheckState={confirmCheckState.current}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
           </View>
           <View style={styles.contents}>
-            {pen && !isfix[2] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow3}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  penicon={pen}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={2}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  setIsfix={isfix3}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={2}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix3}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
-            {pen && !isfix[3] ? (
-              <TouchableOpacity
-                onPress={bottomModalShow4}
-                style={{marginHorizontal: 5}}>
-                <SC
-                  style={styles.card}
-                  pinicon={pinicon}
-                  saveicon={saveicon}
-                  whichcard={whichcard}
-                  idx={3}
-                  keywordlist={selectedkeyword()}
-                  isfix={isfix}
-                  ischeck={ischeck}
-                  penicon={pen}
-                  setIsfix={isfix4}
-                  clicktextModal={clicktextModal}
-                  confirmCheckState={confirmCheckState}
-                  confirmCheck={confirmCheck}
-                  getData={getData}
-                  allrandom={allrandom}
-                  confirmCheck={confirmCheck}
-                />
-              </TouchableOpacity>
-            ) : (
-              <SC
-                style={styles.card}
-                pinicon={pinicon}
-                saveicon={saveicon}
-                whichcard={whichcard}
-                idx={3}
-                keywordlist={selectedkeyword()}
-                isfix={isfix}
-                ischeck={ischeck}
-                penicon={pen}
-                setIsfix={isfix4}
-                clicktextModal={clicktextModal}
-                confirmCheckState={confirmCheckState}
-                confirmCheck={confirmCheck}
-                getData={getData}
-                allrandom={allrandom}
-                confirmCheck={confirmCheck}
-              />
-            )}
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              idx={2}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              setIsfix={isfix3}
+              confirmCheckState={confirmCheckState.current}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
+            <SC
+              style={styles.card}
+              pinicon={pinicon}
+              saveicon={saveicon}
+              idx={3}
+              keywordlist={selectedkeyword()}
+              isfix={isfix}
+              ischeck={ischeck}
+              setIsfix={isfix4}
+              confirmCheckState={confirmCheckState.current}
+              confirmCheck={confirmCheck}
+              getData={getData}
+              allrandom={allrandom}
+              confirmCheck={confirmCheck}
+            />
           </View>
         </View>
       </View>
@@ -739,36 +561,6 @@ const IdeaMatching = ({route, navigation}) => {
               }}>
               <TouchableOpacity onPress={togglepinicon}>
                 <Pinoutline name="pin-outline" size={24} borderColor="black" />
-              </TouchableOpacity>
-            </View>
-          )}
-          {pen ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderColor: 'black',
-                borderWidth: 0.7,
-                margin: 5,
-                backgroundColor: 'gray',
-              }}>
-              <TouchableOpacity onPress={togglepen}>
-                <Icon2 name="pencil" size={22} />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderColor: 'black',
-                borderWidth: 0.7,
-                margin: 5,
-              }}>
-              <TouchableOpacity onPress={togglepen}>
-                <Icon2 name="pencil" size={22} />
               </TouchableOpacity>
             </View>
           )}

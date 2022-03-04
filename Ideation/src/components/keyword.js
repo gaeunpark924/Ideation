@@ -1,15 +1,14 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Remove from 'react-native-vector-icons/Feather';
-const Keyword = props => {
-  const name = props.name;
-  const remove = e => {
-    alert(e.select);
+const Keyword = ({name, remove}) => {
+  const removeKeyword = () => {
+    remove(name);
   };
   return (
     <View style={styles.keyword}>
       <Text style={styles.keywordname}>{name}</Text>
-      <TouchableOpacity onPress={remove}>
+      <TouchableOpacity onPress={removeKeyword}>
         <Remove name="x" size={18} style={styles.deletebutton} />
       </TouchableOpacity>
     </View>
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
   keywordname: {
     fontSize: 16,
     paddingRight: 10,
-    fontFamily: 'SB_AggroM',
+    fontFamily: 'SB_Aggro_M',
   },
 });
 export default Keyword;

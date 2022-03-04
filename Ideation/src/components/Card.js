@@ -9,10 +9,8 @@ import Youtube from './youtubeApi';
 import axios from 'axios';
 //pinicon,saveicon : icon누름 여부
 const SC = ({
-  penicon,
   pinicon,
   saveicon,
-  whichcard,
   idx,
   isfix,
   ischeck,
@@ -25,62 +23,28 @@ const SC = ({
   getData,
 }) => {
   function Card({data}) {
-    // card 고정된건지 여부
     const togglefix = () => {
       setIsfix(idx);
     };
-    // console.log(keywordlist);
-    // card 체크된건지 여부
     const [checked, setChecked] = useState(false);
-    // 카드의 text와 image 데이터
     const cd = useRef({text: data.text, image: data.image});
     const togglecheck = () => {
       setChecked(!checked);
       confirmCheck(idx);
-      // getData({text: data.text, image: data.image});
       getcd();
     };
     const getcd = () => {
-      // console.log(cd.current);
-      // console.log('자식');
-      // console.log(cd.current);
       getData(idx, cd.current);
     };
-    // useEffect(() => {
-    //   getcd();
-    // });
-    // 텍스트인지 이미지인지 판단
-    const [text, setText] = useState('');
-    // console.log(text);
-    const contents = () => {
-      const onChangeTextinput = e => {
-        setText(e.target.value);
-        // console.log(text);
-      };
-      if (whichcard[idx] && clicktextModal) {
-        return (
-          <View style={{marginTop: -20}}>
-            <TextInput
-              placeholder="생각나는 아이디어를 입력해주세요!(30자)"
-              onChangeText={newtext => setText(newtext)}
-              value={text}
-              style={{textAlign: 'center', fontFamily: 'SB_Aggro_L'}}
-              numberOfLines={2}
-              maxLength={30}
-            />
-          </View>
-        );
+    const Contents = () => {
+      if (data.image === undefined || data.image === '') {
+        return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>;
       } else {
-        if (data.image === undefined || data.image === '') {
-          return <Text style={{fontFamily: 'SB_Aggro_L'}}>{data.text}</Text>;
-        } else {
-          return (
-            <Image style={styles.cardthumbnail} source={{uri: data.image}} />
-          );
-        }
+        return (
+          <Image style={styles.cardthumbnail} source={{uri: data.image}} />
+        );
       }
     };
-
     return (
       <View style={[styles.card, {backgroundColor: '#FFF6DF'}]}>
         <View
@@ -163,7 +127,9 @@ const SC = ({
           </View>
           <View style={{flex: 5}}></View>
         </View>
-        <View style={{flex: 1}}>{contents()}</View>
+        <View style={{flex: 1}}>
+          <Contents />
+        </View>
       </View>
     );
   }
@@ -175,38 +141,39 @@ const SC = ({
       </View>
     );
   }
-
   const [cards, setCards] = useState();
   // firestore에서 해당 키워드 데이터 불러오기 -> 배열로 return해서 선택된 키워드 전체의 값을 받아온다.
   const [cd, setCd] = useState([]);
-  const getCardData = async keywordlist => {
-    // console.log('getCardData');
-    const newcd = [];
-    for (let i = 0; i < keywordlist.length; i++) {
-      await firestore()
-        .collection('categoryData')
-        .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            // console.log('doc.data ' + doc.data()['건축'].image.length);
-            for (let j = 0; j < doc.data()[keywordlist[i]].image.length; j++) {
-              let temp = doc.data()[keywordlist[i]].image[j];
-              if (temp === undefined) {
-                newcd.push(keywordlist[i]);
-              } else {
-                newcd.push(temp);
-              }
-            }
-          });
-        });
-    }
-    setCd(newcd);
-  };
   // 키워드에 해당하는 데이터를 cd에 저장함.
   useEffect(() => {
+    async function getCardData(keywordlist) {
+      const newcd = [];
+      for (let i = 0; i < keywordlist.length; i++) {
+        await firestore()
+          .collection('categoryData')
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              // console.log('doc.data ' + doc.data()['건축'].image.length);
+              for (
+                let j = 0;
+                j < doc.data()[keywordlist[i]].image.length;
+                j++
+              ) {
+                let temp = doc.data()[keywordlist[i]].image[j];
+                if (temp === undefined) {
+                  newcd.push(keywordlist[i] + '키워드 정보');
+                } else {
+                  newcd.push(temp);
+                }
+              }
+            });
+          });
+      }
+      setCd(newcd);
+    }
     getCardData(keywordlist);
-    // console.log('card data : ' + cd[0]);
-  }, []);
+  }, [keywordlist]);
   let cards1 = [
     {
       text: keywordlist[0],
@@ -281,7 +248,7 @@ const SC = ({
   ];
   let cards4 = [
     {
-      text: keywordlist[1],
+      text: keywordlist[3],
     },
     {
       image: cd[cd.length - 6],
@@ -313,22 +280,21 @@ const SC = ({
     return sourceArray;
   }
   useEffect(() => {
-    setTimeout(() => {
-      if (allrandom) {
-        if (!isfix[0]) {
-          shuffle(cards1);
-        }
-        if (!isfix[1]) {
-          shuffle(cards2);
-        }
-        if (!isfix[2]) {
-          shuffle(cards3);
-        }
-        if (!isfix[3]) {
-          shuffle(cards4);
-        }
+    if (allrandom) {
+      if (!isfix[0]) {
+        cards1 = shuffle(cards1);
       }
-      // setCards(cards1);
+      if (!isfix[1]) {
+        cards2 = shuffle(cards2);
+      }
+      if (!isfix[2]) {
+        cards3 = shuffle(cards3);
+      }
+      if (!isfix[3]) {
+        cards4 = shuffle(cards4);
+      }
+    }
+    if (!saveicon) {
       if (idx === 0) {
         setCards(cards1);
       } else if (idx === 1) {
@@ -338,25 +304,17 @@ const SC = ({
       } else if (idx === 3) {
         setCards(cards4);
       }
-    }, 1000);
-  }, [allrandom]);
-
-  // 카드 오른쪽으로 옮겼을때
+    }
+  }, [allrandom, cd]);
   function handleYup(card) {
-    console.log(`Yup for ${card.text} ${card.image}`);
-    let temp = {image: card.image};
-    cards1.push(temp);
-    return true; // return false if you wish to cancel the action
+    return true;
   }
-
-  // 카드 왼쪽으로 옮겼을때
   function handleNope(card) {
-    console.log(`Nope for ${card.text} ${card.image}`);
     return true;
   }
   return (
     <View style={styles.container}>
-      {cards ? (
+      {cards && cd.length != 0 ? (
         <SwipeCards
           cards={cards}
           renderCard={cardData => <Card data={cardData} />}
@@ -365,15 +323,13 @@ const SC = ({
           actions={{
             nope: {
               onAction: handleNope,
-              text: '그냥 패스',
-              containerStyle: {width: 120},
-              textStyle: {alignItems: 'center'},
+              text: '',
+              containerStyle: {width: 0, borderColor: '#fdf8ff'},
             },
             yup: {
               onAction: handleYup,
-              text: '다시 보기',
-              containerStyle: {width: 120},
-              textStyle: {alignItems: 'center'},
+              text: '',
+              containerStyle: {width: 0, borderColor: '#fdf8ff'},
             },
           }}
           hasMaybeAction={false}
