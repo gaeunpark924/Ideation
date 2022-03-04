@@ -92,16 +92,12 @@ const IdeaMatching = ({route, navigation}) => {
 
   const unsplash = createApi({
     accessKey: '1-vZgjCJUeOQDzDZ6yd1XdTakyHko4N25qYY9N1ejVo',
-    fetch: nodeFetch,
+    secretKey: 'C6x8Kwfa9QC4bCt6V7o6amRr42lVPU7H0xSypEpg2RI',
   });
 
-  // useEffect(() => {
-  //   unsplash.search.getPhotos({
+  // useEffect(async () => {
+  //   await unsplash.search.getPhotos({
   //     query: 'cat',
-  //     page: 1,
-  //     perPage: 10,
-  //     color: 'green',
-  //     orientation: 'portrait',
   //   });
   // }, []);
 
@@ -362,32 +358,32 @@ const IdeaMatching = ({route, navigation}) => {
   }, [keyword]);
 
   // 가지고 있는 키워드 개수만큼 Addkeyword 호출, firebase에 저장
-  // useEffect(() => {
-  //   async function putfirebase() {
-  //     const keywordlist = keyword.map(k => k.label);
-  //     let imagelist = [];
-  //     for (let i = 0; i < keywordlist.length; i++) {
-  //       try {
-  //         imagelist = await Addkeyword(keywordlist[i]);
-  //       } catch (error) {
-  //         console.log('첫번째' + error);
-  //       }
-  //       try {
-  //         if (imagelist.length != 0) {
-  //           firestore()
-  //             .collection('categoryData')
-  //             .doc('item')
-  //             .update({
-  //               [keywordlist[i]]: {image: imagelist},
-  //             });
-  //         }
-  //       } catch (error) {
-  //         console.log('두번째 오류' + error);
-  //       }
-  //     }
-  //   }
-  //   putfirebase();
-  // }, []);
+  useEffect(() => {
+    async function putfirebase() {
+      const keywordlist = keyword.map(k => k.label);
+      let imagelist = [];
+      for (let i = 0; i < keywordlist.length; i++) {
+        try {
+          imagelist = await Addkeyword(keywordlist[i]);
+        } catch (error) {
+          console.log('첫번째' + error);
+        }
+        try {
+          if (imagelist.length != 0) {
+            firestore()
+              .collection('categoryData')
+              .doc('item')
+              .update({
+                [keywordlist[i]]: {image: imagelist},
+              });
+          }
+        } catch (error) {
+          console.log('두번째 오류' + error);
+        }
+      }
+    }
+    putfirebase();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -475,7 +471,7 @@ const IdeaMatching = ({route, navigation}) => {
               isfix={isfix}
               ischeck={ischeck}
               setIsfix={isfix1}
-              confirmCheckState={confirmCheckState}
+              confirmCheckState={confirmCheckState.current}
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
@@ -490,7 +486,7 @@ const IdeaMatching = ({route, navigation}) => {
               isfix={isfix}
               ischeck={ischeck}
               setIsfix={isfix2}
-              confirmCheckState={confirmCheckState}
+              confirmCheckState={confirmCheckState.current}
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
@@ -507,7 +503,7 @@ const IdeaMatching = ({route, navigation}) => {
               isfix={isfix}
               ischeck={ischeck}
               setIsfix={isfix3}
-              confirmCheckState={confirmCheckState}
+              confirmCheckState={confirmCheckState.current}
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
@@ -522,7 +518,7 @@ const IdeaMatching = ({route, navigation}) => {
               isfix={isfix}
               ischeck={ischeck}
               setIsfix={isfix4}
-              confirmCheckState={confirmCheckState}
+              confirmCheckState={confirmCheckState.current}
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}

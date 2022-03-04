@@ -144,29 +144,6 @@ const SC = ({
   const [cards, setCards] = useState();
   // firestore에서 해당 키워드 데이터 불러오기 -> 배열로 return해서 선택된 키워드 전체의 값을 받아온다.
   const [cd, setCd] = useState([]);
-  // const getCardData = keywordlist => {
-  //   // console.log('getCardData');
-  //   const newcd = [];
-  //   for (let i = 0; i < keywordlist.length; i++) {
-  //     firestore()
-  //       .collection('categoryData')
-  //       .get()
-  //       .then(querySnapshot => {
-  //         querySnapshot.forEach(doc => {
-  //           // console.log('doc.data ' + doc.data()['건축'].image.length);
-  //           for (let j = 0; j < doc.data()[keywordlist[i]].image.length; j++) {
-  //             let temp = doc.data()[keywordlist[i]].image[j];
-  //             if (temp === undefined) {
-  //               newcd.push(keywordlist[i] + '키워드 정보');
-  //             } else {
-  //               newcd.push(temp);
-  //             }
-  //           }
-  //         });
-  //       });
-  //   }
-  //   setCd(newcd);
-  // };
   // 키워드에 해당하는 데이터를 cd에 저장함.
   useEffect(() => {
     async function getCardData(keywordlist) {
@@ -305,37 +282,33 @@ const SC = ({
   useEffect(() => {
     if (allrandom) {
       if (!isfix[0]) {
-        shuffle(cards1);
+        cards1 = shuffle(cards1);
       }
       if (!isfix[1]) {
-        shuffle(cards2);
+        cards2 = shuffle(cards2);
       }
       if (!isfix[2]) {
-        shuffle(cards3);
+        cards3 = shuffle(cards3);
       }
       if (!isfix[3]) {
-        shuffle(cards4);
+        cards4 = shuffle(cards4);
       }
     }
-    if (idx === 0) {
-      setCards(cards1);
-    } else if (idx === 1) {
-      setCards(cards2);
-    } else if (idx === 2) {
-      setCards(cards3);
-    } else if (idx === 3) {
-      setCards(cards4);
+    if (!saveicon) {
+      if (idx === 0) {
+        setCards(cards1);
+      } else if (idx === 1) {
+        setCards(cards2);
+      } else if (idx === 2) {
+        setCards(cards3);
+      } else if (idx === 3) {
+        setCards(cards4);
+      }
     }
   }, [allrandom, cd]);
-  useEffect(() => {
-    console.log('cd정보 ' + cd);
-  }, [cd]);
-  // 카드 오른쪽으로 옮겼을때
   function handleYup(card) {
-    return true; // return false if you wish to cancel the action
+    return true;
   }
-
-  // 카드 왼쪽으로 옮겼을때
   function handleNope(card) {
     return true;
   }
