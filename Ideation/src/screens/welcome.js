@@ -1,17 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {userInfo} from '../User'
+import {UserContext} from "../../App"
 
 const welcome = ({route, navigation}) => {
   const {userUid, email, emailVerified} = route.params;
+  const userCnt = useContext(UserContext)
 
   useEffect(()=>{
     setTimeout(() => {
-      //console.log('email',email, userUid)
-      userInfo.email = email;
-      userInfo.uid = userUid;
-      userInfo.emailVerified = emailVerified;
-      //console.log('email',userInfo)
+      userCnt.email = email
+      userCnt.uid = userUid
       //Stack 리셋하는 부분인데 작동 안함
       // const resetAction = StackActions.reset({
       //   index: 0,
@@ -20,7 +19,6 @@ const welcome = ({route, navigation}) => {
       //   })]
       // })
       // navigation.dispatch(resetAction)
-      //navigation.navigate("idealist", {"userUid":route.params})
       navigation.navigate("StackHomeNavigator")
     }, 2000)
   },[])

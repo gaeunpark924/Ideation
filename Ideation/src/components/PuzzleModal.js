@@ -6,19 +6,37 @@ import {
   TouchableOpacity,
   Modal,
   Image,
-  KeyboardAvoidingView,
-  Pressable,
   Alert,
-  ImageBackground,
   Dimensions,
   Keyboard
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { launchImageLibrary } from "react-native-image-picker";
-import { ComplexAnimationBuilder } from 'react-native-reanimated';
-import { BlurView, VibrancyView } from "@react-native-community/blur";
+import { BlurView} from "@react-native-community/blur";
+import { mainTheme } from '../theme/theme';
 const { width, height } = Dimensions.get("window"); 
-
+const ImageText = (props) => {
+  return(
+    <View {...props}
+      style={[styles.imagetext,props.style]}>
+    </View>
+  )
+}
+const SubView = (props) => {
+  return(
+    <View {...props}
+      style={[styles.subview,props.style]}>
+    </View>
+  )
+}
+const LongButton = (props) => {
+  return(
+    <TouchableOpacity {...props}
+      activeOpacity={0.8}
+      style={[styles.longbutton,props.style]}>
+    </TouchableOpacity>
+  )
+}
 const PuzzleModal = ({
     closePuzzleModal,
     deletePuzzle,
@@ -28,15 +46,14 @@ const PuzzleModal = ({
     column,
     puzzleType
     }) => {
-   //const textRef = useRef(source)
     const [type, setType] = useState(puzzleType)
     const [text, setText] = useState(textSource)
     const [image, setImage] = useState(imageSource)
+    const modalRef = useRef()
     const warning =  () =>{
       Alert.alert("경고","퍼즐을 삭제하시겠습니까?",
         [{text: "아니오", onPress: ()=> null, style:"cancel"},
         {text:"네", onPress: ()=> {deletePuzzle(row,column)}}]);
-        //setVisibleM(false)
     }
     const takeImagefromphone = () => {
       Keyboard.dismiss()
@@ -48,15 +65,11 @@ const PuzzleModal = ({
         },
       };
       launchImageLibrary(options, (response) => {
-        // console.log('Response = ', response);
         if (response.didCancel) {
-          // setProcessing(false)
           console.log("User cancelled image picker");
         } else if (response.error) {
-          // setProcessing(false)
           console.log("ImagePicker Error: ", response.error);
         } else if (response.customButton) {
-          // setProcessing(false)
           console.log("User tapped custom button: ", response.customButton);
         } else {
           console.log('Response = ', response.assets[0].uri);
@@ -69,24 +82,19 @@ const PuzzleModal = ({
             fileName: response.fileName,
           };
           //console.log('행, 열',clickedEmptyIndex.current[0],clickedEmptyIndex.current[1])
-          //console.log(source.uri)
           if (source.uri !== ''){
             setImage(source.uri)
           }
           type === 'text'
           ? setType('image')
           : null
-          //여기서 다시 type을 image로 바꿔야 하나?
-
         }
       });
     };
     const changeType = () => {
       Keyboard.dismiss()
-      if (image==='' && type ==='text'){
-        //처음 텍스트에서 빈 이미지 퍼즐로 전환할 때
+      if (image==='' && type ==='text'){ //처음 텍스트에서 빈 이미지 퍼즐로 전환할 때
         takeImagefromphone()
-        //console.log('xxxxxxxxxx')
       }else{
         setType(type === 'text'
         ? 'image'
@@ -96,237 +104,137 @@ const PuzzleModal = ({
     }
     const onPressBackGround = () => {
       Keyboard.dismiss()
-      type==='text'
-      ? closePuzzleModal(row,column,text,type)
-      : closePuzzleModal(row,column,image,type)
+      type==='text'? closePuzzleModal(row,column,text,type): closePuzzleModal(row,column,image,type)
     }
-    useEffect(()=>{
-      // console.log('플랫폼',Platform.OS === "ios" ? "padding" : "height")
-      console.log('플랫폼',Dimensions.get("screen").height-height)
-    },[])
     return (
         <Modal
-            animationType={'slide'}
-            transparent={true}
-            onRequestClose={()=>{
-              type==='text' ? closePuzzleModal(row,column,text,type) : closePuzzleModal(row,column,image,type)}
-            }
-            onBackdropPress={() => closeModal()}>
-          <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              style={{flex:1}}
-              keyboardVerticalOffset={0}
-              enabled>
-          <BlurView
-            blurType='dark'
-            style={{flex:1}}>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : "height"}
-              style={{flex:1}}
-              keyboardVerticalOffset={Dimensions.get("screen").height-height}//{Dimensions.get("screen").height-height}
-              enabled>
-          <TouchableOpacity
-            onPress={()=>{onPressBackGround()}}
-            activeOpacity={1}
-              style={{
-                flex:1,
-                backgroundColor: 'transparent',//'#000000AA',
-                justifyContent:'space-between',
-                flexDirection:'column',
-                //position:'absolute',
-                alignItems:'center'}}>
+          ref={modalRef}
+          animationType={'fade'}
+          transparent={true}
+          onRequestClose={()=>{
+            type==='text' ? closePuzzleModal(row,column,text,type) : closePuzzleModal(row,column,image,type)}
+          }
+          onBackdropPress={() => closeModal()}>
+          <BlurView blurType='light' style={{height:height}}>
+            <View style={{flex:1}}>
+              <TouchableOpacity
+                onPress={onPressBackGround}
+                activeOpacity={1}
+                style={{
+                  flex:1,
+                  backgroundColor: 'transparent',//'#000000AA',
+                  justifyContent:'space-between',
+                  flexDirection:'column',
+                  alignItems:'center'}}>
               {type === 'text'
-              ? <View
-                  style={{
-                    backgroundColor:'#FFF4D9',
-                    height:'50%',width:'90%',   //////제일 위에 50%
-                    borderRadius:50,
-                    borderWidth:1,
-                    alignItems:'center',
-                    justifyContent:'center',    ///15%  65%
-                    marginTop:'15%'}}>
+              ? <ImageText style={{backgroundColor:'#FFF4D9',borderRadius:50}}>
                   <TextInput
                     style={{fontSize:24, height:'80%',backgroundColor:'#FFF4D9',width:'80%'}}
                     placeholder='내용을 입력해주세요.(30자)'
                     value={text}
                     maxLength={30}
                     multiline={true}
-                    onChangeText={(e) => { setText(e)}}
-                    //setInit(!init ? true : true) //false -> true, true -> true
-                    //textRef.current = e
-                  />
-                </View>
-              : <View
-                  style={{
-                    backgroundColor:'#FFF4D9',
-                    height:'50%',width:'90%',
-                    alignItems:'center',
-                    justifyContent:'center',
-                    marginTop:'15%'}}>
+                    onChangeText={(e) => {setText(e)}}/>
+                </ImageText>
+              : <ImageText style={{backgroundColor:'#FFF4D9'}}>
                   <Image
                     source={{uri:image}}
-                    style={{
-                    height: '100%',  
-                    width: '100%',
-                  //borderWidth: 1,
-                  }}/>
-                </View>
+                    style={{height:'100%',width: '100%',}}/>
+                </ImageText>
               }
               {type === 'text'
-              ? <View
-                  style={{
-                    height:'7%', width:'90%',
-                    backgroundColor: 'transparent',//'transparent',//'transparent',
-                    marginTop:'20%',
-                    justifyContent:'space-between'
-                  }}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={()=>{changeType()}}
-                    style={{
-                      width:'100%',
-                      height:'100%',
-                      backgroundColor:'white',
-                      alignItems:'center',
-                      justifyContent:'center',
-                      borderWidth:1,
-                      flexDirection:'row'}}>
+              ? <SubView style={{height:'7%',marginTop:'20%'}}>
+                  <LongButton
+                    style={{height:'100%',backgroundColor:'white',}}
+                    onPress={()=>{changeType()}}>
                     <Image
-                      //style={styles.plus}
-                      style={{height:24, width:24,marginEnd:5}}
+                      style={{height:24,width:24,marginEnd:5}}
                       source={require('../assets/modal_rotate.png')}/>
-                    <Text
-                      style={{
-                      fontSize:14,
-                      fontFamily:'SB_Aggro_M'
-                      }}>이미지 퍼즐로 전환</Text>
-                  </TouchableOpacity>
-                </View>
-              : <View
-                  style={{
-                    height:'14%', width:'90%',
-                    backgroundColor: 'transparent',//,//'transparent',
-                    //marginBottom:'10%',
-                    marginTop:'10%',
-                    //flexDirection: 'column'
-                    justifyContent:'space-between'
-                  }}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={()=>{changeType()}}
-                    activeOpacity={0.8}
-                    style={{
-                      width:'100%',
-                      height:'43%',
-                      backgroundColor:'white',
-                      alignItems:'center',
-                      justifyContent:'center',
-                      borderWidth:1,
-                      flexDirection:'row'}}>
-                    <Text
-                      style={{
-                        fontSize:14,
-                        fontFamily:'SB_Aggro_M'
-                      }}>텍스트 퍼즐로 전환</Text>
-                    </TouchableOpacity>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={()=>{takeImagefromphone()}}
-                    activeOpacity={0.8}
-                    style={{
-                      width:'100%',
-                      height:'52%',
-                      backgroundColor:'#E7D9FF',
-                      alignItems:'center',
-                      justifyContent:'center',
-                      borderWidth:1,
-                      flexDirection:'row'}}>
-                    <Text
-                      style={{
-                        fontSize:14,
-                        fontFamily:'SB_Aggro_M',
-                      }}>앨범에서 이미지 변경</Text>
-                  </TouchableOpacity>
-                </View>
-              }
-                <View
-                  style={{
-                  height:'10%', width:'90%',
-                  backgroundColor: 'transparent',//'transparent',
-                  marginBottom:'10%',
-                  justifyContent:'space-between'
-                  }}>
-                  <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    style={{flex:1}}
-                    keyboardVerticalOffset={100}
-                    enabled>
-                  <View
-                    style={{
-                      height:'100%', width:'100%',
-                      backgroundColor:'transparent',
-                      flexDirection:'row',
-                      alignItems:'center',
-                      justifyContent:'space-between'
-                    }}>
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={()=>{warning()}}>
-                      <Image
-                        //style={styles.plus}
-                        style={{height:60, width:60}}
-                        source={require('../assets/modal_delete.png')}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      activeOpacity={0.8}
-                      onPress={()=>{
-                        type === 'image'
-                        ? closePuzzleModal(row,column,image,type)
-                        : closePuzzleModal(row, column, text,type)
-                      }}>  
+                    <Text style={styles.buttontext}>이미지 퍼즐로 전환</Text>
+                  </LongButton>    
+                </SubView>
+              : <SubView style={{height:'20%',marginTop:'0%'}}>
+                  <View style={{
+                    height:'20%',alignItems:'center',justifyContent:'center',
+                    borderRadius:20,borderColor:mainTheme.colors.fontGray,borderWidth:1,
+                    backgroundColor:mainTheme.colors.white,flexDirection:'row'}}>
                     <Image
-                      //style={styles.plus}
-                      style={{height:60, width:60}}
-                      source={require('../assets/modal_check.png')}/>
-                    </TouchableOpacity>
+                  style={{
+                    width: 14,
+                    height: 14,
+                    marginEnd:5}}
+                  source={require('../assets/warning.png')}
+                  resizeMode='cover'/>   
+                    <Text style={{color:mainTheme.colors.fontGray}}>직접 업로드한 이미지는 앱 삭제 시 저장되지 않습니다.</Text>
                   </View>
-                  </KeyboardAvoidingView>  
-                </View>
-            </TouchableOpacity>
-            </KeyboardAvoidingView>
+                  <LongButton
+                    style={{height:'31%',backgroundColor:'white',}} //43
+                    onPress={()=>{changeType()}}>
+                    <Text style={styles.buttontext}>텍스트 퍼즐로 전환</Text>
+                  </LongButton>
+                  <LongButton
+                    style={{height:'37%',backgroundColor:'#E7D9FF',}}  //52
+                    onPress={takeImagefromphone}>
+                    <Text style={styles.buttontext}>앨범에서 이미지 변경</Text>
+                  </LongButton>
+                </SubView>
+              }
+                <SubView style={{height:'10%',marginBottom:'10%',flexDirection:'row',alignItems:'center'}}>
+                  <TouchableOpacity activeOpacity={0.8} onPress={warning}>
+                    <Image
+                      style={{height:60, width:60}}
+                      source={require('../assets/modal_delete.png')}/>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={()=>{
+                      type === 'image'? closePuzzleModal(row,column,image,type) : closePuzzleModal(row,column,text,type)
+                    }}>  
+                  <Image
+                    style={{height:60, width:60}}
+                    source={require('../assets/modal_check.png')}/>
+                  </TouchableOpacity>
+                </SubView>
+              </TouchableOpacity>
+            </View>
           </BlurView>
-          </KeyboardAvoidingView>   
         </Modal>
     );
   };
 
 const styles = StyleSheet.create({
-    ideaComponent:{
-      borderWidth: 1,
-      borderStyle:'solid',
-      marginBottom: 15,
-      flexDirection: 'row',
-      justifyContent: 'center'
+    imagetext:{
+      height:'50%',
+      width:'90%',   //////제일 위에 50%
+      alignItems:'center',
+      justifyContent:'center', ///15%  65%
+      marginTop:'15%',
+      borderWidth:1
     },
-    title:{
-      fontSize: 20,
-      marginBottom: 7,
-      fontFamily:'SB_Aggro_M'
+    subview:{
+      width:'90%',
+      backgroundColor: 'transparent',
+      justifyContent:'space-between',
     },
-    update:{
-      fontSize: 18,
-      color: '#AEAEAE',
-      fontFamily:'SB_Aggro_M'
-    },
-    menu:{
-      padding:0,
-      margin:0,
-      elevation:0,
+    longbutton:{
+      width:'100%',
+      alignItems:'center',
+      justifyContent:'center',
       borderWidth:1,
-      borderStyle:'solid',
-      //height:96,
-      backgroundColor:'#fdf8ff'
+      flexDirection:'row'
+    },
+    buttontext:{
+      fontSize:14,
+      fontFamily:'SB_Aggro_M'
     }
 });
 
 export default PuzzleModal;
+
+// onLayout={onLayout}
+// const onLayout = e => {
+//   const { height } = e.nativeEvent.layout; //View의 높이
+//   //console.log('출력',height)
+// }
+
+//onPressIn={pressIn} //TextInput 눌렸을때

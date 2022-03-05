@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react';
 import {StyleSheet, Text, View, TextInput, TouchableOpacity,Alert,Keyboard } from 'react-native';
 import {KeyboardAvoidingView} from 'react-native';
 import auth from '@react-native-firebase/auth';
-//import DropDownPicker from 'react-native-dropdown-picker';
-import Email from 'react-native-vector-icons/MaterialIcons';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { color } from 'react-native-reanimated';
+import { mainTheme } from "../../theme/theme";
+import { CustomH,BottomButton } from '../../components/N';
 
 const SearchPwd = ({navigation}) => {
     const [email,setEmail] = useState('')
@@ -36,55 +35,36 @@ const SearchPwd = ({navigation}) => {
           // }
         })
     }
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-      {label: 'gmail.com', value: 'gmail'},
-      {label: 'naver.com', value: 'naver'}
-    ]);
     return (
-      <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS == "ios" ? 0 : 110}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView behavior="padding">
-              <View style={{marginTop:110}}> 
-                <TextInput
-                  underlineColorAndroid={'black'}
-                  style={{
-                    fontSize:18,
-                    fontFamily:'SB_Aggro_L',
-                  }}
-                  placeholder="이메일주소를 알려주세요."
-                  autoFocus={true}
-                  onSubmitEditing={() =>onPressNavigation()}
-                  onChangeText={(text)=>setEmail(text)}  
-                />
-                { (errorCode==='')
-                ? <Text
-                    style={styles.textStyle}>이메일로 비밀번호 재설정 링크를 보내드려요.</Text>
-                : (errorCode ==='auth/user-not-found')
-                ? <Text
-                    style={styles.textStyle2}>가입되지 않은 이메일이에요.{'\n'}다른 이메일 주소를 알려주세요!</Text>
-                : (errorCode === 'auth/invalid-email')
-                ? <Text
-                    style={styles.textStyle}>이메일 형식이 아닙니다.</Text>
-                : null      
-                }
-              </View>
-            </KeyboardAvoidingView>
-            </TouchableWithoutFeedback>
-            <TouchableOpacity
-              style={styles.bottomButton}
-              onPress={onPressNavigation}
-              activeOpacity={0.8}>
-              <Text
-                style={{fontSize:16, fontFamily:'SB_Aggro_M'}}>
-                재설정 링크 전송
-              </Text>
-            </TouchableOpacity>
-        </KeyboardAvoidingView>
+      <View style={{flex:1,backgroundColor:mainTheme.colors.background,}}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={()=>{Keyboard.dismiss()}}
+        style={{flex:1}}>
+      <CustomH name={'비밀번호 찾기'} press={()=>{navigation.goBack()}}></CustomH>
+        <View style={styles.container}>
+          <View style={{marginTop:110}}> 
+            <TextInput
+              underlineColorAndroid={'black'}
+              style={{
+                fontSize:18,
+                fontFamily:'SB_Aggro_L',
+              }}
+              placeholder="이메일주소를 알려주세요."
+              autoFocus={true}
+              onSubmitEditing={() =>onPressNavigation()}
+              onChangeText={(text)=>setEmail(text)}/>
+            {(errorCode==='')
+            ? <Text style={styles.textStyle}>이메일로 비밀번호 재설정 링크를 보내드려요.</Text>
+            : (errorCode ==='auth/user-not-found')
+              ? <Text style={styles.textStyle2}>가입되지 않은 이메일이에요.{'\n'}다른 이메일 주소를 알려주세요!</Text>
+              : (errorCode === 'auth/invalid-email') && <Text style={styles.textStyle2}>이메일 형식이 아닙니다.</Text>
+            }
+          </View>
+          <BottomButton name={'재설정 링크 전송'} press={onPressNavigation}/>
+        </View>
+        </TouchableOpacity>
+        </View>
     );
 };
 
@@ -105,20 +85,20 @@ const styles = StyleSheet.create({
     minHeight: 56, //최소 높이
     borderWidth: 1, //테두리 굵기
     borderColor: 'black', //테두리
-    backgroundColor: '#E7D9FF', //배경
+    backgroundColor: mainTheme.colors.main1//'#E7D9FF', //배경
   },
   textStyle:{
     fontSize:14,
-    fontFamily:'SB_Aggro_M',
+    fontFamily: mainTheme.font.M,
     marginLeft:5,
     marginTop:10
   },
   textStyle2:{
     fontSize:14,
-    fontFamily:'SB_Aggro_M',
+    fontFamily: mainTheme.font.M,
     marginLeft:5,
     marginTop:10,
-    color:'#FF3F25'
+    color:mainTheme.colors.warning
   },
 });
 

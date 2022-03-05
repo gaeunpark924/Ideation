@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef, useContext} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {
   StyleSheet,
@@ -10,9 +10,11 @@ import {
   Dimensions,
   TouchableOpacity,
   Image,
+  ImageBackground,
   BackHandler,
   Alert,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import {Button, Header, Card, Icon} from 'react-native-elements';
 import auth from '@react-native-firebase/auth';
@@ -23,17 +25,19 @@ import Sort from 'react-native-vector-icons/Fontisto';
 import Menu from 'react-native-vector-icons/Feather';
 import IdeaComponent from '../components/Idea';
 import {createDrawerNavigator} from 'react-navigation-drawer';
-import {userInfo} from '../User';
+import {UserContext} from "../../App"
+import {Guide, Num} from "../components/N"
+
 
 //import { fetchPost } from '../actions';
 import { transform } from '@babel/core';
 import { set } from 'react-hook-form';
+import { mainTheme } from '../theme/theme';
 
 const { width, height } = Dimensions.get("window");
 const idealist = ({route,navigation}) => {
-  const ideas = [];
-  //const {userUid} = route.params;
-  const [userUid, setUserUid] = useState(); //useRef(userInfo.uid)
+  const userCnt = useContext(UserContext)
+  const [userUid, setUserUid] = useState(userCnt.uid);
   const [post, setPost] = useState([]);
   const [postSearch, setPostSearch] = useState([]);
   const [postFilter, setPostFilter] = useState([]);
@@ -43,13 +47,14 @@ const idealist = ({route,navigation}) => {
   //const deleted = useRef(false)
   const [search, setSearch] = useState('');
   const [test, setTest] = useState(0);
-  const testRef = useRef(0);
   const [init, setInit] = useState(false);
   const [emptyList, setEmptyList] = useState(false);
   const [countIdea, setCountIdea] = useState(0);
+  // const numOfIdea = useRef();
+  const [numOfIdea, setNumOfIdea] = useState()
 
   const getPosts = async (userUid) => {
-    console.log("getPost", userUid)
+    // console.log("getPost", userUid)
     const list = []
     await firestore()
         .collection('userIdeaData')
@@ -60,6 +65,7 @@ const idealist = ({route,navigation}) => {
         .then(querySnapshot => {
           if (querySnapshot.empty) {
             setEmptyList(true);
+            getNumOfIdea()
           } else {
             querySnapshot.forEach(doc => {
               let postData = doc.data(); //문서 1개
@@ -68,6 +74,7 @@ const idealist = ({route,navigation}) => {
               list.push(postData);
               console.log('postData',postData)
             })
+            setEmptyList(false)
           }
           setIndex(0)
           setInit(true)
@@ -79,10 +86,6 @@ const idealist = ({route,navigation}) => {
     //setPostSearch(list)
     setPostFilter(list)
     //console.log("list",list)
-  }
-  const parse= (date) =>{
-    const splitedData = date.split('-')
-    return splitedData[0][2]+splitedData[0][3]+"."+splitedData[1]+"."+splitedData[2]
   }
   const deletePost = (postId) => {
     //console.log('Current Post Id: ', postId);
@@ -102,29 +105,43 @@ const idealist = ({route,navigation}) => {
             .delete() //firestore 에서 삭제
             .then(() => {
               Alert.alert('Delete', '삭제 되었습니다');
-              //deleted.current = false
-              //setDeleted(true);
-              getPosts(userInfo.uid);
+              decreaseIdea()
+              getPosts(userUid);
             })
             .catch(error => console.log('deletePost', error));
         }
       });
   };
+  const decreaseIdea = async () => {
+    await firestore()
+        .collection('ideaCount')
+        .doc('numOfIdea')
+        .update({numOfIdea:firestore.FieldValue.increment(-1)})
+        .then(() => {
+        })
+        .catch((error)=>{
+          console.log('error',error)
+        })
+  }
+  const getNumOfIdea = async () => {
+    await firestore()
+        .collection('ideaCount')
+        .doc('numOfIdea')
+        .get()
+        .then(querySnapshot => {
+          setNumOfIdea(querySnapshot.data().numOfIdea)
+        })
+        .catch((error)=>{
+          setNumOfIdea('166,483')
+        })
+  }
+  const parse = (date) =>{
+    const splitedData = date.split('-')
+    return splitedData[0][2]+splitedData[0][3]+"."+splitedData[1]+"."+splitedData[2]
+  }  
   // useEffect(()=>{
-  //   console.log("그냥 useEffect")
-  //   setUserUid(userInfo.uid)
-  //   getPosts(userInfo.uid);
-  // },[])
-  useEffect(()=>{
-    //console.log("useEffect",userInfo.uid)
-    setUserUid(userInfo.uid);
-    getPosts(userInfo.uid);
-    // if (deleted){
-    //   //getPosts(userInfo.uid);  //삭제 후 서버에서 데이터 다시
-    //   setDeleted(false);
-    //   deleted
-    // }
-  }, []);
+  //   setUserUid(userCnt.uid)
+  // }, []);
   //백 버튼
   useFocusEffect(
     useCallback(() => {
@@ -146,11 +163,11 @@ const idealist = ({route,navigation}) => {
       return () => backHandler.remove();
     }, []),
   );
+  //리스트화면이 포커스 되면
   useEffect(() => {
-    //getPosts();
-    //console.log('1')
     const willFocusSubscription = navigation.addListener('focus', () => {
-      getPosts(userInfo.uid);
+      getPosts(userUid)
+      //getNumOfIdea()
     });
   return willFocusSubscription;
   }, []);
@@ -205,6 +222,7 @@ const idealist = ({route,navigation}) => {
     }
   };
   const menu = () => {
+    Keyboard.dismiss();
     navigation.openDrawer();
   }
   const pressIdea = (items) => {
@@ -212,14 +230,9 @@ const idealist = ({route,navigation}) => {
   }
   return (
     <View style={styles.container}>
-      {/* <View style={styles.header}> */}
-        {/* <TouchableOpacity onPress={()=>{navigation.navigate("ideadevelop")}}>
-          <Text> 아이디어 발전 </Text>
-        </TouchableOpacity> */}
         <View style={{
           flexDirection:'row',
-          backgroundColor: '#fdf8ff',//'//'blue',//'#fdf8ff',
-          //justifyContent: 'center',
+          backgroundColor: '#fdf8ff',
           alignItems: 'center',
           marginHorizontal: 15,
           marginTop: 25,
@@ -237,111 +250,71 @@ const idealist = ({route,navigation}) => {
             //value={search}
             onChangeText={searchTitle}></TextInput>
           <TouchableOpacity disabled={true}>
-            {/* <Image
-                style={{resizeMode:'cover',marginEnd:15}}
-                source={require('../assets/list_search.png')}/> */}
-            <Search
-              style={{marginEnd: 15, transform: [{rotate: '15deg'}]}}
-              name="ios-search"
-              size={22}
-              color="#000"
-            />
+            <Search style={{marginEnd: 15, transform: [{rotate: '15deg'}]}} name="ios-search" size={22} color="#000"/>
           </TouchableOpacity>
         </View>
       </View>
-      {/* </View> */}
       <View style={styles.title}>
         <Text style={styles.titlePuzzle}>Puzzles</Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={styles.titleSort}>{sortList[index]}</Text>
+          {!emptyList && <Text style={styles.titleSort}>{sortList[index]}</Text>}
           <TouchableOpacity onPress={plusIndex}>
-            {/* <Image
-              style={{resizeMode:'cover',marginEnd:10}}
-              source={require('../assets/list_sort.png')}/> */}
-            <Sort
-              style={{marginEnd: 12, transform: [{rotate: '270deg'}]}}
-              name="arrow-swap"
-              size={22}
-              color="#000"
-            />
+            <Sort style={{marginEnd: 12, transform: [{rotate: '270deg'}]}} name="arrow-swap" size={22} color="#000" />
           </TouchableOpacity>
         </View>
       </View>
-      {!init
-       ?<ActivityIndicator
-          style={{
-            justifyContent:'center',
-            alignItems:'center'}}
-          size="large" color="gray" />
-       : null}
+      {!init && <ActivityIndicator style={{justifyContent:'center',alignItems:'center'}} size="large" color="gray" />}
       {!emptyList
       ? <FlatList
           data={postFilter}
           renderItem={({item})=>(
-            <IdeaComponent
-              item={item}
-              onDelete={deletePost}
-              pressIdea={pressIdea}/>
+          <IdeaComponent
+            item={item}
+            onDelete={deletePost}
+            pressIdea={pressIdea}/>
           )}
           keyExtractor={item => item.postId}
           style={{paddingHorizontal: 15}}></FlatList>
-      :
-        <View style={styles.emptyStyle}>
-          <Text
-            style={{
-              fontFamily: 'SB_Aggro_L',
-              fontSize: 16,
-              color: '#595959',
-              textAlign: 'center',
-              backgroundColor: '#fdf8ff',
-              marginBottom: 5,
-            }}>
-            퍼즐링 아이디어에서
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'SB_Aggro_M',
-              fontSize: 32,
-              color: '#7023D2',
-              textAlign: 'center',
-              backgroundColor: '#fdf8ff',
-              marginVertical: 5,
-            }}>
-            {countIdea}
-          </Text>
-          <Text
-            style={{
-              fontFamily: 'SB_Aggro_L',
-              fontSize: 16,
-              color: '#595959',
-              textAlign: 'center',
-              backgroundColor: '#fdf8ff',
-              marginVertical: 5,
-            }}>
-            개의 아이디어가 탄생하고 있어요!
-          </Text>
-        </View>
-      }
-
-      <TouchableOpacity
-        style={styles.touchableOpacity}
-        activeOpacity={1}
-        onPress={() => {
-          navigation.navigate('ideamatching', {uid: userUid});
-        }}>
-        <Image
-          //style={styles.plus}
-          style={{height: 60, width: 60}}
-          source={require('../assets/listTomatching.png')}
-        />
-      </TouchableOpacity>
+      : <View style={{flex:1}}>
+          <View style={{flex:1,justifyContent: 'center',alignItems: 'center',}}>
+            <Guide name={'퍼즐링 아이디어에서'}></Guide>
+            <Num name={numOfIdea}></Num>
+            <Guide name={'개의 아이디어가 탄생하고 있어요!'}></Guide>   
+          </View>
+          <View style={{height:157}}>
+            <ImageBackground
+              style={{width:285,height:57,alignItems:'center',position: 'absolute',right: 45,bottom: 100,}}
+              source={require('../assets/empty.png')}>
+              <Text style={{justifyContent:'center',fontFamily:mainTheme.font.L,color:mainTheme.colors.black,top:12}}>
+                이곳을 눌러 아이디어를 만들어보세요!</Text>
+            </ImageBackground>
+            <TouchableOpacity
+              style={styles.touchableOpacity}
+              activeOpacity={0.8}
+              onPress={() => {navigation.navigate('ideamatching', {uid: userUid});}}>
+              <Image style={{height: 60, width: 60}} source={require('../assets/listTomatching.png')}/>
+            </TouchableOpacity>
+          </View>
+        </View>} 
+      {!emptyList &&
+        <TouchableOpacity
+          style={styles.touchableOpacity}
+          activeOpacity={0.8}
+          onPress={() => {navigation.navigate('ideamatching', {uid: userUid});}}>
+          <Image style={{height: 60, width: 60}} source={require('../assets/listTomatching.png')}/>
+        </TouchableOpacity>}
     </View>
   );
 };
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: '#fdf8ff',
+    height:height
+    // position:'absolute',
+    // height:height,
+    // left:0,
+    // bottom:0
     //margin: 10
     //marginTop: StatusBar.currentHeight || 0,  //상태바 높이만큼 낮추는 코드
   },
@@ -398,12 +371,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     right: 30,
     bottom: 30,
-  },
-  emptyStyle: {
-    flex: 1,
-    backgroundColor: '#fdf8ff', //'blue',//'#fdf8ff',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 

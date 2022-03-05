@@ -281,11 +281,12 @@ const IdeaMatching = ({route, navigation}) => {
           .add({
             keyword: selectedkeyword,
             carddata: Carddata,
-            title: '앱 아이디어',
+            title: 'Puzzle Name',
             createTime: firestore.FieldValue.serverTimestamp(),
             updateTime: firestore.FieldValue.serverTimestamp(),
             createDate: createDate(),
             updateDate: createDate(),
+            offset: true
           })
           .then(() => {
             console.log('User added!');
@@ -295,6 +296,17 @@ const IdeaMatching = ({route, navigation}) => {
       }
     }
   };
+  const increaseIdea = async () => {
+    await firestore()
+        .collection('ideaCount')
+        .doc('numOfIdea')
+        .update({numOfIdea:firestore.FieldValue.increment(1)})
+        .then(() => {
+        })
+        .catch((error)=>{
+          console.log('error',error)
+        })
+  }
   // save toggleButton
   const [saveicon, setSaveicon] = useState(false);
 
@@ -309,12 +321,13 @@ const IdeaMatching = ({route, navigation}) => {
     setSaveicon(!saveicon);
     console.log(temp.current);
     addPosts();
+    increaseIdea();
     temp.current = [{}, {}, {}, {}];
     confirmCheckState.current = [false, false, false, false];
-    console.log(next);
-    if (next.current) {
-      navigation.navigate('ideadevelop', {uid: uid});
-    }
+    // console.log(next);
+    // if (next.current) {
+    //   navigation.navigate('ideadevelop', {uid: uid});
+    // }
   };
   // 체크 여부 판단  //여기가 먼저
   const confirmCheck = index => {

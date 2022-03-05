@@ -1,6 +1,6 @@
 export const mainTheme = {
     colors:{
-        main1 : '#cca5ff',
+        main1 : '#BE8AFF', //#cca5ff',
         main2 : '#e7d9ff',
         white : '#fbfbfb',
         background : '#fdf8ff',
@@ -15,9 +15,9 @@ export const mainTheme = {
         blue : '#D9E3FF',
         pink : '#FFD9D9'
     },
-    text : {
-        style : {
-            fontStyle: 'SB_Aggro_L'
-        }
+    font:{
+        L : 'SB_Aggro_L',
+        M : 'SB_Aggro_M',
+        B : 'SB_Aggro_B',
     }
 }
