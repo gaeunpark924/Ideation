@@ -14,6 +14,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import { launchImageLibrary } from "react-native-image-picker";
 import { BlurView} from "@react-native-community/blur";
 import { mainTheme } from '../theme/theme';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+
 const { width, height } = Dimensions.get("window"); 
 const ImageText = (props) => {
   return(
@@ -46,6 +48,7 @@ const PuzzleModal = ({
     column,
     puzzleType
     }) => {
+    AndroidKeyboardAdjust.setAdjustPan();  
     const [type, setType] = useState(puzzleType)
     const [text, setText] = useState(textSource)
     const [image, setImage] = useState(imageSource)

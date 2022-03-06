@@ -4,21 +4,13 @@ import {userInfo} from '../User'
 import {UserContext} from "../../App"
 
 const welcome = ({route, navigation}) => {
-  const {userUid, email, emailVerified} = route.params;
+  const {userUid, email} = route.params;
   const userCnt = useContext(UserContext)
 
   useEffect(()=>{
     setTimeout(() => {
       userCnt.email = email
       userCnt.uid = userUid
-      //Stack 리셋하는 부분인데 작동 안함
-      // const resetAction = StackActions.reset({
-      //   index: 0,
-      //   actions: [NavigationActions.navigate({
-      //     routeName: "StackHomeNavigator",
-      //   })]
-      // })
-      // navigation.dispatch(resetAction)
       navigation.navigate("StackHomeNavigator")
     }, 2000)
   },[])

@@ -4,7 +4,7 @@ import {KeyboardAvoidingView} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { mainTheme } from "../../theme/theme";
-import { CustomH,BottomButton } from '../../components/N';
+import { CustomH,BottomButton,TxtInMessage } from '../../components/N';
 
 const SearchPwd = ({navigation}) => {
     const [email,setEmail] = useState('')
@@ -37,34 +37,34 @@ const SearchPwd = ({navigation}) => {
     }
     return (
       <View style={{flex:1,backgroundColor:mainTheme.colors.background,}}>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={()=>{Keyboard.dismiss()}}
-        style={{flex:1}}>
-      <CustomH name={'비밀번호 찾기'} press={()=>{navigation.goBack()}}></CustomH>
-        <View style={styles.container}>
-          <View style={{marginTop:110}}> 
-            <TextInput
-              underlineColorAndroid={'black'}
-              style={{
-                fontSize:18,
-                fontFamily:'SB_Aggro_L',
-              }}
-              placeholder="이메일주소를 알려주세요."
-              autoFocus={true}
-              onSubmitEditing={() =>onPressNavigation()}
-              onChangeText={(text)=>setEmail(text)}/>
-            {(errorCode==='')
-            ? <Text style={styles.textStyle}>이메일로 비밀번호 재설정 링크를 보내드려요.</Text>
-            : (errorCode ==='auth/user-not-found')
-              ? <Text style={styles.textStyle2}>가입되지 않은 이메일이에요.{'\n'}다른 이메일 주소를 알려주세요!</Text>
-              : (errorCode === 'auth/invalid-email') && <Text style={styles.textStyle2}>이메일 형식이 아닙니다.</Text>
-            }
+        <TouchableOpacity activeOpacity={1} onPress={()=>{Keyboard.dismiss()}} style={{flex:1}}>
+        <CustomH name={'비밀번호 찾기'} press={()=>{navigation.goBack()}}></CustomH>
+          <View style={styles.container}>
+            <View style={{marginTop:110}}> 
+              <TextInput
+                underlineColorAndroid={'black'}
+                style={{
+                  fontSize:18,
+                  fontFamily:'SB_Aggro_L',
+                }}
+                placeholder="이메일주소를 알려주세요."
+                autoFocus={true}
+                onSubmitEditing={() =>onPressNavigation()}
+                onChangeText={(text)=>setEmail(text)}/>
+              {(errorCode==='')
+              ? <TxtInMessage name='이메일로 비밀번호 재설정 링크를 보내드려요.'></TxtInMessage>
+              : (errorCode ==='auth/user-not-found')
+                ? <View>
+                    <TxtInMessage name='가입되지 않은 이메일이에요.' style={{color:mainTheme.colors.warning}}></TxtInMessage>
+                    <TxtInMessage name='다른 이메일 주소를 알려주세요!'style={{color:mainTheme.colors.warning,marginTop:0}}></TxtInMessage>
+                  </View>
+                : (errorCode === 'auth/invalid-email') && <TxtInMessage name='이메일 형식이 아닙니다.' style={{color:mainTheme.colors.warning}}></TxtInMessage>
+              }
+            </View>
+            <BottomButton name={'재설정 링크 전송'} press={onPressNavigation}/>
           </View>
-          <BottomButton name={'재설정 링크 전송'} press={onPressNavigation}/>
-        </View>
         </TouchableOpacity>
-        </View>
+      </View>
     );
 };
 

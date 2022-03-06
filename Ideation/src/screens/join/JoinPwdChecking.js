@@ -3,8 +3,12 @@ import { StyleSheet, Text, View, TextInput, ToastAndroid, TouchableOpacity,Alert
 import {KeyboardAvoidingView} from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import auth from '@react-native-firebase/auth';
-import { CustomH,BottomButton } from '../../components/N';
+import { CustomH, BottomButton, TxtInMessage } from '../../components/N';
 import { mainTheme } from '../../theme/theme';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+
+AndroidKeyboardAdjust.setAdjustResize();
+
 const JoinPwdChecking = ({route, navigation}) => {
     const { emailValue, pwdValue} = route.params;
     const [ pwdCheckingValue, setPwdCheckingValue] = useState('');
@@ -92,11 +96,11 @@ const JoinPwdChecking = ({route, navigation}) => {
             />
             {errors.pwdCheckingForm
             ? pwdCheckingValue===''
-              ? <Text style={styles.textStyle}>실수는 누구나 하니까요!</Text>
-              : <Text style={styles.textStyle2}>{errors.pwdCheckingForm.message}</Text>
+              ? <TxtInMessage name='실수는 누구나 하니까요!'></TxtInMessage>
+              : <TxtInMessage name={errors.pwdCheckingForm.message} style={{color:mainTheme.colors.warning}}></TxtInMessage>
             : (getValues('pwdCheckingForm') === '' || pwdCheckingValue ===''
-              ? <Text style={styles.textStyle}>실수는 누구나 하니까요!</Text>
-              : <Text style={styles.textStyle}>이용 약관에 동의해주세요.</Text>)
+              ? <TxtInMessage name='실수는 누구나 하니까요!'></TxtInMessage>
+              : <TxtInMessage name='이용 약관에 동의해주세요.'></TxtInMessage>)
             }  
           </View>
           <View>

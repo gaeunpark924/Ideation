@@ -3,19 +3,17 @@ import { Text, View, TextInput, ToastAndroid, TouchableOpacity,
   KeyboardAvoidingView, StyleSheet, Alert, Keyboard,
   StackActions, NavigationActions  } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { color } from 'react-native-reanimated';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import {userInfo} from '../../User'
 import {UserContext} from "../../../App"
 import { mainTheme } from "../../theme/theme";
 import { CustomH,BottomButton } from '../../components/N';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
+AndroidKeyboardAdjust.setAdjustResize();
 
 const LoginEmail = ({navigation}) => {
   const userCnt = useContext(UserContext)
   const passwordInput = useRef();
   const emailInput = useRef()
-  const [ keyboardOffset, setKeyboardOffset] = useState()
   const onPressSearchPwd = ()=>{
     navigation.navigate("SearchPwd")
   }
@@ -77,7 +75,6 @@ const LoginEmail = ({navigation}) => {
           onPress={()=>{Keyboard.dismiss()}}
           style={{flex:1}}>
           <CustomH name={'이메일로 로그인'} press={()=>{navigation.goBack()}}/>
-            {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
             <View style={styles.container}>
             <View>
               <View style={{marginTop:110}}>

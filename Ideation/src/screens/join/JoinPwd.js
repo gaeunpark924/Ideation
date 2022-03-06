@@ -8,8 +8,11 @@ import {
   Keyboard,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
-import { CustomH,BottomButton } from '../../components/N';
+import { CustomH,BottomButton,TxtInMessage } from '../../components/N';
 import { mainTheme } from '../../theme/theme';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+
+AndroidKeyboardAdjust.setAdjustResize();
 
 const JoinPwd = ({route, navigation}) => {
   const {emailValue} = route.params;
@@ -39,59 +42,59 @@ const JoinPwd = ({route, navigation}) => {
         activeOpacity={1}
         onPress={()=>{Keyboard.dismiss()}}
         style={{flex:1}}>
-      <CustomH name={'회원가입 2/3단계'} press={()=>{navigation.goBack()}}></CustomH>
-    <View style={styles.container}>
-      <View style={{marginTop: 110}}>
-        <Controller
-          control={control}
-          rules={{
-            required: '든든한 보안을 위해 알파벳 + 숫자를 조합해주세요.',
-            minLength: {
-              value: 8,
-              message: '8자 이상 입력해주세요.',
-            },
-            maxLength: {
-              value: 16,
-              message: '16자 이하로 입력해주세요.',
-            },
-            pattern: {
-              value: /^(?=.*\d)(?=.*[a-zA-Z])/, //비밀번호 정규식 표현
-              message: '알파벳 + 숫자를 조합해주세요.',
-            },
-          }}
-          render={props => (
-            <TextInput
-              {...props}
-              ref={ref}
-              underlineColorAndroid={'black'}
-              style={{
-                fontSize:18,
-                fontFamily:mainTheme.font.L,
+        <CustomH name={'회원가입 2/3단계'} press={()=>{navigation.goBack()}}></CustomH>
+        <View style={styles.container}>
+          <View style={{marginTop: 110}}>
+              <Controller
+              control={control}
+              rules={{
+                required: '든든한 보안을 위해 알파벳 + 숫자를 조합해주세요.',
+                minLength: {
+                  value: 8,
+                  message: '8자 이상 입력해주세요.',
+                },
+                maxLength: {
+                  value: 16,
+                  message: '16자 이하로 입력해주세요.',
+                },
+                pattern: {
+                  value: /^(?=.*\d)(?=.*[a-zA-Z])/, //비밀번호 정규식 표현
+                  message: '알파벳 + 숫자를 조합해주세요.',
+                },
               }}
-              placeholder="비밀번호를 입력해주세요."
-              secureTextEntry={true}
-              onChange={e => {
-                setPwdValue(e.nativeEvent.text);
-              }} //state 업데이트
-              onChangeText={props.field.onChange} //
-              onBlur={props.field.onBlur}
-              value={props.field.value}
-              onSubmitEditing={onPressNavigation}
+              render={props => (
+                <TextInput
+                  {...props}
+                  ref={ref}
+                  underlineColorAndroid={'black'}
+                  style={{
+                    fontSize:18,
+                    fontFamily:mainTheme.font.L,
+                  }}
+                  placeholder="비밀번호를 입력해주세요."
+                  secureTextEntry={true}
+                  onChange={e => {
+                    setPwdValue(e.nativeEvent.text);
+                  }} //state 업데이트
+                  onChangeText={props.field.onChange} //
+                  onBlur={props.field.onBlur}
+                  value={props.field.value}
+                  onSubmitEditing={onPressNavigation}
+                />  
+              )}
+              name="pwdForm"
             />
-          )}
-          name="pwdForm"
-        />
-        {errors.pwdForm ? (
-          <Text style={styles.textStyle}>{errors.pwdForm.message}</Text>
-        ) : getValues('pwdForm') === '' ? (
-          <Text style={styles.textStyle}>든든한 보안을 위해 알파벳 + 숫자를 조합해주세요.</Text>
-        ) : (
-          <Text style={styles.textStyle}>안전한 비밀번호입니다. 다음 단계로 이동해주세요.</Text>
-        )}
-      </View>
-      <BottomButton name={'다음단계'} press={onPressNavigation}/>
-    </View>
-    </TouchableOpacity>
+            {errors.pwdForm ? (
+              <TxtInMessage name={errors.pwdForm.message}></TxtInMessage>
+            ) : getValues('pwdForm') === '' ? (
+              <TxtInMessage name='든든한 보안을 위해 알파벳 + 숫자를 조합해주세요.'></TxtInMessage>
+            ) : (
+              <TxtInMessage name='안전한 비밀번호입니다. 다음 단계로 이동해주세요.'></TxtInMessage>
+            )}
+          </View>
+          <BottomButton name={'다음단계'} press={onPressNavigation}/>
+        </View>
+      </TouchableOpacity>
     </View> 
   );
 };
