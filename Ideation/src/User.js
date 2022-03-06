@@ -15,7 +15,8 @@ export const userInfo =
     {
       email:'',
       emailVerified:false,
-      uid:''  
+      uid:'',
+      keyboardHeight:''  
     }
 
 

@@ -1,70 +1,59 @@
-import React, { useState, useRef, useEffect } from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Animated} from 'react-native';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import {StyleSheet, Text, Animated} from 'react-native';
 import auth from '@react-native-firebase/auth';
-import { ToastAndroid } from 'react-native';
-import { useScrollToTop } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 import { userInfo } from '../User';
-
-const Loading = ({navigation}) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current; 
-  //new Animated.Value 초기값을 0으로 준다
-  const [initializing, setInitializing] = useState(false);
-  const [userUid, setUserUid] = useState();
-  const [countIdea, setCountIdea] = useState(0);
+import {UserContext} from "../../App"
+import {Guide, Num} from "../components/N"
   
+const Loading = ({navigation}) => {
+  // const {emailCnt, emailCntHandler, uidCnt, uidCntHandler} = useContext(UserContext)
+  const userCnt = useContext(UserContext)
+  const [countIdea, setCountIdea] = useState(0);
+  const [initializing, setInitializing] = useState(false)
+  const numOfIdea = useRef()
   function onAuthStateChanged(user){
     if(user){
-      // setInitializing(true)
-      // setUserUid(user.uid)
-
-      setTimeout(()=>{
-        userInfo.email = user.email
-        userInfo.uid = user.uid
-        userInfo.emailVerified = user.emailVerified //사용하진 않는데 그냥 넣어둠
-        navigation.navigate("StackHomeNavigator")//,{"userUid":user.uid})
-      },2000)
+        setTimeout(()=>{
+          userCnt.email = user.email
+          userCnt.uid = user.uid
+          // console.log("onAuthStateChanged",user)
+          navigation.navigate("StackHomeNavigator")
+        },2000)
     }else{
       setTimeout(()=>{
-        userInfo.email = ''
-        userInfo.uid = ''
-        userInfo.emailVerified = false
+        userCnt.email = ''
+        userCnt.uid = ''
         navigation.navigate("StackAuthNavigator")
       },2000)
     }
-    // Animated.timing(fadeAnim,
-    //   {toValue:1,       
-    //     duration: 2000,  //2초 지속
-    //     useNativeDriver: true, 
-    //   }).start(()=>{
-    //     console.log("initializing",initializing)
-    //     initializing ? navigation.navigate("idealist",{"userUid":userUid}) : navigation.navigate("Login")
-    //   })
   }
-  
+  const getNumOfIdea = async () => {
+    await firestore()
+        .collection('ideaCount')
+        .doc('numOfIdea')
+        .get()
+        .then(querySnapshot => {
+          numOfIdea.current = querySnapshot.data().numOfIdea
+          setInitializing(true)
+        })
+        .catch((error)=>{
+          numOfIdea.current = '166,483'
+          setInitializing(true)
+        })
+  }      
   useEffect(()=>{
-    const unSubScriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return unSubScriber;
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    getNumOfIdea()
+    return subscriber;
   },[])
-  // useEffect(()=>{
-  //   onLoad()
-  // },[])
-  // const onLoad = () => {
-  //   //console.log("onLoad")
-  //   Animated.timing(fadeAnim,
-  //     {toValue:1,       
-  //       duration: 2000,  //2초 지속
-  //       useNativeDriver: true, 
-  //     }).start(()=>{
-  //       initializing ? navigation.navigate("idealist",{"userUid":userUid}) : navigation.navigate("Login")
-  //     })
-  // };
-  const getStyle = () =>{
-    return{
-
-    }
+  if(!initializing){
+    return(
+      <Animated.View style={styles.loading}>
+      </Animated.View>
+    )
   }
   return (
-    // <View style={styles.loading}>
       <Animated.View style={styles.loading}>
           <Text style={{
             fontFamily:'SB_Aggro_B',
@@ -73,42 +62,12 @@ const Loading = ({navigation}) => {
             textAlign: 'center',
             backgroundColor:'#fdf8ff',
             marginVertical:30}}>PZLING IDEA</Text>
-          <Text style={{
-            fontFamily:'SB_Aggro_L',
-            fontSize:16,
-            color:'#595959',
-            textAlign: 'center',
-            backgroundColor:'#fdf8ff',
-            marginVertical:5}}>퍼즐링 아이디어에서</Text>
-          <Text style={{
-            fontFamily:'SB_Aggro_M',
-            fontSize:32,
-            color:'#7023D2',
-            textAlign: 'center',
-            backgroundColor:'#fdf8ff',
-            marginVertical:5}}>{countIdea}</Text>
-          <Text style={{
-            fontFamily:'SB_Aggro_L',
-            fontSize:16,
-            color:'#595959',
-            textAlign: 'center',
-            backgroundColor:'#fdf8ff',
-            marginVertical:5}}>개의 아이디어가 탄생하고 있어요!</Text>
-          {/* {Animated.timing(fadeAnim,
-              {toValue:1,       
-              duration: 2000,  //2초 지속
-              useNativeDriver: true, 
-              }).start(()=>{
-                initializing ? navigation.navigate("idealist",{"userUid":userUid}) : navigation.navigate("Login")
-          })} */}
+          <Guide name={'퍼즐링 아이디어에서'}></Guide>
+          <Num name={numOfIdea.current}></Num>
+          <Guide name={'개의 아이디어가 탄생하고 있어요!'}></Guide>
       </Animated.View>
-    // </View>
   );
 };
-{/* <Animated.Image
-        source={require('../assets/facebook.png')}   //
-        style={{width:300, height:300}}
-        onLoad={onLoad}/> */}
 const styles = StyleSheet.create({
   loading: {
     height:'100%',
@@ -116,5 +75,13 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center'
   },
+  textStyle1:{
+    fontFamily:'SB_Aggro_L',
+    fontSize:16,
+    color:'#595959',
+    textAlign: 'center',
+    backgroundColor:'#fdf8ff',
+    marginVertical:5
+  }
 });
 export default Loading;

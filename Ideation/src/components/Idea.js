@@ -22,7 +22,6 @@ const IdeaComponent = ({item,onDelete,pressIdea}) => {
       return date.getFullYear()+"-"+("0"+(1+date.getMonth())).slice(-2)+"-"+("0"+date.getDate()).slice(-2)
     }
     useEffect(()=>{
-      console.log('item')
       var todayDate = new Date(getToday());
       var updateDate = new Date(item.updateDate);
       const diff = updateDate.getTime() - todayDate.getTime();
