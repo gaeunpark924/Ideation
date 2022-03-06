@@ -13,11 +13,10 @@ import { mainTheme } from '../../theme/theme';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
-AndroidKeyboardAdjust.setAdjustResize();
-
 const JoinEmail = ({route, navigation}) => {
   const [emailValue, setEmailValue] = useState();
   const ref = useRef()
+  AndroidKeyboardAdjust.setAdjustResize();
   const {
     control,
     watch,
@@ -36,6 +35,7 @@ const JoinEmail = ({route, navigation}) => {
       ? navigation.navigate('JoinPwd', {emailValue: emailValue})
       : null;
   };
+
   useEffect(() => {
     ref.current.focus()
   }, []);

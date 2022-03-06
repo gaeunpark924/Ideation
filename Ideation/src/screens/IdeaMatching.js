@@ -31,14 +31,17 @@ import firestore from '@react-native-firebase/firestore';
 import {createApi} from 'unsplash-js';
 import nodeFetch from 'node-fetch';
 import {URL, URLSearchParams} from 'react-native-url-polyfill';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
 const IdeaMatching = ({route, navigation}) => {
+  AndroidKeyboardAdjust.setAdjustPan(); //View가 키보드 따라서 밀려올라오지 않도록 함
   const {uid} = route.params;
   useEffect(() => {
     console.log('사용자id', uid);
   }, [uid]);
 
   let index = 0;
+  
   const [keyword, setKeyword] = useState([
     /*label : 키워드 이름 select: 선택되었는지 여부*/
     {key: index++, label: '랜덤', select: false},
@@ -488,7 +491,6 @@ const IdeaMatching = ({route, navigation}) => {
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
-              confirmCheck={confirmCheck}
             />
             <SC
               style={styles.card}
@@ -503,7 +505,6 @@ const IdeaMatching = ({route, navigation}) => {
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
-              confirmCheck={confirmCheck}
             />
           </View>
           <View style={styles.contents}>
@@ -520,7 +521,6 @@ const IdeaMatching = ({route, navigation}) => {
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
-              confirmCheck={confirmCheck}
             />
             <SC
               style={styles.card}
@@ -535,7 +535,6 @@ const IdeaMatching = ({route, navigation}) => {
               confirmCheck={confirmCheck}
               getData={getData}
               allrandom={allrandom}
-              confirmCheck={confirmCheck}
             />
           </View>
         </View>

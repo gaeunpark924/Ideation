@@ -12,12 +12,11 @@ import { CustomH,BottomButton,TxtInMessage } from '../../components/N';
 import { mainTheme } from '../../theme/theme';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
-AndroidKeyboardAdjust.setAdjustResize();
-
 const JoinPwd = ({route, navigation}) => {
   const {emailValue} = route.params;
   const [pwdValue, setPwdValue] = useState('');
   const ref = useRef()
+  AndroidKeyboardAdjust.setAdjustResize();
   const { control, watch, formState: {errors}, getValues} = useForm({
     mode: 'onChange', reValidateMode: 'onChange', criteriaMode: 'firstError',
     defaultValues: {
@@ -80,6 +79,7 @@ const JoinPwd = ({route, navigation}) => {
                   onBlur={props.field.onBlur}
                   value={props.field.value}
                   onSubmitEditing={onPressNavigation}
+                  autoCapitalize='none'
                 />  
               )}
               name="pwdForm"

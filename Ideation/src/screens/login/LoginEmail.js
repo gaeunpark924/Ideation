@@ -8,8 +8,6 @@ import { mainTheme } from "../../theme/theme";
 import { CustomH,BottomButton } from '../../components/N';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
-AndroidKeyboardAdjust.setAdjustResize();
-
 const LoginEmail = ({navigation}) => {
   const userCnt = useContext(UserContext)
   const passwordInput = useRef();
@@ -19,6 +17,7 @@ const LoginEmail = ({navigation}) => {
   }
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  AndroidKeyboardAdjust.setAdjustResize();
   function onPressLogin() {
     console.log(email, password);
     if (email && password) {  //email, pass null, 공백 처리

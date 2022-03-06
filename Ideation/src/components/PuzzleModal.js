@@ -133,11 +133,12 @@ const PuzzleModal = ({
               ? <ImageText style={{backgroundColor:'#FFF4D9',borderRadius:50}}>
                   <TextInput
                     style={{fontSize:24, height:'80%',backgroundColor:'#FFF4D9',width:'80%'}}
-                    placeholder='내용을 입력해주세요.(30자)'
+                    placeholder='내용을 입력해주세요'
                     value={text}
                     maxLength={30}
                     multiline={true}
-                    onChangeText={(e) => {setText(e)}}/>
+                    onChangeText={(e) => {setText(e)}}
+                    textAlign='center'/>
                 </ImageText>
               : <ImageText style={{backgroundColor:'#FFF4D9'}}>
                   <Image

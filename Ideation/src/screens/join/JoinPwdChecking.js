@@ -7,13 +7,12 @@ import { CustomH, BottomButton, TxtInMessage } from '../../components/N';
 import { mainTheme } from '../../theme/theme';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
-AndroidKeyboardAdjust.setAdjustResize();
-
 const JoinPwdChecking = ({route, navigation}) => {
     const { emailValue, pwdValue} = route.params;
     const [ pwdCheckingValue, setPwdCheckingValue] = useState('');
     const [ policy, setPolicy] = useState(false)
     const ref = useRef()
+    AndroidKeyboardAdjust.setAdjustResize();
     const { control, watch, formState: { errors }, getValues} = useForm({
       mode : 'onChange', reValidateMode: 'onChange', criteriaMode: "firstError",  //mode : 'onChange' 값이 변할때마다 유효성 확인
       defaultValues:{
