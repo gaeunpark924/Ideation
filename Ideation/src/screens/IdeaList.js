@@ -4,8 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
-  StatusBar,
   FlatList,
   Dimensions,
   TouchableOpacity,
@@ -16,22 +14,16 @@ import {
   ActivityIndicator,
   Keyboard,
 } from 'react-native';
-import {Button, Header, Card, Icon} from 'react-native-elements';
-import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {TextInput} from 'react-native-gesture-handler';
 import Search from 'react-native-vector-icons/Ionicons';
 import Sort from 'react-native-vector-icons/Fontisto';
 import Menu from 'react-native-vector-icons/Feather';
 import IdeaComponent from '../components/Idea';
-import {createDrawerNavigator} from 'react-navigation-drawer';
 import {UserContext} from "../../App"
 import {Guide, Num} from "../components/N"
 
-
 //import { fetchPost } from '../actions';
-import { transform } from '@babel/core';
-import { set } from 'react-hook-form';
 import { mainTheme } from '../theme/theme';
 
 const { width, height } = Dimensions.get("window");
@@ -39,10 +31,7 @@ const idealist = ({route,navigation}) => {
   const userCnt = useContext(UserContext)
   const [userUid, setUserUid] = useState(userCnt.uid);
   const [post, setPost] = useState([]);
-  const [postSearch, setPostSearch] = useState([]);
-  const [postFilter, setPostFilter] = useState([]);
   const sortList = ['최근 수정 순 ', '최근 생성 순 ', '가나다 순 '];
-  const [index, setIndex] = useState(0);
   //const [deleted, setDeleted] = useRef(false)
   //const deleted = useRef(false)
   const [search, setSearch] = useState('');
@@ -74,25 +63,19 @@ const idealist = ({route,navigation}) => {
               postData.postId = doc.id; //문서 id
               postData.createDate = parse(postData.createDate);
               list.push(postData);
-              console.log('postData',postData)
+              // console.log('postData',postData)
             })
             setEmptyList(false)
             setPost(list)
-            setPostFilter(list)
           }
-          setIndex(0)
+          setSortIndex(0)
           setInit(true)
         })
         .catch((error)=>{
           console.log('error',error)
         })
-    
-    //setPostSearch(list)
-    
-    //console.log("list",list)
   }
   const deletePost = (postId) => {
-    //console.log('Current Post Id: ', postId);
     firestore()
       .collection('userIdeaData')
       .doc(userUid)
@@ -143,9 +126,6 @@ const idealist = ({route,navigation}) => {
     const splitedData = date.split('-')
     return splitedData[0][2]+splitedData[0][3]+"."+splitedData[1]+"."+splitedData[2]
   }  
-  // useEffect(()=>{
-  //   setUserUid(userCnt.uid)
-  // }, []);
   //백 버튼
   useFocusEffect(
     useCallback(() => {
@@ -175,60 +155,15 @@ const idealist = ({route,navigation}) => {
     });
   return willFocusSubscription;
   }, []);
-  const getToday = () => {
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = ('0' + (1 + date.getMonth())).slice(-2);
-    var day = ('0' + date.getDate()).slice(-2);
-    return year + '.' + month + '.' + day;
-  };
   const searchTitle = text => {
     setSearchText(text)
-    // setText()
-    // if (text) {
-    //   const tmpPost = post.filter(item => item.title.includes(text));
-    //   //setPostSearch(tmpPost);
-    //   setPostFilter(tmpPost);
-    // } else {
-    //   //setPostSearch(post);
-    //   setPostFilter(post);
-    // }
   };
+  //정렬 index
   const plusIndex = () => {
-    var idx = index;
-    if (index < 2) {
-      idx = index + 1;
-      setIndex(index + 1);
+    if (sortIndex < 2) {
+      setSortIndex(sortIndex + 1);
     } else {
-      idx = 0;
-      setIndex(0);
-    }
-    setSortIndex(idx)
-    //filterItem(idx);
-  };
-  const filterItem = idx => {
-    const tmpPost = postSearch;
-    // console.log("출력",idx, postSearch)
-    switch (idx) {
-      case 0: //수정 //수정시간 기준 내림차순
-        setPostFilter(post);
-        console.log('0')
-        break;
-      case 1: //생성 //생성 시간 기준 오름차순
-        postFilter.sort((a, b) => b.createTime - a.createTime);
-        setPostFilter(postFilter);
-        console.log('1')
-        //console.log('xxx', postSearch);
-        break;
-      case 2: //이름
-        postFilter.sort((a, b) => (a.title > b.title ? 1 : -1));
-        setPostFilter(postFilter);
-        console.log('2')
-        break;
-      default:
-        setPostFilter(post);
-        console.log("출력")
-        break;
+      setSortIndex(0);
     }
   };
   const menu = () => {
@@ -267,7 +202,7 @@ const idealist = ({route,navigation}) => {
       <View style={styles.title}>
         <Text style={styles.titlePuzzle}>Puzzles</Text>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          {!emptyList && <Text style={styles.titleSort}>{sortList[index]}</Text>}
+          {!emptyList && <Text style={styles.titleSort}>{sortList[sortIndex]}</Text>}
           <TouchableOpacity onPress={plusIndex}>
             <Sort style={{marginEnd: 12, transform: [{rotate: '270deg'}]}} name="arrow-swap" size={22} color="#000" />
           </TouchableOpacity>
@@ -278,14 +213,13 @@ const idealist = ({route,navigation}) => {
       ? <FlatList
           data={
             searchText ?
-            post.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()))
+            post.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()))  //검색
             : sortIndex === 0 ?
-            post.sort((a,b)=> b.updateTime - a.updateTime)
+            post.sort((a,b)=> b.updateTime - a.updateTime)  //수정시간 기준 내림차순
             : sortIndex === 1 ?
-            post.sort((a, b) => b.createTime - a.createTime)
+            post.sort((a, b) => b.createTime - a.createTime)  //생성 시간 기준 내림차순
             : sortIndex === 2 &&
-            post.sort((a, b) => (a.title > b.title ? 1 : -1))
-            // postFilter
+            post.sort((a, b) => (a.title > b.title ? 1 : -1))  //
           }
           renderItem={({item})=>(
           <IdeaComponent
@@ -331,12 +265,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     backgroundColor: '#fdf8ff',
     height:height
-    // position:'absolute',
-    // height:height,
-    // left:0,
-    // bottom:0
-    //margin: 10
-    //marginTop: StatusBar.currentHeight || 0,  //상태바 높이만큼 낮추는 코드
+    // position:'absolute',height:height, left:0, bottom:0, margin: 10, marginTop: StatusBar.currentHeight || 0,  //상태바 높이만큼 낮추는 코드
   },
   searchContainer: {
     //flex:1,
@@ -373,15 +302,6 @@ const styles = StyleSheet.create({
     marginEnd: 3,
     fontSize: 14,
     fontFamily: 'SB_Aggro_L',
-  },
-  card_button_row: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#fff',
-  },
-  CenterComponent: {
-    fontSize: 24,
   },
   touchableOpacity: {
     position: 'absolute',

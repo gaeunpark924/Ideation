@@ -3,20 +3,14 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   Dimensions,
-  StatusBar,
   TouchableOpacity,
   TextInput,
   Image,
-  SafeAreaView,
-  Keyboard,
-  Button
 } from "react-native";
-import { PanGestureHandler, Swipeable, State } from "react-native-gesture-handler";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {KeyboardAvoidingView} from 'react-native';
 import exampleImageFrame from '../assets/frame.png'
 import TextIcon from 'react-native-vector-icons/Ionicons';
 import PictureIcon from 'react-native-vector-icons/FontAwesome';
@@ -493,7 +487,7 @@ const App = ({ navigation, route }) => {
   };
   //퍼즐 모달 닫기(완료)
   const closePuzzleModal = (row, column, source, type) => {
-    console.log(source)
+    //console.log(source)
     //수정된 값 저장
     type === 'text'
     ? source === ''
@@ -661,52 +655,6 @@ const App = ({ navigation, route }) => {
 export default App;
 
 const styles = StyleSheet.create({
-  textInputView: {
-    padding: 8,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  textInput: {
-    flexGrow: 1,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "#CCC",
-    padding: 10,
-    fontSize: 16,
-    marginRight: 10,
-    textAlignVertical: "top",
-  },
-  textInputButton: {
-    flexShrink: 1,
-  },
-  bottomSheetStyle:{
-    backgroundColor: '#FDF8FF',
-    padding: 10,
-    height: height-60-pad-itemSizeC, //itemSizeC*8+itemSizeC/2-itemSizeC*3+150,  //바텀 시트 내용물 높이
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    elevation: 100,
-  },
-  grabber:{
-    width:70,
-    borderTopWidth: 2,
-    borderTopColor:"#aaa",
-    margin: 5,
-  },
-  containerX: {
-    flex: 1,
-    flexDirection: "row",
-    //height: 20
-    //height: itemSizeC,
-    backgroundColor : "#fdf8ff"
-  },
-  imgX: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: "cover",
-  },
   bottomModal: {
     flex: 1,
     flexDirection: 'row',
@@ -719,25 +667,6 @@ const styles = StyleSheet.create({
     flex: 1,
     // position:'absolute', height:height, width,
     backgroundColor: '#fdf8ff'
-  },
-  viewContainer: {
-    flex: 1,
-    width,
-    backgroundColor: "#fdf8ff"//"#20232A",
-  },
-  bottom:{
-    width: "100%",
-    height: "10%",   //하단 공간
-    alignItems: "center",
-    backgroundColor: "green"
-  },
-  addBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#ff4c6f",
-    alignItems: "center",
-    justifyContent: "center",
   },
   img: {
     flex: 1,
