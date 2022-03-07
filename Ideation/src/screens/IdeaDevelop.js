@@ -11,6 +11,7 @@ import {
   Image,
   SafeAreaView,
   Keyboard,
+  Button
 } from "react-native";
 import { PanGestureHandler, Swipeable, State } from "react-native-gesture-handler";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -26,7 +27,7 @@ import firestore from '@react-native-firebase/firestore';
 import Back from 'react-native-vector-icons/MaterialIcons';
 import ViewShot from "react-native-view-shot";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';  //adjustResize, adjustPan 조절하는거
 import { BottomSheetShadow } from "../components/N";
 import Animated, { 
   useAnimatedGestureHandler,
@@ -38,7 +39,6 @@ import Animated, {
 
 //import { __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED } from "react/cjs/react.production.min";
 
-AndroidKeyboardAdjust.setAdjustPan();
 const { width, height } = Dimensions.get("window"); //상태바 포함하지 않음
 const COL = 4;
 const ROW = 6;
@@ -47,22 +47,31 @@ const pad = (width - (COL*(width/COL - 8)))/2; //배경 격자 padding
 const snapPoints = [height-60-(itemSizeC*6+pad*2),height-60-itemSizeC-pad] //바텀 시트 snapPoints
 
 const PuzzleTitle = ({title, getTitle}) =>{
+
   const [puzzleTitle, setPuzzleTitle] = useState(title)
   const changeText = (e) => {
     setPuzzleTitle(e)
     getTitle(e)
   }
+  
   return (
     <View style={{flexDirection:'row',alignItems:'center'}}>
+      {/* <Text
+        style={{
+         fontFamily: 'SB_Aggro_M',
+         fontSize: 20,
+         width: 20*10,
+        }}>{puzzleTitle}</Text> */}
       <TextInput
        style={{
          fontFamily: 'SB_Aggro_B',
          fontSize: 20,
          width: 20*10,
         }}
-       placeholderTextColor={mainTheme.colors.black}
+       placeholderTextColor={mainTheme.colors.gray}
        defaultValue={puzzleTitle}
        onChangeText={(e) => {changeText(e)}}
+       //placeholder='이름을 입력해주세요'
        />
       <Image
         style={{height:17, width:18}}
@@ -122,6 +131,7 @@ const App = ({ navigation, route }) => {
     'memo':'',
     'boxMatix': []
   })
+  AndroidKeyboardAdjust.setAdjustPan();
   const MaxRows = 6;
   const MaxColumns = 4;
   useEffect(()=>{
@@ -558,8 +568,7 @@ const App = ({ navigation, route }) => {
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex:1,margin:0,padding:0}}>
       <View style={styles.safeAreaView}>
-        <View style={{marginTop:0,height:60,flexDirection:'row',alignItems:'center',
-        borderBottomWidth:2,borderBottomColor:'black'}}>
+        <View style={{marginTop:0,height:60,flexDirection:'row',alignItems:'center',borderBottomWidth:2,borderBottomColor:'black'}}>
           <TouchableOpacity style={{marginStart:20,marginEnd:5}} activeOpacity={0.5} onPress={()=>{navigation.goBack()}}>
             <Back name="arrow-back-ios" color="#000" size={24}/>
           </TouchableOpacity>
@@ -567,73 +576,70 @@ const App = ({ navigation, route }) => {
         </View>
         <View style={{margin:pad}}>
           <ViewShot ref={recorder} options={{format: 'jpg', quality:0.9}}>    
-          <View style={{backgroundColor:'#fdf8ff',width:width-pad*2, height:itemSizeC*6}}>
-            <Background/>
-          {init
-           ? (boxMatrix.map((row, i)=>
-            row.map((square, j)=>{
-              if(square === 0){
-                return null;
-              }else {
-                return(
-                  <Photo
-                    key={`${j}-${i}`}
-                    row={i}
-                    column={j}
-                    position={{x:j*itemSizeC, y: i*itemSizeC}}
-                    uri={square}
-                    text={square}
-                  />
-                )
-              }
-            })))
-            : null
-          }
-          </View>
-        </ViewShot>  
-      </View>
-      <BottomSheet
-        ref={bottomSheetRef}
-        index={0}
-        snapPoints={snapPoints}
-        onChange={onChangeBottom}
-        backdropComponent={renderBackdrop}
-        handleComponent={BottomSheetShadow}
-        backgroundStyle={{backgroundColor:mainTheme.colors.background}}>
-        <TextInput
-          placeholder="퍼즐에 대한 설명을 적어보세요."
-          multiline={true}
-          maxLength={150}
-          //ref={memoBottomTextInput}
-          returnKeyType='done'
-          style={{
-            fontSize:18,
-            fontFamily:'SB_Aggro_L',
-            height: 18*10,    //TextInput 높이
-            textAlignVertical: 'top',
-            marginHorizontal:7
-          }}
-          editable = {bottomSheetMemoOpen ? true : false}
-          value={memoPuzzle}
-          onChangeText={(e) => {setMemoPuzzle(e)}} //메모 상태 업뎃 //placeholder와 연동
-          />
-      </BottomSheet> 
-      <BottomSheetPhoto radius={1} ref={bottomSheetPhoto} height={200}>
-        <TouchableOpacity onPress={textModal} style={styles.bottomModal}>
-          <TextIcon name="text" size={24} style={{marginRight: 7}} />
-          <Text style={{fontFamily: 'SB_Aggro_L'}}>텍스트 입력하기</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={pressBottomImage}
-          style={styles.bottomModal}>
-          <PictureIcon
-            name="picture-o"
-            size={24}
-            style={{marginRight: 7}}/>
-          <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
-        </TouchableOpacity>
-      </BottomSheetPhoto>
-      {openPuzzleModal &&
+            <View style={{backgroundColor:'#fdf8ff',width:width-pad*2, height:itemSizeC*6}}>
+              <Background/>
+              {init
+              && (boxMatrix.map((row, i)=>
+                row.map((square, j)=>{
+                  if(square === 0){
+                    return null;
+                  }else {
+                    return(
+                      <Photo
+                        key={`${j}-${i}`}
+                        row={i}
+                        column={j}
+                        position={{x:j*itemSizeC, y: i*itemSizeC}}
+                        uri={square}
+                        text={square}
+                      />
+                    )
+                  }
+                })))}
+            </View>
+          </ViewShot>  
+        </View>
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          onChange={onChangeBottom}
+          backdropComponent={renderBackdrop}
+          handleComponent={BottomSheetShadow}
+          backgroundStyle={{backgroundColor:mainTheme.colors.background}}>
+          <TextInput
+            placeholder="퍼즐에 대한 설명을 적어보세요."
+            multiline={true}
+            maxLength={150}
+            //ref={memoBottomTextInput}
+            returnKeyType='done'
+            style={{
+              fontSize:18,
+              fontFamily:'SB_Aggro_L',
+              height: 18*10,    //TextInput 높이
+              textAlignVertical: 'top',
+              marginHorizontal:7
+            }}
+            editable = {bottomSheetMemoOpen ? true : false}
+            onChangeText={(e) => {setMemoPuzzle(e)}} //메모 상태 업뎃 //placeholder와 연동
+            value={memoPuzzle}/>
+        </BottomSheet> 
+        <BottomSheetPhoto radius={1} ref={bottomSheetPhoto} height={200}>
+          <TouchableOpacity onPress={textModal} style={styles.bottomModal}>
+            <TextIcon name="text" size={24} style={{marginRight: 7}} />
+            <Text style={{fontFamily: 'SB_Aggro_L'}}>텍스트 입력하기</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={pressBottomImage}
+            style={styles.bottomModal}>
+            <PictureIcon
+              name="picture-o"
+              size={24}
+              style={{marginRight: 7}}/>
+            <Text style={{fontFamily: 'SB_Aggro_L'}}>사진 가져오기</Text>
+          </TouchableOpacity>
+        </BottomSheetPhoto>
+        {openPuzzleModal &&
         // <KeyboardAvoidingView
         //   behavior={Platform.OS === "ios" ? "padding" : "height"}
         //   style={{flex:1}}>
@@ -645,8 +651,8 @@ const App = ({ navigation, route }) => {
             row={clickedInfo.current.row}
             column={clickedInfo.current.column}
             puzzleType={puzzleType.current}/>
-          //</KeyboardAvoidingView>
-          }
+        }
+        
     </View>
   </KeyboardAwareScrollView>
   );
@@ -655,6 +661,25 @@ const App = ({ navigation, route }) => {
 export default App;
 
 const styles = StyleSheet.create({
+  textInputView: {
+    padding: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  textInput: {
+    flexGrow: 1,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#CCC",
+    padding: 10,
+    fontSize: 16,
+    marginRight: 10,
+    textAlignVertical: "top",
+  },
+  textInputButton: {
+    flexShrink: 1,
+  },
   bottomSheetStyle:{
     backgroundColor: '#FDF8FF',
     padding: 10,
@@ -721,3 +746,4 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
 });
+

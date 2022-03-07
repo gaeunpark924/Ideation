@@ -40,7 +40,6 @@
     "react-native-gesture-handler": "1.10.3",
     "react-native-image-picker": "4.7.3",
     "react-native-ionicons": "4.6.5",
-    "react-native-keyboard-accessory": "^0.1.16",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-material-menu": "2.0.0",
     "react-native-modal": "13.0.0",

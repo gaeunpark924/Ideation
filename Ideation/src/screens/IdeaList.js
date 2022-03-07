@@ -52,6 +52,8 @@ const idealist = ({route,navigation}) => {
   const [countIdea, setCountIdea] = useState(0);
   // const numOfIdea = useRef();
   const [numOfIdea, setNumOfIdea] = useState()
+  const [sortIndex, setSortIndex] = useState(0)
+  const [searchText, setSearchText] = useState()
 
   const getPosts = async (userUid) => {
     // console.log("getPost", userUid)
@@ -75,6 +77,8 @@ const idealist = ({route,navigation}) => {
               console.log('postData',postData)
             })
             setEmptyList(false)
+            setPost(list)
+            setPostFilter(list)
           }
           setIndex(0)
           setInit(true)
@@ -82,9 +86,9 @@ const idealist = ({route,navigation}) => {
         .catch((error)=>{
           console.log('error',error)
         })
-    setPost(list)
+    
     //setPostSearch(list)
-    setPostFilter(list)
+    
     //console.log("list",list)
   }
   const deletePost = (postId) => {
@@ -179,14 +183,16 @@ const idealist = ({route,navigation}) => {
     return year + '.' + month + '.' + day;
   };
   const searchTitle = text => {
-    if (text) {
-      const tmpPost = post.filter(item => item.title.includes(text));
-      //setPostSearch(tmpPost);
-      setPostFilter(tmpPost);
-    } else {
-      //setPostSearch(post);
-      setPostFilter(post);
-    }
+    setSearchText(text)
+    // setText()
+    // if (text) {
+    //   const tmpPost = post.filter(item => item.title.includes(text));
+    //   //setPostSearch(tmpPost);
+    //   setPostFilter(tmpPost);
+    // } else {
+    //   //setPostSearch(post);
+    //   setPostFilter(post);
+    // }
   };
   const plusIndex = () => {
     var idx = index;
@@ -197,7 +203,8 @@ const idealist = ({route,navigation}) => {
       idx = 0;
       setIndex(0);
     }
-    filterItem(idx);
+    setSortIndex(idx)
+    //filterItem(idx);
   };
   const filterItem = idx => {
     const tmpPost = postSearch;
@@ -205,19 +212,22 @@ const idealist = ({route,navigation}) => {
     switch (idx) {
       case 0: //수정 //수정시간 기준 내림차순
         setPostFilter(post);
+        console.log('0')
         break;
       case 1: //생성 //생성 시간 기준 오름차순
-        postFilter.sort((a, b) => a.createTime - b.createTime);
+        postFilter.sort((a, b) => b.createTime - a.createTime);
         setPostFilter(postFilter);
+        console.log('1')
         //console.log('xxx', postSearch);
         break;
       case 2: //이름
         postFilter.sort((a, b) => (a.title > b.title ? 1 : -1));
         setPostFilter(postFilter);
+        console.log('2')
         break;
       default:
         setPostFilter(post);
-        // console.log("출력")
+        console.log("출력")
         break;
     }
   };
@@ -266,7 +276,17 @@ const idealist = ({route,navigation}) => {
       {!init && <ActivityIndicator style={{justifyContent:'center',alignItems:'center'}} size="large" color="gray" />}
       {!emptyList
       ? <FlatList
-          data={postFilter}
+          data={
+            searchText ?
+            post.filter(item => item.title.toLowerCase().includes(searchText.toLowerCase()))
+            : sortIndex === 0 ?
+            post.sort((a,b)=> b.updateTime - a.updateTime)
+            : sortIndex === 1 ?
+            post.sort((a, b) => b.createTime - a.createTime)
+            : sortIndex === 2 &&
+            post.sort((a, b) => (a.title > b.title ? 1 : -1))
+            // postFilter
+          }
           renderItem={({item})=>(
           <IdeaComponent
             item={item}
@@ -375,3 +395,4 @@ const styles = StyleSheet.create({
 });
 
 export default idealist;
+

@@ -8,7 +8,8 @@ import {
   Image,
   Alert,
   Dimensions,
-  Keyboard
+  Keyboard,
+  Button
 } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { launchImageLibrary } from "react-native-image-picker";
@@ -39,20 +40,15 @@ const LongButton = (props) => {
     </TouchableOpacity>
   )
 }
-const PuzzleModal = ({
-    closePuzzleModal,
-    deletePuzzle,
-    imageSource,
-    textSource,
-    row,
-    column,
-    puzzleType
-    }) => {
-    AndroidKeyboardAdjust.setAdjustPan();  
+const PuzzleModal = ({closePuzzleModal,deletePuzzle,imageSource,textSource,row,column,puzzleType}) => {
+    
     const [type, setType] = useState(puzzleType)
     const [text, setText] = useState(textSource)
     const [image, setImage] = useState(imageSource)
     const modalRef = useRef()
+
+    AndroidKeyboardAdjust.setAdjustPan();  
+
     const warning =  () =>{
       Alert.alert("경고","퍼즐을 삭제하시겠습니까?",
         [{text: "아니오", onPress: ()=> null, style:"cancel"},
@@ -105,6 +101,9 @@ const PuzzleModal = ({
         )
       }
     }
+    // useEffect(()=>{
+    //   AndroidKeyboardAdjust.setAdjustPan();  
+    // },[])
     const onPressBackGround = () => {
       Keyboard.dismiss()
       type==='text'? closePuzzleModal(row,column,text,type): closePuzzleModal(row,column,image,type)
@@ -117,9 +116,10 @@ const PuzzleModal = ({
           onRequestClose={()=>{
             type==='text' ? closePuzzleModal(row,column,text,type) : closePuzzleModal(row,column,image,type)}
           }
-          onBackdropPress={() => closeModal()}>
-          <BlurView blurType='light' style={{height:height}}>
-            <View style={{flex:1}}>
+          onBackdropPress={() => closeModal()}
+          style={{position:'absolute',height:height,width:width}}>
+          <BlurView blurType='light' style={{position:'absolute',height:height,width:width}}>
+            <View style={{position:'absolute',width:width,height:height}}>
               <TouchableOpacity
                 onPress={onPressBackGround}
                 activeOpacity={1}
@@ -128,18 +128,19 @@ const PuzzleModal = ({
                   backgroundColor: 'transparent',//'#000000AA',
                   justifyContent:'space-between',
                   flexDirection:'column',
-                  alignItems:'center'}}>
+                  alignItems:'center'
+                  }}>
               {type === 'text'
               ? <ImageText style={{backgroundColor:'#FFF4D9',borderRadius:50}}>
-                  <TextInput
-                    style={{fontSize:24, height:'80%',backgroundColor:'#FFF4D9',width:'80%'}}
-                    placeholder='내용을 입력해주세요'
-                    value={text}
-                    maxLength={30}
-                    multiline={true}
-                    onChangeText={(e) => {setText(e)}}
-                    textAlign='center'/>
-                </ImageText>
+                    <TextInput
+                      style={{fontSize:24, height:'80%',backgroundColor:'#FFF4D9',width:'80%'}}
+                      placeholder='내용을 입력해주세요'
+                      value={text}
+                      maxLength={30}
+                      multiline={true}
+                      onChangeText={(e) => {setText(e)}}
+                      textAlign='center'/>         
+                  </ImageText>
               : <ImageText style={{backgroundColor:'#FFF4D9'}}>
                   <Image
                     source={{uri:image}}
@@ -163,13 +164,13 @@ const PuzzleModal = ({
                     borderRadius:20,borderColor:mainTheme.colors.fontGray,borderWidth:1,
                     backgroundColor:mainTheme.colors.white,flexDirection:'row'}}>
                     <Image
-                  style={{
-                    width: 14,
-                    height: 14,
-                    marginEnd:5}}
-                  source={require('../assets/warning.png')}
-                  resizeMode='cover'/>   
-                    <Text style={{color:mainTheme.colors.fontGray}}>직접 업로드한 이미지는 앱 삭제 시 저장되지 않습니다.</Text>
+                      style={{
+                        width: 14,
+                        height: 14,
+                        marginEnd:5}}
+                        source={require('../assets/warning.png')}
+                      resizeMode='cover'/>   
+                    <Text style={{color:mainTheme.colors.fontGray,fontSize:12}}>직접 업로드한 이미지는 앱 삭제 시 저장되지 않습니다.</Text>
                   </View>
                   <LongButton
                     style={{height:'31%',backgroundColor:'white',}} //43
@@ -209,6 +210,8 @@ const PuzzleModal = ({
 const styles = StyleSheet.create({
     imagetext:{
       height:'50%',
+      // height:500,
+      // width:90,
       width:'90%',   //////제일 위에 50%
       alignItems:'center',
       justifyContent:'center', ///15%  65%

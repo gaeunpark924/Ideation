@@ -87,7 +87,8 @@ const LoginEmail = ({navigation}) => {
                   placeholder="이메일 입력"
                   returnKeyType="next"
                   onChangeText={(e) => setEmail(e)}
-                  defaultValue={email}/>
+                  defaultValue={email}
+                  keyboardType="email-address"/>
               </View>
               <View style={{marginTop:40}}>
                 <TextInput
@@ -101,6 +102,7 @@ const LoginEmail = ({navigation}) => {
                   secureTextEntry={true}
                   onChangeText={(e) => setPassword(e)}
                   defaultValue={password}
+                  autoCapitalize='none'
                 />
               </View>
               </View>

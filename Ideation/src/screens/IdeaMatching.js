@@ -34,7 +34,7 @@ import {URL, URLSearchParams} from 'react-native-url-polyfill';
 import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
 const IdeaMatching = ({route, navigation}) => {
-  AndroidKeyboardAdjust.setAdjustPan(); //View가 키보드 따라서 밀려올라오지 않도록 함
+  AndroidKeyboardAdjust.setAdjustPan(); 
   const {uid} = route.params;
   useEffect(() => {
     console.log('사용자id', uid);
