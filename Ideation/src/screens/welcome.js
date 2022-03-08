@@ -1,56 +1,49 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import auth from '@react-native-firebase/auth';
+import {userInfo} from '../User'
+import {UserContext} from "../../App"
 
-const welcome = ({navigation}) => {
+const welcome = ({route, navigation}) => {
+  const {userUid, email} = route.params;
+  const userCnt = useContext(UserContext)
+
+  useEffect(()=>{
+    setTimeout(() => {
+      userCnt.email = email
+      userCnt.uid = userUid
+      navigation.navigate("StackHomeNavigator")
+    }, 2000)
+  },[])
   return (
     <View style={styles.welcome}>
-      <TouchableOpacity>
-        <View style={styles.body}>
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate('idealist')}>
-              <Text style={styles.title}>환영합니다</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ideamatching')}>
-              <Text style={styles.title}>환영합니다</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('ideadevelop')}>
-              <Text style={styles.title}>환영합니다</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                auth().signOut();
-                navigation.navigate('Login');
-                }}>
-              <Text style={styles.title}>로그아웃</Text>
-            </TouchableOpacity>
-          </View>
-          <View>
-            <Text>함께 아이디어 퍼즐을 완성해봐요!</Text>
-          </View>
+        <View>
+            <Text style={styles.title}>Let's Puzzling!</Text>
         </View>
-      </TouchableOpacity>
+        <View style={{alignItems:'center'}}>
+            <Text style={styles.sub}>퍼즐링 아이디어와 함께</Text>
+            <Text style={styles.sub}>아이디어 퍼즐을 완성해봐요!</Text>
+        </View>
     </View>
   );
 };
 const styles = StyleSheet.create({
   welcome: {
+    height:'100%',
+    backgroundColor:'#FDF8FF',
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  body: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent:'center',
+    alignItems:'center'
   },
   title: {
-    fontSize: 50,
     marginBottom: 30,
-    color: '#E7D9ff',
-    fontWeight: 'bold',
+    color: '#CCA5FF',
+    fontFamily: 'SB_Aggro_M',
+    fontSize:32
   },
+  sub: {
+    fontFamily: 'SB_Aggro_M',
+    paddingVertical: 5,
+    fontSize:14
+  }
 });
 export default welcome;

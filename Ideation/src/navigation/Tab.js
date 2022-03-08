@@ -6,13 +6,14 @@ import IdeaMatching from '../screens/IdeaMatching';
 import {Icon} from 'react-native-elements';
 import {NavigationContainer} from '@react-navigation/native';
 
-const BTab = createBottomTabNavigator();
+const BTab = createStackNavigator();
 
 const TabNavigation = () => {
   return (
     <BTab.Navigator
       screenOptions={{
         headerShown: false,
+        headerBackTitleVisible: false,
       }}
       initialRouteName="랜덤 아이디어 매칭">
       <BTab.Screen name="아이디어 발전 커뮤니티" component={IdeaCommunity} />

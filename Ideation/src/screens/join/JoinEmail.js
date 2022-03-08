@@ -1,17 +1,22 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
-import styles from '../../styles/style';
 import {Controller, useForm} from 'react-hook-form';
+import { CustomH, BottomButton, BackGroundContainer, TxtInMessage } from '../../components/N';
+import { mainTheme } from '../../theme/theme';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
-import {KeyboardAvoidingView} from 'react-native';
-const JoinEmail = ({navigation}) => {
+const JoinEmail = ({route, navigation}) => {
   const [emailValue, setEmailValue] = useState();
+  const ref = useRef()
+  AndroidKeyboardAdjust.setAdjustResize();
   const {
     control,
     watch,
@@ -30,57 +35,67 @@ const JoinEmail = ({navigation}) => {
       ? navigation.navigate('JoinPwd', {emailValue: emailValue})
       : null;
   };
-  console.log(watch()); //입력한 값을 실시간으로 확인
-  //console.log('errors',errors.emailForm) //에러 확인
+
+  useEffect(() => {
+    ref.current.focus()
+  }, []);
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding">
-        <View style={{marginTop: 110}}>
-          <Controller
-            control={control}
-            rules={{
-              required: '비밀번호를 재설정할 때 필요해요.',
-              pattern: {
-                value:
-                  /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i, //이메일 정규식
-                message: '이메일 형식으로 입력해주세요.',
-              },
-            }}
-            render={props => (
-              <TextInput
-                {...props}
-                underlineColorAndroid={'black'}
-                placeholder="이메일 주소를 알려주세요."
-                onChange={e => {
-                  setEmailValue(e.nativeEvent.text);
-                }} //state 업데이트
-                onChangeText={props.field.onChange}
-                onBlur={props.field.onBlur}
-                value={props.field.value}
-                autoFocus={true}
-                onSubmitEditing={() => onPressNavigation()}
-              />
+    <View style={{flex:1,backgroundColor:mainTheme.colors.background,}}>
+      <TouchableOpacity activeOpacity={1} onPress={()=>{Keyboard.dismiss()}} style={{flex:1}}>
+        <CustomH name={'회원가입 1/3단계'} press={()=>{navigation.goBack()}}></CustomH>
+        <View style={styles.container}>
+          <View style={{marginTop: 110}}>
+            <Controller
+              control={control}
+              rules={{
+                required: '비밀번호를 재설정할 때 필요해요.',
+                pattern: {
+                  value:
+                    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i, //이메일 정규식
+                  message: '이메일 형식으로 입력해주세요.',
+                },
+              }}
+              render={props => (
+                <TextInput
+                  {...props}
+                  ref={ref}
+                  underlineColorAndroid={'black'}
+                  style={{fontSize:18,fontFamily:mainTheme.font.L,}}
+                  placeholder="입력하세요"
+                  onChange={e => {setEmailValue(e.nativeEvent.text);}} //state 업데이트
+                  onChangeText={props.field.onChange}
+                  onBlur={props.field.onBlur}
+                  value={props.field.value}
+                  keyboardType="email-address"
+                  onSubmitEditing={() => onPressNavigation()}
+                  autoCapitalize='none'
+                />
+              )}
+              name="emailForm"
+            />
+            {errors.emailForm ? (
+              <TxtInMessage name={errors.emailForm.message}></TxtInMessage>
+            ) : getValues('emailForm') === '' ? (
+              <TxtInMessage name='비밀번호를 재설정할 때 필요해요.'></TxtInMessage>
+            ) : (
+              <TxtInMessage name='다음 단계로 이동해주세요'></TxtInMessage>
             )}
-            name="emailForm"
-          />
-          {errors.emailForm ? (
-            <Text>{errors.emailForm.message}</Text>
-          ) : getValues('emailForm') === '' ? (
-            <Text>비밀번호를 재설정할 때 필요해요.</Text>
-          ) : (
-            <Text>다음 단계로 이동해주세요</Text>
-          )}
+          </View>
+          <BottomButton name={'다음단계'} press={onPressNavigation}/>
         </View>
-      </KeyboardAvoidingView>
-      <TouchableOpacity
-        title="Submit"
-        style={styles.bottomButton}
-        onPress={onPressNavigation}
-        activeOpacity={0.8}>
-        <Text>다음단계</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    justifyContent: 'space-between',
+  },
+});
 
 export default JoinEmail;

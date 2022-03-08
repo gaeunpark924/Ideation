@@ -1,85 +1,142 @@
-import React, { useRef, useState, useEffect} from 'react';
-import { Text, View, TextInput, ToastAndroid, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-
+import React, { useRef, useState, useEffect, useContext} from 'react';
+import { Text, View, TextInput, ToastAndroid, TouchableOpacity,
+  KeyboardAvoidingView, StyleSheet, Alert, Keyboard,
+  StackActions, NavigationActions  } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import {UserContext} from "../../../App"
+import { mainTheme } from "../../theme/theme";
+import { CustomH,BottomButton } from '../../components/N';
+import AndroidKeyboardAdjust from 'react-native-android-keyboard-adjust';
 
-import styles from '../../styles/style'
-const showToast = () =>{
-  ToastAndroid.show("로그인", ToastAndroid.SHORT);
-};
 const LoginEmail = ({navigation}) => {
-    const passwordInput = useRef();
-    const onPressSearchPwd = ()=>{
-      navigation.navigate("SearchPwd")
-    }
-
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
+  const userCnt = useContext(UserContext)
+  const passwordInput = useRef();
+  const emailInput = useRef()
+  const onPressSearchPwd = ()=>{
+    navigation.navigate("SearchPwd")
+  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  AndroidKeyboardAdjust.setAdjustResize();
   function onPressLogin() {
     console.log(email, password);
     if (email && password) {  //email, pass null, 공백 처리
       auth().signInWithEmailAndPassword(email, password)
         .then((user) => {
-          console.log(user, '로그인 성공');
-          // auth().onAuthStateChanged((user) => {   //firebase에서 제공하는 유저 접속 유무 알려주는 함수
-          //     if(user){
-          //       console.log('a')
-          //     }
-          //   });
-          navigation.navigate("welcome")
+          userCnt.email = user.user.email
+          userCnt.uid = user.user.uid
+          //Stack 리셋하는 부분인데 작동 안함
+          // const resetAction = StackActions.reset({
+          //   index: 0,
+          //   actions: [NavigationActions.navigate({
+          //     routeName: "StackHomeNavigator",
+          //   })]
+          // })
+          // navigation.dispatch(resetAction)
+          navigation.navigate("StackHomeNavigator")
         })
-        .catch((err) => console.log(err))
+        .catch((error) => {
+          switch(error.code){
+            case 'auth/wrong-password':
+              Alert.alert("경고",'비밀번호가 틀렸습니다',[{text:"확인"}]);
+              setPassword('')
+              break;
+            case 'auth/user-not-found':
+              Alert.alert("경고",'등록되지 않은 사용자입니다.',[{text:"확인"}]);
+              setEmail('')
+              setPassword('')
+              break;
+            case 'auth/invalid-email':
+              Alert.alert("경고",'이메일 형식이 아닙니다.',[{text:"확인"}]);
+              setEmail('')
+              setPassword('')
+              break;
+            default:
+              Alert.alert("error",error.code,[{text:"확인"}]);
+              setEmail('')
+              setPassword('')
+              break;
+          }
+        })
+      }else if(!email){
+        Alert.alert("경고",'이메일을 입력해주세요.',[{text:"확인",onPress: ()=> {emailInput.current.focus()}}]);
+      }else if(!password){
+        Alert.alert("경고",'비밀번호를 입력해주세요.',[{text:"확인",onPress: ()=> {passwordInput.current.focus()}}]);
+      }
     }
-  }
-
+    useEffect(()=>{
+      emailInput.current.focus()
+    },[])
     return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView behavior="padding">
-                <View style={{marginTop:110}}>
-                  <TextInput
-                    underlineColorAndroid={'black'}
-                    placeholder="이메일 입력"
-                    autoFocus={true}
-                    returnKeyType="next"
-                    onSubmitEditing={() => {passwordInput.current.focus()}}    //키보드에서 다음 누르면 비밀번호 확인으로 자동으로 넘어감
-                    onChangeText={(e) => setEmail(e)}
-                />
-              </View>
-              <View style={{marginTop:50}}>
+      <View style={{flex:1,backgroundColor : mainTheme.colors.background,flexDirection:'column'}}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={()=>{Keyboard.dismiss()}}
+          style={{flex:1}}>
+          <CustomH name={'이메일로 로그인'} press={()=>{navigation.goBack()}}/>
+            <View style={styles.container}>
+            <View>
+              <View style={{marginTop:110}}>
                 <TextInput
+                  ref={emailInput}
                   underlineColorAndroid={'black'}
+                  style={{
+                    fontSize:18,
+                    fontFamily:'SB_Aggro_L'
+                  }}
+                  placeholder="이메일 입력"
+                  returnKeyType="next"
+                  onChangeText={(e) => setEmail(e)}
+                  defaultValue={email}
+                  keyboardType="email-address"/>
+              </View>
+              <View style={{marginTop:40}}>
+                <TextInput
+                  ref={passwordInput}
+                  underlineColorAndroid={'black'}
+                  style={{
+                    fontSize:18,
+                    fontFamily:'SB_Aggro_L'
+                  }}
                   placeholder="비밀번호 입력"
                   secureTextEntry={true}
-                  onSubmitEditing={() =>showToast()}    //
-                  ref={passwordInput}
                   onChangeText={(e) => setPassword(e)}
+                  defaultValue={password}
+                  autoCapitalize='none'
                 />
               </View>
-            </KeyboardAvoidingView>
+              </View>
             <View>
-                <View style={{alignItems:'center',marginBottom:20}}>
-                    <Text
-                      style={styles.textUseCondition}
-                      onPress={onPressSearchPwd}
-                      >
-                        {"  비밀번호 찾기  "}
-                    </Text>
-                </View>
-                <TouchableOpacity
-                    style={styles.bottomButton}
-                    onPress={()=>{
-                      showToast();
-                      onPressLogin();
-                    }}
-                    activeOpacity={0.8}>
-                <Text>
-                    로그인
-                </Text>
-                </TouchableOpacity>
+            <View style={{alignItems:'center',marginBottom:20}}>
+              <Text
+                style={styles.textUseCondition}
+                onPress={onPressSearchPwd}>
+                {"  비밀번호 찾기  "}
+              </Text>
             </View>
+            <BottomButton name={'로그인'} press={onPressLogin}/>
+          </View>
         </View>
+        </TouchableOpacity>
+      </View>
     );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    justifyContent: 'space-between',
+    backgroundColor : mainTheme.colors.background
+  },
+  textUseCondition: {
+    color: mainTheme.colors.black, 
+    paddingBottom: 6,
+    borderBottomWidth: 1,
+    fontSize:14,
+    fontFamily: mainTheme.font.L//'SB_Aggro_M'
+  },
+});
 
 export default LoginEmail;
