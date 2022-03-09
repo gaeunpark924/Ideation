@@ -16,6 +16,7 @@ import java.util.List;
 import com.facebook.react.bridge.JSIModulePackage; // <- add
 import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 import net.zubricky.AndroidKeyboardAdjust.AndroidKeyboardAdjustPackage;
+import com.microsoft.codepush.react.CodePush;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -45,6 +46,11 @@ public class MainApplication extends Application implements ReactApplication {
 
         @Override
         protected JSIModulePackage getJSIModulePackage() { return new ReanimatedJSIModulePackage(); }
+
+        @Override
+        protected String getJSBundleFile() {
+            return CodePush.getJSBundleFile();
+        }
       };
 
   @Override

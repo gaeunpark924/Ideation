@@ -83,6 +83,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle" // add this line
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -132,6 +133,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
     }
     splits {
         abi {
@@ -164,14 +166,22 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            //resValue 'string', "CodePushDeploymentKey", '""'
         }
+//        releaseStaging {
+//            resValue "string", "CodePushDeploymentKey", '"0WCTrmo0YPfQJ45pivhp3a9H4zPRSlHEnMW6c"'
+//            matchingFallbacks = ['release']
+//        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            //resValue "string", "CodePushDeploymentKey", '"CL91QJ3QilNPtDfF09pL8jKzoNpuImOwqUOf_"'
+
         }
+
     }
 
     // applicationVariants are e.g. debug, release
