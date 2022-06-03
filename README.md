@@ -29,12 +29,12 @@
 #### 💡 아이데이션이란?
 아이데이션이란 단순한 아이디어 자체가 아니라 새로운 아이디어를 만드는 **생성(Generating)**, **발전(Developing)**, 커뮤니케이션(Communicating) 과정을 아우르는 단어입니다.
 
-<img src="https://user-images.githubusercontent.com/51811995/158553638-ee0b2c15-6771-4016-be56-91d9e4aa063f.png" width=600>
+<img src="https://user-images.githubusercontent.com/51811995/158553638-ee0b2c15-6771-4016-be56-91d9e4aa063f.png" width=500>
 
   🔗 [위키피디아 설명](https://en.wikipedia.org/wiki/Ideation_(creative_process))
 
 ## 기술 스택
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white">
+<img src="https://img.shields.io/badge/React Native-61DAFB?style=for-the-badge&logo=React&logoColor=white">
 <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white">
 <img src="https://img.shields.io/badge/Google Play-414141?style=for-the-badge&logo=Google Play&logoColor=white">
 <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=YouTube&logoColor=white">
