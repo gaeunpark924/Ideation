@@ -27,7 +27,7 @@
 **퍼즐 컨셉**으로 유저들이 아이디어 퍼즐을 맞춰가면서 아이디어를 **생성**하고 **발전**시킬 수 있도록 도와줍니다.
 
 #### 💡 아이데이션이란?
-아이데이션이란 단순한 아이디어 자체가 아니라 새로운 아이디어를 만드는 **생성(Generating)**, **발전(Developing)**, 커뮤니케이션(Communicating) 과정을 아우르는 단어입니다.
+단순한 아이디어 자체가 아니라 새로운 아이디어를 만드는 **생성(Generating)**, **발전(Developing)**, 커뮤니케이션(Communicating) 과정을 말함
 
 <img src="https://user-images.githubusercontent.com/51811995/158553638-ee0b2c15-6771-4016-be56-91d9e4aa063f.png" width=500>
 
