@@ -66,10 +66,7 @@
 <img src="https://user-images.githubusercontent.com/51811995/158197545-51668b0f-d8d5-4199-a3ee-47ce015a7a57.PNG">
 
 ## 브랜치 전략
-- main :  메인 브랜치
-    - 배포시에는 필요에 따라 main브랜치에서 release 브랜치도 만들었습니다.
-- develop : 개발이 끝나면 main에 merge 하였습니다.
-- feature : 기능별로 feature 브랜치를 만들고 작업이 끝나면 develop에 merge 하였습니다.
+- git-flow
 
 <p>
 <img src="https://user-images.githubusercontent.com/51811995/160810158-f60dfe05-fbaf-4a84-a9dc-46e6eeec2492.PNG" width=800>
