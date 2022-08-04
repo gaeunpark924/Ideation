@@ -4,7 +4,7 @@
  <img src="https://user-images.githubusercontent.com/51811995/158551452-dc7e4b26-e4c7-4011-bcc4-47f2f247f312.png">
 </p>
 
-**건국대학교 IT 동아리 WIT**
+**WIT**
 
 |파트|이름|
 |----|---|
